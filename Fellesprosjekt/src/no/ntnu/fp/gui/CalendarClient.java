@@ -42,15 +42,26 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			System.err.println("Full screen not supported");
 		}
 		
-		//Add components
-		add(toolbar=new ApplicationToolbar(), BorderLayout.NORTH);
-		add(toolPanel=new ApplicationSidePanel(), BorderLayout.WEST);
-		Dimension calendarSize=new Dimension(getPreferredSize()); //Calculate the size of the calendar
+		//Initialize components
+		toolbar=new ApplicationToolbar();
+		toolPanel=new ApplicationSidePanel();
+		
+		//Calculate the size of the calendar
+		Dimension calendarSize=new Dimension(getPreferredSize());
 		calendarSize.width-=toolPanel.size.width; //Subtract the size of the application side panel
 		calendarSize.width-=16; // Subtract 16 because of window decorations
 		calendarSize.height-=toolbar.size.height; // Subtract the size of the application tool bar
 		calendarSize.height-=40; //Subtract 40 because of window decorations
-		add(calendarPanel=new CalendarPanel(calendarSize), BorderLayout.CENTER);
+		calendarPanel=new CalendarPanel(calendarSize);
+		
+		toolbar.month.setMonth(calendarPanel.calendar.getDisplayedMonth());
+		toolbar.year.setYear(calendarPanel.calendar.getDisplayedYear());
+		toolbar.week.setWeek(calendarPanel.calendar.getDisplayedWeek());
+		
+		//Add components
+		add(toolbar, BorderLayout.NORTH);
+		add(toolPanel, BorderLayout.WEST);
+		add(calendarPanel, BorderLayout.CENTER);
 		
 		//Show the frame
 		pack();
@@ -59,8 +70,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		//add component listener, this should be the last thing you do because we don't want to call events for no reason
 		addComponentListener(this);
 		toolbar.nextWeek.addActionListener(this);
-		toolbar.lastWeek.addActionListener(this);
-		toolbar.weekField.addActionListener(this);
+		toolbar.previousWeek.addActionListener(this);
+		toolbar.week.addActionListener(this);
 		toolbar.month.addPropertyChangeListener(this);
 		toolbar.year.addPropertyChangeListener(this);
 	}
@@ -73,19 +84,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public void updateDisplayedWeek() {
 		calendarPanel.calendar.setDisplayedMonth(toolbar.month.getMonth());
 		calendarPanel.calendar.setDisplayedYear(toolbar.year.getYear());
-		
-		int week=calendarPanel.calendar.getDisplayedWeek();
-		String weekString=toolbar.weekField.getText();
-		if (weekString.matches("week [0-9][0-9]*")) {
-			String s[]=weekString.split(" ");
-			weekString=s[1];
-		}
-		try {
-			week=Integer.parseInt(weekString);
-		} catch (IllegalArgumentException ex) {
-			System.out.println(ex);
-		}
-		calendarPanel.calendar.setDisplayedWeek(week);
+		calendarPanel.calendar.setDisplayedWeek(toolbar.week.getWeek());
 	}
 
 	@Override
@@ -106,13 +105,17 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==toolbar.lastWeek || e.getSource()==toolbar.nextWeek) {
+		if (e.getSource()==toolbar.previousWeek) {
+			
+		} else if (e.getSource()==toolbar.nextWeek) {
+			
+		} else if (e.getSource()==toolbar.week) {
 			
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		
+		updateDisplayedWeek();
 	}
 }
