@@ -4,6 +4,8 @@ import no.ntnu.fp.gui.calendar.CalendarPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +34,13 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		setFocusable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(size);
+		
+		GraphicsDevice device=GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		if (device.isFullScreenSupported()) {
+			device.setFullScreenWindow(this);
+		} else {
+			System.err.println("Full screen not supported");
+		}
 		
 		//Add components
 		add(toolbar=new ApplicationToolbar(), BorderLayout.NORTH);
