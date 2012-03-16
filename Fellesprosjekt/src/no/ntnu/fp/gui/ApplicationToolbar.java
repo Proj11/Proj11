@@ -8,7 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+
+import no.ntnu.fp.gui.calendar.WeekTextField;
 
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
@@ -17,8 +18,8 @@ public class ApplicationToolbar extends JPanel {
 	
 	public final Dimension size=new Dimension(CalendarClient.size.width, 40); //Default size of the component
 	public JLabel messageLabel; //This label tells you if you have any messages
-	public JTextField weekField; //This TextField shows which week is displayed in the calendar
-	public JButton changeConnectivityButton, nextWeek, lastWeek;  //Some intuitive button
+	public WeekTextField week; //This TextField shows which week is displayed in the calendar
+	public JButton changeConnectivityButton, nextWeek, previousWeek;  //Some intuitive button
 	public JYearChooser year; //This object is used to show which year is used in the calendar
 	public JMonthChooser month; //This object is used to show which month is used in the calendar
 	public JLabel stateLabel; //This label displays your online status
@@ -52,14 +53,14 @@ public class ApplicationToolbar extends JPanel {
 		month.setMaximumSize(new Dimension(120, 28));
 		add(month);
 		add(Box.createHorizontalStrut(5));
-		lastWeek=new JButton("Last Week");
-		lastWeek.setMaximumSize(new Dimension(80, 28));
-		add(lastWeek);
+		previousWeek=new JButton("Previous Week");
+		previousWeek.setMaximumSize(new Dimension(80, 28));
+		add(previousWeek);
 		add(Box.createHorizontalStrut(5));
-		weekField=new JTextField("Week 3");
-		weekField.setPreferredSize(new Dimension(80, 28));
-		weekField.setMaximumSize(new Dimension(80, 28));
-		add(weekField);
+		week=new WeekTextField();
+		week.setPreferredSize(new Dimension(80, 28));
+		week.setMaximumSize(new Dimension(80, 28));
+		add(week);
 		add(Box.createHorizontalStrut(5));
 		nextWeek=new JButton("Next Week");
 		nextWeek.setMaximumSize(new Dimension(80, 28));
