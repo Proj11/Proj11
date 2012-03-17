@@ -80,12 +80,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		// Run the application
 		new CalendarClient();
 	}
-	
-	public void updateDisplayedWeek() {
-		calendarPanel.calendar.setDisplayedMonth(toolbar.month.getMonth());
-		calendarPanel.calendar.setDisplayedYear(toolbar.year.getYear());
-		calendarPanel.calendar.setDisplayedWeek(toolbar.week.getWeek());
-	}
 
 	@Override
 	public void componentShown(ComponentEvent e) {}
@@ -105,17 +99,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==toolbar.previousWeek) {
-			
-		} else if (e.getSource()==toolbar.nextWeek) {
-			
-		} else if (e.getSource()==toolbar.week) {
-			
-		}
+		
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		updateDisplayedWeek();
+		
 	}
 }
