@@ -4,8 +4,6 @@ import no.ntnu.fp.gui.calendar.CalendarPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
@@ -15,6 +13,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -24,11 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener {
 	
+	public static Locale calendarLocale=Locale.ENGLISH;
 	public final static Dimension size=Toolkit.getDefaultToolkit().getScreenSize(); //Get the information required to set the frame to full screen
 	public ApplicationToolbar toolbar; //The applications tool bar
 	public CalendarPanel calendarPanel; // This panel is used to display the calendar
@@ -44,6 +42,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		setFocusable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(size);
+		setLocale(calendarLocale);
+		setExtendedState(MAXIMIZED_BOTH);
 		
 		//Initialize components
 		toolbar=new ApplicationToolbar();
@@ -57,9 +57,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		calendarSize.height-=40; //Subtract 40 because of window decorations
 		calendarPanel=new CalendarPanel(calendarSize);
 		
-		toolbar.month.setMonth(calendarPanel.calendar.getDisplayedMonth());
-		toolbar.year.setYear(calendarPanel.calendar.getDisplayedYear());
-		toolbar.week.setWeek(calendarPanel.calendar.getDisplayedWeek());
+		toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
+		toolbar.year.setYear(calendarPanel.getDisplayedYear());
+		toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
 		
 		//Add components
 		add(toolbar, BorderLayout.NORTH);
@@ -102,12 +102,30 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		if (e.getSource()==toolbar.nextWeek) {
+			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()+1);
+		} else if (e.getSource()==toolbar.previousWeek) {
+			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()-1);
+		}
+		toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
+		toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
+		toolbar.year.setYear(calendarPanel.getDisplayedYear());
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		
+		if (e.getSource()==toolbar.year && e.getPropertyName()=="year" && toolbar.year.getYear()!=calendarPanel.getDisplayedYear()) {
+			calendarPanel.setDisplayedYear(toolbar.year.getYear());
+			toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
+			toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
+			toolbar.year.setYear(calendarPanel.getDisplayedYear());
+		} else if (e.getSource()==toolbar.month && e.getPropertyName()=="month" && toolbar.month.getMonth()!=calendarPanel.getDisplayedMonth()) {
+			calendarPanel.setDisplayedMonth(toolbar.month.getMonth());
+			toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
+			toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
+			toolbar.year.setYear(calendarPanel.getDisplayedYear());
+			
+		}
 	}
 }
 

@@ -1,8 +1,9 @@
 package no.ntnu.fp.gui.calendar;
 
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import no.ntnu.fp.model.calendar.CalendarTableModel;
 
@@ -16,20 +17,13 @@ public class CalendarTable extends JTable {
 		getTableHeader().setReorderingAllowed(false);
 	}
 	
-	public void addPropertyChangeListenerToModel(PropertyChangeListener pcl) {
-		model.addPropertyChangeListener(pcl);
-	}
-	
-	public void removePropertyChangeListenerFromModel(PropertyChangeListener pcl) {
-		model.removePropertyChangeListener(pcl);
-	}
-	
 	public int getDisplayedMonth() {
 		return model.getDisplayedMonth();
 	}
 	
 	public void setDisplayedMonth(int month) {
 		model.setDisplayedMonth(month);
+		changeHeaderValues();
 	}
 	
 	public int getDisplayedYear() {
@@ -38,6 +32,7 @@ public class CalendarTable extends JTable {
 	
 	public void setDisplayedYear(int year) {
 		model.setDisplayedYear(year);
+		changeHeaderValues();
 	}
 	
 	public int getDisplayedWeek() {
@@ -46,5 +41,18 @@ public class CalendarTable extends JTable {
 	
 	public void setDisplayedWeek(int week) {
 		model.setDisplayedWeek(week);
+		changeHeaderValues();
+	}
+	
+	private void changeHeaderValues() {
+		JTableHeader th= getTableHeader();
+		TableColumnModel tcm=th.getColumnModel();
+		TableColumn tc;
+		for (int i = 1; i < model.getColumnCount(); i++) {
+			tc=tcm.getColumn(i);
+			tc.setHeaderValue(model.getColumnName(i));
+			
+		}
+		th.repaint();
 	}
 }
