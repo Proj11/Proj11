@@ -10,10 +10,10 @@ public class Appointment {
 	private int duration;
 	private Date date;
 	private String subject;
-	private Employee createdBy;
+	private Employee leader;
 	
 	public Appointment(Employee createdBy) {
-		this.createdBy=createdBy;
+		this.leader=createdBy;
 	}
 
 	public Time getStart() {
@@ -22,6 +22,9 @@ public class Appointment {
 
 	public void setStart(Time start) {
 		this.start = start;
+	}
+	public Employee getLeader(){
+		return this.leader;
 	}
 
 	public int getDuration() {
@@ -49,6 +52,6 @@ public class Appointment {
 	}
 	
 	public String toString() {
-		return subject+"\n"+createdBy.getName();
+		return subject+"\n"+leader.getName();
 	}
 }
