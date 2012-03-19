@@ -19,7 +19,7 @@ public class CalendarTableModel extends AbstractTableModel {
 	private int columnCount;
 	private String[] columnNames;
 	private Set<Appointment> appointments;
-	private Calendar calendar;
+	private GregorianCalendar calendar;
 	
 	public CalendarTableModel(String[] columnNames) {
 		calendar=new GregorianCalendar();
@@ -41,10 +41,13 @@ public class CalendarTableModel extends AbstractTableModel {
 			return columnNames[col]; //Kl
 		} else {
 			String s="";
-			s+=calendar.get(Calendar.DAY_OF_MONTH)+(-calendar.get(Calendar.DAY_OF_WEEK)+col); //Calculate the number of the day
+			int dayNumber=calendar.get(Calendar.DAY_OF_MONTH)+(-calendar.get(Calendar.DAY_OF_WEEK)+col);//Calculate the number of the day
+			if (dayNumber>calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+				dayNumber-=calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			}
+			s+=dayNumber; 
 			s+=". ";
 			s+=columnNames[col]; //Get the name of the day
-			System.out.println(s);
 			return s;
 		}
 	}
@@ -90,6 +93,5 @@ public class CalendarTableModel extends AbstractTableModel {
 	
 	public void setDisplayedWeek(int week) {
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
-		System.out.println(calendar.get(Calendar.WEEK_OF_YEAR));
 	}
 }
