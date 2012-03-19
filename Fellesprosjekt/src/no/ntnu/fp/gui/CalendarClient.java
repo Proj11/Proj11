@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +16,14 @@ import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -36,29 +44,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		setFocusable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(size);
-		try {
-			// Set cross-platform Java L&F (also called "Metal")
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-	    } 
-	    catch (UnsupportedLookAndFeelException e) {
-	       // handle exception
-	    }
-	    catch (ClassNotFoundException e) {
-	       // handle exception
-	    }
-	    catch (InstantiationException e) {
-	       // handle exception
-	    }
-	    catch (IllegalAccessException e) {
-	       // handle exception
-	    }
-		
-		GraphicsDevice device=GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		if (device.isFullScreenSupported()) {
-			device.setFullScreenWindow(this);
-		} else {
-			System.err.println("Full screen not supported");
-		}
 		
 		//Initialize components
 		toolbar=new ApplicationToolbar();
@@ -96,7 +81,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	
 	public static void main(String[] args) {
 		// Run the application
-		new CalendarClient();
+		new CalendarLogin();
 	}
 
 	@Override
@@ -123,5 +108,64 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		
+	}
+}
+
+class CalendarLogin extends JFrame implements ActionListener {
+	
+	public final static Dimension size = new Dimension(240, 180);
+	private JButton login;
+	private JTextField usernameText;
+	private JPasswordField passwordText;
+	private JLabel usernameLabel, passwordLabel;
+	
+	public CalendarLogin() {
+		setPreferredSize(size);
+		setResizable(false);
+		setTitle("Calendar Client");
+		setIconImage(new ImageIcon("res/Calendar.png").getImage());
+		setLayout(new BorderLayout());
+		setFocusable(true);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocation((CalendarClient.size.width-size.width)/2, (CalendarClient.size.height-size.height)/2);
+		
+		JPanel panel=new JPanel();
+		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createEtchedBorder());
+		GridBagConstraints c=new GridBagConstraints();
+		c.gridx=0;
+		c.gridy=0;
+		usernameLabel=new JLabel("USERNAME: ");
+		panel.add(usernameLabel, c);
+		c.gridx=1;
+		c.gridy=0;
+		usernameText=new JTextField(10);
+		panel.add(usernameText, c);
+		c.gridx=0;
+		c.gridy=1;
+		passwordLabel=new JLabel("PASSWORD: ");
+		panel.add(passwordLabel, c);
+		c.gridx=1;
+		c.gridy=1;
+		passwordText=new JPasswordField(10);
+		panel.add(passwordText, c);
+		
+		add(panel, BorderLayout.CENTER);
+		login=new JButton("Login");
+		login.addActionListener(this);
+		add(login, BorderLayout.SOUTH);
+		
+		pack();
+		setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==login) {
+			//TODO A connection should be established here
+			//TODO The connection should then be passed as an argument to the CalendarClient class
+			setVisible(false);
+			new CalendarClient();
+		}
 	}
 }
