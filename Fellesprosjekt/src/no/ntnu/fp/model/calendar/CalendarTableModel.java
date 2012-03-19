@@ -1,6 +1,10 @@
 package no.ntnu.fp.model.calendar;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.sql.Date;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,14 +20,11 @@ public class CalendarTableModel extends AbstractTableModel {
 	private int columnCount;
 	private String[] columnNames;
 	private Set<Appointment> appointments;
-	private int week;
-	private int month;
-	private int year;
+	private PropertyChangeSupport pcs;
+	private Calendar calendar;
 	
 	public CalendarTableModel(String[] columnNames) {
-		week=Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
-		month=Calendar.getInstance().get(Calendar.MONTH);
-		year=Calendar.getInstance().get(Calendar.YEAR);
+		calendar=new GregorianCalendar();
 		this.columnNames=columnNames;
 		rowCount=24;
 		columnCount=columnNames.length;
@@ -33,8 +34,10 @@ public class CalendarTableModel extends AbstractTableModel {
 		temp.setStart(new Time(7, 0));
 		temp.setDuration(1);
 		temp.setSubject("Hurr durr");
-		temp.setDate(Calendar.getInstance().getTime());
+		temp.setDate(new Date(2012, 3, 15));
 		appointments.add(temp);
+		
+		pcs=new PropertyChangeSupport(this);
 	}
 
 	public String getColumnName(int col) {
@@ -42,8 +45,8 @@ public class CalendarTableModel extends AbstractTableModel {
 			return columnNames[col]; //Kl
 		} else {
 			String s="";
-			s+=Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+(-Calendar.getInstance().get(Calendar.DAY_OF_WEEK)+col); //Calculate the number of the day
-			s+=" ";
+			s+=calendar.get(Calendar.DAY_OF_MONTH)+(-calendar.get(Calendar.DAY_OF_WEEK)+col); //Calculate the number of the day
+			s+=". ";
 			s+=columnNames[col]; //Get the name of the day
 			return s;
 		}
@@ -68,27 +71,45 @@ public class CalendarTableModel extends AbstractTableModel {
 		}
 	}
 	
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+		pcs.addPropertyChangeListener(pcl);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener pcl) {
+		pcs.removePropertyChangeListener(pcl);
+	}
+	
 	public int getDisplayedMonth() {
-		return month;
+		return calendar.get(Calendar.MONTH);
 	}
 	
 	public void setDisplayedMonth(int month) {
-		this.month=month;
+		int oldValue=calendar.get(Calendar.MONTH);
+		int newValue=month;
+		calendar.set(Calendar.MONTH, month);
+		pcs.firePropertyChange("MONTH", oldValue, newValue);
 	}
 	
 	public int getDisplayedYear() {
-		return year;
+		return calendar.get(Calendar.YEAR);
 	}
 	
 	public void setDisplayedYear(int year) {
-		this.year=year;
+		int oldValue=calendar.get(Calendar.YEAR);
+		int newValue=year;
+		calendar.set(Calendar.YEAR, year);
+		pcs.firePropertyChange("YEAR", oldValue, newValue);
 	}
 	
 	public int getDisplayedWeek() {
-		return week;
+		return calendar.get(Calendar.WEEK_OF_YEAR);
 	}
 	
 	public void setDisplayedWeek(int week) {
-		this.week=week;
+		week%=53;
+		int oldValue=calendar.get(Calendar.WEEK_OF_YEAR);
+		int newValue=week;
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		pcs.firePropertyChange("WEEK", oldValue, newValue);
 	}
 }

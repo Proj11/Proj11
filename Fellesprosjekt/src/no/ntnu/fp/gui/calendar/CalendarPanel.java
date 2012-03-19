@@ -5,7 +5,6 @@ import java.text.DateFormatSymbols;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 public class CalendarPanel extends JPanel {
 	
