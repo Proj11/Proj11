@@ -1,7 +1,5 @@
 package no.ntnu.fp.model.calendar;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -16,11 +14,11 @@ import no.ntnu.fp.model.time.Time;
 
 public class CalendarTableModel extends AbstractTableModel {
 	
+	static int q=0;
 	private int rowCount;
 	private int columnCount;
 	private String[] columnNames;
 	private Set<Appointment> appointments;
-	private PropertyChangeSupport pcs;
 	private Calendar calendar;
 	
 	public CalendarTableModel(String[] columnNames) {
@@ -36,8 +34,6 @@ public class CalendarTableModel extends AbstractTableModel {
 		temp.setSubject("Hurr durr");
 		temp.setDate(new Date(2012, 3, 15));
 		appointments.add(temp);
-		
-		pcs=new PropertyChangeSupport(this);
 	}
 
 	public String getColumnName(int col) {
@@ -48,6 +44,7 @@ public class CalendarTableModel extends AbstractTableModel {
 			s+=calendar.get(Calendar.DAY_OF_MONTH)+(-calendar.get(Calendar.DAY_OF_WEEK)+col); //Calculate the number of the day
 			s+=". ";
 			s+=columnNames[col]; //Get the name of the day
+			System.out.println(s);
 			return s;
 		}
 	}
@@ -71,23 +68,12 @@ public class CalendarTableModel extends AbstractTableModel {
 		}
 	}
 	
-	public void addPropertyChangeListener(PropertyChangeListener pcl) {
-		pcs.addPropertyChangeListener(pcl);
-	}
-	
-	public void removePropertyChangeListener(PropertyChangeListener pcl) {
-		pcs.removePropertyChangeListener(pcl);
-	}
-	
 	public int getDisplayedMonth() {
 		return calendar.get(Calendar.MONTH);
 	}
 	
 	public void setDisplayedMonth(int month) {
-		int oldValue=calendar.get(Calendar.MONTH);
-		int newValue=month;
 		calendar.set(Calendar.MONTH, month);
-		pcs.firePropertyChange("MONTH", oldValue, newValue);
 	}
 	
 	public int getDisplayedYear() {
@@ -95,10 +81,7 @@ public class CalendarTableModel extends AbstractTableModel {
 	}
 	
 	public void setDisplayedYear(int year) {
-		int oldValue=calendar.get(Calendar.YEAR);
-		int newValue=year;
 		calendar.set(Calendar.YEAR, year);
-		pcs.firePropertyChange("YEAR", oldValue, newValue);
 	}
 	
 	public int getDisplayedWeek() {
@@ -106,10 +89,7 @@ public class CalendarTableModel extends AbstractTableModel {
 	}
 	
 	public void setDisplayedWeek(int week) {
-		week%=53;
-		int oldValue=calendar.get(Calendar.WEEK_OF_YEAR);
-		int newValue=week;
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
-		pcs.firePropertyChange("WEEK", oldValue, newValue);
+		System.out.println(calendar.get(Calendar.WEEK_OF_YEAR));
 	}
 }
