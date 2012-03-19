@@ -4,8 +4,10 @@ import no.ntnu.fp.gui.calendar.CalendarPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -147,13 +149,17 @@ class CalendarLogin extends JFrame implements ActionListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((CalendarClient.size.width-size.width)/2, (CalendarClient.size.height-size.height)/2);
 		
+		JLabel titleLabel=new JLabel("Calendurrp", JLabel.CENTER);
+		titleLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+		add(titleLabel, BorderLayout.NORTH);
+		
 		JPanel panel=new JPanel();
 		panel.setLayout(new GridBagLayout());
-		panel.setBorder(BorderFactory.createEtchedBorder());
 		GridBagConstraints c=new GridBagConstraints();
+		c.insets=new Insets(5, 0, 0, 0);
 		c.gridx=0;
 		c.gridy=0;
-		usernameLabel=new JLabel("USERNAME: ");
+		usernameLabel=new JLabel("Username: ");
 		panel.add(usernameLabel, c);
 		c.gridx=1;
 		c.gridy=0;
@@ -161,7 +167,7 @@ class CalendarLogin extends JFrame implements ActionListener {
 		panel.add(usernameText, c);
 		c.gridx=0;
 		c.gridy=1;
-		passwordLabel=new JLabel("PASSWORD: ");
+		passwordLabel=new JLabel("Password: ");
 		panel.add(passwordLabel, c);
 		c.gridx=1;
 		c.gridy=1;
