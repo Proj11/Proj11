@@ -46,7 +46,7 @@ public class CalendarTableModel extends AbstractTableModel {
 		} else {
 			String s="";
 			s+=calendar.get(Calendar.DAY_OF_MONTH)+(-calendar.get(Calendar.DAY_OF_WEEK)+col); //Calculate the number of the day
-			s+=" ";
+			s+=". ";
 			s+=columnNames[col]; //Get the name of the day
 			return s;
 		}

@@ -16,6 +16,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener {
 	
@@ -34,6 +36,22 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		setFocusable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(size);
+		try {
+			// Set cross-platform Java L&F (also called "Metal")
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+	    } 
+	    catch (UnsupportedLookAndFeelException e) {
+	       // handle exception
+	    }
+	    catch (ClassNotFoundException e) {
+	       // handle exception
+	    }
+	    catch (InstantiationException e) {
+	       // handle exception
+	    }
+	    catch (IllegalAccessException e) {
+	       // handle exception
+	    }
 		
 		GraphicsDevice device=GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		if (device.isFullScreenSupported()) {

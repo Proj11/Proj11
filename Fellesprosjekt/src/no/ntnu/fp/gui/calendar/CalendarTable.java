@@ -16,11 +16,11 @@ public class CalendarTable extends JTable {
 		getTableHeader().setReorderingAllowed(false);
 	}
 	
-	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+	public void addPropertyChangeListenerToModel(PropertyChangeListener pcl) {
 		model.addPropertyChangeListener(pcl);
 	}
 	
-	public void removePropertyChangeListener(PropertyChangeListener pcl) {
+	public void removePropertyChangeListenerFromModel(PropertyChangeListener pcl) {
 		model.removePropertyChangeListener(pcl);
 	}
 	
