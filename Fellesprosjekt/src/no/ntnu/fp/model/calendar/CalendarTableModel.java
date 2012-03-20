@@ -32,17 +32,12 @@ public class CalendarTableModel extends AbstractTableModel {
 		columnCount=columnNames.length;
 		appointments=new ArrayList<Appointment>();
 		
-		Appointment temp=new Appointment(new Employee("Herp Derp"));
-		temp.setStart(new Time(7, 0));
-		temp.setEnd(new Time(8, 0));
-		temp.setSubject("Hurr durr");
-		temp.setDate(new Date(2011, 3, 1));
-		appointments.add(temp);
+		Appointment temp;
 		temp=new Appointment(new Employee("Herp Derp"));
 		temp.setStart(new Time(7, 0));
-		temp.setEnd(new Time(8, 0));
+		temp.setEnd(new Time(12, 0));
 		temp.setSubject("Hurr durr");
-		temp.setDate(new Date(2011, 0, 1));
+		temp.setDate(new Date(2012, 2, 21));
 		appointments.add(temp);
 	}
 
