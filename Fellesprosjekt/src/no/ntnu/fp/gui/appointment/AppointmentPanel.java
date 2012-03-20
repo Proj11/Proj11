@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 import javax.swing.Box;
@@ -27,21 +29,96 @@ import javax.swing.ScrollPaneConstants;
 
 import com.toedter.calendar.JDateChooser;
 
-public class AppointmentPanel extends JPanel {
+public class AppointmentPanel extends JPanel{
 	
-	public JDateChooser dateChooser;
-	public JSpinner startTime, endTime;
-	public JList employeeList;
-	public JButton addEmployee, removeEmployee;
-	public JTextField subject;
-	public JTextArea description;
-	public JCheckBox autoReserve;
-	public JComboBox rooms;
-	public JTextField place;
-	public JButton deleteButton;
-	public JButton createAppointmentButton;
-	public JButton saveButton;
-	public JButton clearButton;
+	private JDateChooser dateChooser;
+	private JSpinner startTime, endTime;
+	private JList employeeList;
+	private JButton addEmployee, removeEmployee;
+	private JTextField subject;
+	private JTextArea description;
+	private JCheckBox autoReserve;
+	private JComboBox rooms;
+	private JTextField place;
+	private JButton deleteButton;
+	private JButton createAppointmentButton;
+	private JButton saveButton;
+	private JButton clearButton;
+	public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+
+
+	public JSpinner getStartTime() {
+		return startTime;
+	}
+
+
+	public JSpinner getEndTime() {
+		return endTime;
+	}
+
+
+	public JList getEmployeeList() {
+		return employeeList;
+	}
+
+
+	public JButton getAddEmployee() {
+		return addEmployee;
+	}
+
+
+	public JButton getRemoveEmployee() {
+		return removeEmployee;
+	}
+
+
+	public JTextField getSubject() {
+		return subject;
+	}
+
+
+	public JTextArea getDescription() {
+		return description;
+	}
+
+
+	public JCheckBox getAutoReserve() {
+		return autoReserve;
+	}
+
+
+	public JComboBox getRooms() {
+		return rooms;
+	}
+
+
+	public JTextField getPlace() {
+		return place;
+	}
+
+
+	public JButton getDeleteButton() {
+		return deleteButton;
+	}
+
+
+	public JButton getCreateAppointmentButton() {
+		return createAppointmentButton;
+	}
+
+
+	public JButton getSaveButton() {
+		return saveButton;
+	}
+
+
+	public JButton getClearButton() {
+		return clearButton;
+	}
+
+
 	
 	
 	public AppointmentPanel() {
@@ -192,5 +269,27 @@ public class AppointmentPanel extends JPanel {
 		add(panel);
 		
 		
+		// actions
+		clearButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clearFields();
+			}
+		});
+		
+		
 	}
+
+	public void clearFields(){
+		dateChooser.setDate(Calendar.getInstance().getTime());
+		subject.setText("");
+		description.setText("");
+		employeeList.removeAll();
+		place.setText("");
+		autoReserve.setSelected(false);
+		rooms.setSelectedItem(null);
+		//needs code to include Model
+	}
+	
 }
