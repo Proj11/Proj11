@@ -1,7 +1,5 @@
 package no.ntnu.fp.server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,7 +8,6 @@ import java.net.Socket;
 import java.sql.ResultSet;
 
 import no.ntnu.fp.db.Database;
-import no.ntnu.fp.net.co.SendTimer;
 
 public class CalendarServer {
 	
@@ -20,36 +17,39 @@ public class CalendarServer {
 	String message;
 	
 	
-	@SuppressWarnings("deprecation")
-	public CalendarServer() throws IOException {
+	
+	public CalendarServer() throws Exception{
 		serverSocket = new ServerSocket(8000);
-		Socket socket = serverSocket.accept();
-//		DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
-//		DataOutputStream outputToClient = new DataOutputStream(socket.getOutputStream());
+		Socket socket;
 		while (true) {
-			
+//			//Receive something
+			socket = serverSocket.accept();
 			out = new ObjectOutputStream(socket.getOutputStream());
 			out.flush();
 			in = new ObjectInputStream(socket.getInputStream());
 			
-			sendMessage("Connection successful");
+			message = (String) in.readObject();
+			char id = message.charAt(0);
 			
-			
-			
-			
-			
-			
-			
-//			//Receive something
-//			
 //			//Do something
-//			
-//			//Send something
-//			if (input.equals("test"))
-//				outputToClient.writeChars("Dette er en test");
-//			else
-//				outputToClient.writeChars("Dette er ikke en test");
-//			outputToClient.flush();
+			switch (id) {
+			case '1':
+				boolean b = logon(message.substring(1));
+				if (b){
+					sendMessage("1");
+				}
+				else 
+					sendMessage("0");
+				break;
+
+			default:
+				break;
+			}
+			
+			out.close();
+			in.close();
+			socket.close();
+				
 		}
 		
 	}
@@ -65,15 +65,19 @@ public class CalendarServer {
 		
 	}
 	
-	public static boolean logon(String username, String password) throws Exception{
+	public static boolean logon(String logonString) throws Exception{
+		String[] logonArray = logonString.split("-");
+		String username = logonArray[0];
+		String password = logonArray[1];
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM Employee WHERE username='" + username + "' AND password='" + password + "'");
-		if (rs.next())
+		if (rs.next()){
 			return true;
+		}
 		return false;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		try {
 			new CalendarServer();
 		} catch (IOException e) {

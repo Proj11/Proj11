@@ -1,5 +1,6 @@
 package no.ntnu.fp.gui;
 
+import no.ntnu.fp.client.Client;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 
 import java.awt.BorderLayout;
@@ -182,13 +183,35 @@ class CalendarLogin extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==login) {
 			//TODO A connection should be established here
 			//TODO The connection should then be passed as an argument to the CalendarClient class
-			setVisible(false);
-			new CalendarClient();
+			try { 
+				if (usernameText.getText() == null || passwordText.getText() == null){
+					Client client = new Client();
+					boolean logon = client.logOn("brukernavn", "passord");
+					setVisible(false);
+					new CalendarClient();
+				}
+				else {
+					Client client = new Client();
+					boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
+					
+					if (logon){
+						setVisible(false);
+						new CalendarClient();
+					}
+					else System.out.println("Incorrect username / password.");
+				}
+			}
+			catch (Exception eX){
+				eX.printStackTrace();
+				System.out.println("Could not connect to server.");
+			}
+			
 		}
 	}
 }
