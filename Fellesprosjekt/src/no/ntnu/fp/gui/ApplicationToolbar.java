@@ -53,17 +53,15 @@ public class ApplicationToolbar extends JPanel {
 		month.setMaximumSize(new Dimension(120, 28));
 		add(month);
 		add(Box.createHorizontalStrut(5));
-		previousWeek=new JButton("Previous Week");
-		previousWeek.setMaximumSize(new Dimension(80, 28));
+		previousWeek=new JButton("<");
+		previousWeek.setMaximumSize(new Dimension(40, 28));
 		add(previousWeek);
-		add(Box.createHorizontalStrut(5));
 		week=new WeekTextField();
 		week.setPreferredSize(new Dimension(80, 28));
 		week.setMaximumSize(new Dimension(80, 28));
 		add(week);
-		add(Box.createHorizontalStrut(5));
-		nextWeek=new JButton("Next Week");
-		nextWeek.setMaximumSize(new Dimension(80, 28));
+		nextWeek=new JButton(">");
+		nextWeek.setMaximumSize(new Dimension(40, 28));
 		add(nextWeek);
 		add(Box.createGlue());
 		
