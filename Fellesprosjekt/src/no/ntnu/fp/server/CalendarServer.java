@@ -1,5 +1,7 @@
 package no.ntnu.fp.server;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,18 +9,35 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.ResultSet;
 
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
 import no.ntnu.fp.db.Database;
 
-public class CalendarServer {
+public class CalendarServer extends JFrame {
 	
 	private ServerSocket serverSocket;
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	String message;
 	
-	
+	JTextArea textArea;
 	
 	public CalendarServer() throws Exception{
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("Calendar Server");
+		
+		textArea = new JTextArea();
+		textArea.setColumns(50);
+		textArea.setRows(30);
+		JScrollPane scrollPane=new JScrollPane(textArea);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		add(scrollPane);
+		
+		pack();
+		setVisible(true);
+		
 		serverSocket = new ServerSocket(8000);
 		Socket socket;
 		while (true) {
@@ -29,6 +48,7 @@ public class CalendarServer {
 			in = new ObjectInputStream(socket.getInputStream());
 			
 			message = (String) in.readObject();
+			textArea.append(message+"\n");
 			char id = message.charAt(0);
 			
 //			//Do something
@@ -49,6 +69,7 @@ public class CalendarServer {
 			out.close();
 			in.close();
 			socket.close();
+			textArea.append("Connection closed\n");
 				
 		}
 		
@@ -58,6 +79,7 @@ public class CalendarServer {
 		try {
 			out.writeObject(msg);
 			out.flush();
+			textArea.append("Message sent: "+msg+"\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,5 +107,4 @@ public class CalendarServer {
 			e.printStackTrace();
 		}
 	}
-
 }
