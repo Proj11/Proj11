@@ -3,12 +3,14 @@ package no.ntnu.fp.model.message;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
 
 public class MessageTableModel extends AbstractTableModel {
 	
 	private List<Message> messages;
-	private String[] columnName = {"Leader", "Subject", "Go to"};
+	private String[] columnName = {"Leader", "Subject"};
+	JButton button = new JButton("-->");
 	
 	public MessageTableModel(){
 		messages = new ArrayList<Message>();
@@ -35,6 +37,14 @@ public class MessageTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		return null;
+		if (columnIndex==0) {
+			return messages.get(rowIndex).getAppointment().getLeader().getName();
+		}
+		else if(columnIndex==1){
+			return messages.get(rowIndex).getAppointment().getSubject();
+		}
+		else{
+			return null;
+		}
 	}
 }
