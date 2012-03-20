@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import no.ntnu.fp.gui.CalendarClient;
+import no.ntnu.fp.model.appointment.Appointment;
 
 public class CalendarPanel extends JPanel {
 	
@@ -22,6 +23,7 @@ public class CalendarPanel extends JPanel {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setPreferredSize(size);
 		add(scrollPane);
+		calendar.setDefaultRenderer(calendar.getColumnClass(1), new CalendarCellRenderer());
 	}
 	
 	public void resizeScrollPane(Dimension d) {
@@ -35,6 +37,7 @@ public class CalendarPanel extends JPanel {
 	
 	public void setDisplayedMonth(int month) {
 		calendar.setDisplayedMonth(month);
+		repaint();
 	}
 	
 	public int getDisplayedYear() {
@@ -43,6 +46,7 @@ public class CalendarPanel extends JPanel {
 	
 	public void setDisplayedYear(int year) {
 		calendar.setDisplayedYear(year);
+		repaint();
 	}
 	
 	public int getDisplayedWeek() {
@@ -51,5 +55,10 @@ public class CalendarPanel extends JPanel {
 	
 	public void setDisplayedWeek(int week) {
 		calendar.setDisplayedWeek(week);
+		repaint();
+	}
+	
+	public Appointment getSelectedCell() {
+		return calendar.getSelectedCell();
 	}
 }
