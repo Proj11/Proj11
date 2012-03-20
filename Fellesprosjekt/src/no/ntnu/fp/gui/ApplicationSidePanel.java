@@ -24,4 +24,8 @@ public class ApplicationSidePanel extends JTabbedPane {
 		addTab("Employees", empPanel=new EmployeePanel()); //Add the employees tab
 		addTab("Appointment", appPanel=new AppointmentPanel()); //Add the appointment tab
 	}
+	
+	
+	
+	
 }
