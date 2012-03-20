@@ -1,10 +1,10 @@
 package no.ntnu.fp.model.calendar;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -18,15 +18,16 @@ public class CalendarTableModel extends AbstractTableModel {
 	private int rowCount;
 	private int columnCount;
 	private String[] columnNames;
-	private Set<Appointment> appointments;
+	private List<Appointment> appointments;
 	private GregorianCalendar calendar;
+	
 	
 	public CalendarTableModel(String[] columnNames) {
 		calendar=new GregorianCalendar();
 		this.columnNames=columnNames;
 		rowCount=24;
 		columnCount=columnNames.length;
-		appointments=new HashSet<Appointment>();
+		appointments=new ArrayList<Appointment>();
 		
 		Appointment temp=new Appointment(new Employee("Herp Derp"));
 		temp.setStart(new Time(7, 0));

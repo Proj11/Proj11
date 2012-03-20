@@ -12,7 +12,8 @@ public class CalendarTable extends JTable {
 	private CalendarTableModel model;
 
 	public CalendarTable(String[] columnNames) {
-		setModel(model=new CalendarTableModel(columnNames));
+		model=new CalendarTableModel(columnNames);
+		setModel(model);
 		setRowHeight(50);
 		getTableHeader().setReorderingAllowed(false);
 	}
@@ -45,11 +46,11 @@ public class CalendarTable extends JTable {
 	}
 	
 	private void changeHeaderValues() {
-		JTableHeader th= getTableHeader();
-		TableColumnModel tcm=th.getColumnModel();
+		JTableHeader th = getTableHeader();
+		TableColumnModel tcm = th.getColumnModel();
 		TableColumn tc;
 		for (int i = 1; i < model.getColumnCount(); i++) {
-			tc=tcm.getColumn(i);
+			tc = tcm.getColumn(i);
 			tc.setHeaderValue(model.getColumnName(i));
 			
 		}

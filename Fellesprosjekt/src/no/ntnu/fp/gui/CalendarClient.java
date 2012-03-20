@@ -17,7 +17,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,8 +43,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		setFocusable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(size);
-		setLocale(calendarLocale);
 		setExtendedState(MAXIMIZED_BOTH);
+		setLocale(calendarLocale);		
 		
 		//Initialize components
 		toolbar=new ApplicationToolbar();
