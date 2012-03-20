@@ -7,7 +7,7 @@ import no.ntnu.fp.model.time.Time;
 
 public class Appointment {
 	private Time start;
-	private int duration;
+	private Time end;
 	private Date date;
 	private String subject;
 	private Employee leader;
@@ -23,16 +23,17 @@ public class Appointment {
 	public void setStart(Time start) {
 		this.start = start;
 	}
+	
 	public Employee getLeader(){
 		return this.leader;
 	}
 
-	public int getDuration() {
-		return duration;
+	public Time getEnd() {
+		return end;
 	}
 
-	public void setDuration(int duration) {
-		this.duration = duration;
+	public void setEnd(Time end) {
+		this.end=end;
 	}
 
 	public String getSubject() {

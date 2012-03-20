@@ -2,7 +2,7 @@ package no.ntnu.fp.model.time;
 
 import no.ntnu.fp.timeexception.TimeException;
 
-public class Time {
+public class Time implements Comparable<Time> {
 	public final int HOUR;
 	public final int MINUTE;
 	
@@ -49,5 +49,14 @@ public class Time {
 			}
 		}
 		throw new TimeException("Invalid format!");
+	}
+
+	@Override
+	public int compareTo(Time o) {
+		if (this.HOUR-o.HOUR==0) {
+			return this.MINUTE-o.MINUTE;
+		} else {
+			return this.HOUR-o.HOUR;
+		}
 	}
 }
