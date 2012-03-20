@@ -5,6 +5,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.calendar.CalendarTableModel;
 
 public class CalendarTable extends JTable {
@@ -15,6 +16,8 @@ public class CalendarTable extends JTable {
 		model=new CalendarTableModel(columnNames);
 		setModel(model);
 		setRowHeight(50);
+		setColumnSelectionAllowed(false);
+		setRowSelectionAllowed(false);
 		getTableHeader().setReorderingAllowed(false);
 	}
 	
@@ -55,5 +58,13 @@ public class CalendarTable extends JTable {
 			
 		}
 		th.repaint();
+	}
+	
+	public Appointment getSelectedCell() {
+		Object o=model.getValueAt(getSelectedRow(), getSelectedColumn());
+		if (o instanceof Appointment) {
+			return (Appointment)o; 
+		}
+		return null;
 	}
 }
