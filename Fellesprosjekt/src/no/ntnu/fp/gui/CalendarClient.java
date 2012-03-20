@@ -164,6 +164,7 @@ class CalendarLogin extends JFrame implements ActionListener {
 		c.gridx=1;
 		c.gridy=0;
 		usernameText=new JTextField(10);
+		usernameText.setText("brukernavn");
 		panel.add(usernameText, c);
 		c.gridx=0;
 		c.gridy=1;
@@ -172,6 +173,7 @@ class CalendarLogin extends JFrame implements ActionListener {
 		c.gridx=1;
 		c.gridy=1;
 		passwordText=new JPasswordField(10);
+		passwordText.setText("passord");
 		panel.add(passwordText, c);
 		
 		add(panel, BorderLayout.CENTER);
@@ -190,7 +192,7 @@ class CalendarLogin extends JFrame implements ActionListener {
 			//TODO A connection should be established here
 			//TODO The connection should then be passed as an argument to the CalendarClient class
 			try { 
-				if (usernameText.getText() == null || passwordText.getText() == null){
+				if (usernameText.getText() == "" || passwordText.getText() == ""){
 					Client client = new Client();
 					boolean logon = client.logOn("brukernavn", "passord");
 					setVisible(false);
