@@ -41,6 +41,7 @@ public class EmployeePanel extends JPanel {
 		});
 		GridBagConstraints c = new GridBagConstraints();
 		searchPanel.setLayout(new GridBagLayout());
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weighty = 1;
@@ -60,8 +61,8 @@ public class EmployeePanel extends JPanel {
 		employeeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		employeeScrollPane.add(searchResults);
 		employeeScrollPane.setPreferredSize(new Dimension(280, 400));
-		employeeScrollPane.setMaximumSize(EmployeeList.defaultSize);
-		employeeScrollPane.setMinimumSize(EmployeeList.defaultSize);
+		employeeScrollPane.setMaximumSize(new Dimension(280, 200));
+		employeeScrollPane.setMinimumSize(new Dimension(280, 200));
 		c.gridx = 0;
 		c.gridy = 2;
 		add(employeeScrollPane, c);		
@@ -82,9 +83,9 @@ public class EmployeePanel extends JPanel {
 		JScrollPane chosenScrollPane=new JScrollPane();
 		chosenScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		chosenScrollPane.add(searchResults);
-		chosenScrollPane.setPreferredSize(new Dimension(280, 400));
-		chosenScrollPane.setMaximumSize(EmployeeList.defaultSize);
-		chosenScrollPane.setMinimumSize(EmployeeList.defaultSize);
+		chosenScrollPane.setPreferredSize(new Dimension(280, 200));
+		chosenScrollPane.setMaximumSize(new Dimension(280, 200));
+		chosenScrollPane.setMinimumSize(new Dimension(280, 200));
 		c.gridy = 4;
 		add(chosenScrollPane, c);	
 		removeButton = new JButton("Remove from calendar");
