@@ -5,8 +5,10 @@ import no.ntnu.fp.gui.time.TimeSpinner;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Calendar;
 
 import javax.swing.Box;
@@ -33,18 +35,18 @@ public class AppointmentPanel extends JPanel {
 	public JButton addEmployee, removeEmployee;
 	public JTextField subject;
 	public JTextArea description;
-	private JCheckBox autoReserve;
-	private JComboBox rooms;
-	private JTextField place;
-	private JButton deleteButton;
-	private JButton createAppointmentButton;
-	private JButton saveButton;
-	private JButton clearButton;
+	public JCheckBox autoReserve;
+	public JComboBox rooms;
+	public JTextField place;
+	public JButton deleteButton;
+	public JButton createAppointmentButton;
+	public JButton saveButton;
+	public JButton clearButton;
 	
 	
 	public AppointmentPanel() {
 		super();
-		
+		setLayout(new FlowLayout(FlowLayout.LEADING));
 		//The date and time panel
 		JPanel panel=new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -135,68 +137,48 @@ public class AppointmentPanel extends JPanel {
 		panel.add(scrollPane);
 		add(panel);
 		
-		//The auto-reservation panel
-		panel=new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		Box box = Box.createHorizontalBox();
-		panel.add(new JLabel("Auto reservation?"));
-		autoReserve =new JCheckBox();
-		box.add(autoReserve);
-		box.add(Box.createHorizontalStrut(160));
-		panel.add(box);
-		add(panel);
-		
 		//The manual-reservation panel
-		panel = new JPanel(); 
+		//The auto-reservation panel
+		d = new Dimension(120, 24);
+		panel = new JPanel();
+		autoReserve = new JCheckBox("Auto reserve?");
+		panel.add(autoReserve);
+		add(panel);
+		panel=new JPanel();
 		rooms = new JComboBox();
+		rooms.setPreferredSize(d);
 		place = new JTextField(10);
-		JPanel roomReservPanel = new JPanel();
-		roomReservPanel.setLayout(new BoxLayout(roomReservPanel, BoxLayout.X_AXIS));
-		Box verticalBox = Box.createVerticalBox();
-		Box roomLabelBox = Box.createHorizontalBox();
-//		roomLabelBox.add(new JLabel("Available rooms"));
-		roomLabelBox.add(Box.createHorizontalStrut(80));
-//		Box roomBox = Box.createHorizontalBox();
-//		roomBox.add(rooms);
-//		roomBox.add(Box.createHorizontalStrut(70));
-		verticalBox.add(new JLabel("Available rooms"));
-		verticalBox.add(rooms);
-		roomReservPanel.add(verticalBox);
-//		placeRoomLabelBox.add(Box.createHorizontalStrut(60));
-//		placeRoomLabelBox.add(new JLabel("Place"));
-//		verticalBox.add(placeRoomLabelBox);
-//		Box placeRoomBox = Box.createHorizontalBox();
-//		placeRoomBox.add(rooms);
-//		placeRoomBox.add(Box.createHorizontalStrut(90));
-//		placeRoomBox.add(place);
-//		verticalBox.add(placeRoomBox);
-//		roomReserv.add(new JLabel("Avaliable rooms:"));
-//		roomReserv.add(rooms);
-		JPanel placeReservePanel = new JPanel();
-		placeReservePanel.setLayout(new BoxLayout(placeReservePanel, BoxLayout.X_AXIS));
-		Box placeVerticalBox = Box.createVerticalBox();
-		placeVerticalBox.add(new JLabel("Place:"));
-		placeVerticalBox.add(place);
-		placeReservePanel.add(placeVerticalBox);
-//		Box placeBox = Box.createHorizontalBox();
-//		placeBox.add(place);
-//		placeBox.add(Box.createHorizontalStrut(70));
-//		placeVerticalBox.add(placeBox);
-//		placeReservePanel.add(placeVerticalBox);
-//		placeReserve.add(new JLabel("Place:"));
-//		placeReserve.add(place);
-		panel.add(roomReservPanel);
-		panel.add(placeReservePanel);
-//		panel.add(verticalBox);		
+		place.setPreferredSize(d);
+		panel.setLayout(new GridBagLayout());
+		c=new GridBagConstraints();
+		c.gridx=0;
+		c.gridy=0;
+		panel.add(new JLabel("Available rooms:"), c);
+		c.gridx=1;
+		c.gridy=0;
+		panel.add(new JLabel("Location:"), c);
+		c.gridx=0;
+		c.gridy=1;
+		panel.add(rooms, c);
+		c.gridx=1;
+		c.gridy=1;
+		panel.add(place, c);
 		add(panel);
 		
 		//The edit buttons panel
 		panel = new JPanel();
+		c=new GridBagConstraints();
+		d = new Dimension(80, 24);
 		panel.setLayout(new GridBagLayout());
 		deleteButton = new JButton("Delete");
+		deleteButton.setPreferredSize(d);
 		createAppointmentButton = new JButton("Create");
+		createAppointmentButton.setPreferredSize(d);
 		saveButton = new JButton("Save");
+		saveButton.setPreferredSize(d);
 		clearButton = new JButton("Clear");
+		clearButton.setPreferredSize(d);
+		c.insets=new Insets(3, 3, 3, 3);
 		c.gridx=0;
 		c.gridy=0;
 		panel.add(deleteButton,c);
