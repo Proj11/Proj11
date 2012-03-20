@@ -12,6 +12,8 @@ public class CalendarTable extends JTable {
 	
 	private CalendarTableModel model;
 
+	
+	
 	public CalendarTable(String[] columnNames) {
 		model=new CalendarTableModel(columnNames);
 		setModel(model);

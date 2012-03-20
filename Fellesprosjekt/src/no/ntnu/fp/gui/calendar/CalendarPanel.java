@@ -23,6 +23,7 @@ public class CalendarPanel extends JPanel {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setPreferredSize(size);
 		add(scrollPane);
+		calendar.setDefaultRenderer(calendar.getColumnClass(1), new CalendarCellRenderer());
 	}
 	
 	public void resizeScrollPane(Dimension d) {
