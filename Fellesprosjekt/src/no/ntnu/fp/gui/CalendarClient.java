@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
+import no.ntnu.fp.gui.appointment.AppointmentPanel;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 
 import java.awt.BorderLayout;
@@ -53,7 +54,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		
 		//Calculate the size of the calendar
 		Dimension calendarSize=new Dimension(getPreferredSize());
-		calendarSize.width-=toolPanel.size.width; //Subtract the size of the application side panel
+		calendarSize.width-=toolPanel.getSize().width; //Subtract the size of the application side panel
 		calendarSize.width-=16; // Subtract 16 because of window decorations
 		calendarSize.height-=toolbar.size.height; // Subtract the size of the application tool bar
 		calendarSize.height-=40; //Subtract 40 because of window decorations
@@ -79,6 +80,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolbar.week.addActionListener(this);
 		toolbar.month.addPropertyChangeListener(this);
 		toolbar.year.addPropertyChangeListener(this);
+		AppointmentPanel app = toolPanel.getAppPanel();
+		app.getCreateAppointmentButton().addActionListener(this);
+		app.getSaveButton().addActionListener(this);
+		app.getDeleteButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
