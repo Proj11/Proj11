@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
@@ -80,10 +82,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolbar.week.addActionListener(this);
 		toolbar.month.addPropertyChangeListener(this);
 		toolbar.year.addPropertyChangeListener(this);
-		AppointmentPanel app = toolPanel.getAppPanel();
-		app.getCreateAppointmentButton().addActionListener(this);
-		app.getSaveButton().addActionListener(this);
-		app.getDeleteButton().addActionListener(this);
+		toolPanel.getAppPanel().getSaveButton().addActionListener(this);
+		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -106,37 +106,41 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		d.height-=40; //Subtract 40 because of the window decorations
 		calendarPanel.resizeScrollPane(d);
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==toolbar.nextWeek) {
-			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()+1);
-		} else if (e.getSource()==toolbar.previousWeek) {
-			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()-1);
-		}
+	
+	private void updateCalendarPanel() {
 		toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
 		toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
 		toolbar.year.setYear(calendarPanel.getDisplayedYear());
 	}
 
 	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==toolbar.nextWeek) {
+			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()+1);
+			updateCalendarPanel();
+		} else if (e.getSource()==toolbar.previousWeek) {
+			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()-1);
+			updateCalendarPanel();
+		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
+			toolPanel.getAppPanel().getModel(); //TODO Code to add an appointment into the database
+		}  else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
+			toolPanel.getAppPanel().getModel(); //TODO Code to remove an appointment from the database
+		}
+	}
+
+	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getSource()==toolbar.year && e.getPropertyName()=="year" && toolbar.year.getYear()!=calendarPanel.getDisplayedYear()) {
 			calendarPanel.setDisplayedYear(toolbar.year.getYear());
-			toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
-			toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
-			toolbar.year.setYear(calendarPanel.getDisplayedYear());
+			updateCalendarPanel();
 		} else if (e.getSource()==toolbar.month && e.getPropertyName()=="month" && toolbar.month.getMonth()!=calendarPanel.getDisplayedMonth()) {
 			calendarPanel.setDisplayedMonth(toolbar.month.getMonth());
-			toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
-			toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
-			toolbar.year.setYear(calendarPanel.getDisplayedYear());
-			
+			updateCalendarPanel();
 		}
 	}
 }
 
-class CalendarLogin extends JFrame implements ActionListener {
+class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 	
 	public final static Dimension size = new Dimension(240, 180);
 	private JButton login;
@@ -189,36 +193,50 @@ class CalendarLogin extends JFrame implements ActionListener {
 		pack();
 		setVisible(true);
 	}
-
+	
 	@SuppressWarnings("deprecation")
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==login) {
-			//TODO A connection should be established here
-			//TODO The connection should then be passed as an argument to the CalendarClient class
-			try { 
-				if (usernameText.getText() == "" || passwordText.getText() == ""){
-					Client client = new Client();
-					boolean logon = client.logOn("brukernavn", "passord");
+	public void login() {
+		//TODO A connection should be established here
+		//TODO The connection should then be passed as an argument to the CalendarClient class
+		try { 
+			if (usernameText.getText() == "" || passwordText.getText() == ""){
+				Client client = new Client();
+				boolean logon = client.logOn("brukernavn", "passord");
+				setVisible(false);
+				new CalendarClient();
+			}
+			else {
+				Client client = new Client();
+				boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
+				
+				if (logon){
 					setVisible(false);
 					new CalendarClient();
 				}
-				else {
-					Client client = new Client();
-					boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
-					
-					if (logon){
-						setVisible(false);
-						new CalendarClient();
-					}
-					else System.out.println("Incorrect username / password.");
-				}
+				else System.out.println("Incorrect username / password.");
 			}
-			catch (Exception eX){
-				eX.printStackTrace();
-				System.out.println("Could not connect to server.");
-			}
-			
+		}
+		catch (Exception eX){
+			eX.printStackTrace();
+			System.out.println("Could not connect to server.");
 		}
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==login) {
+			login();
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+			login();
+		}
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {}
 }

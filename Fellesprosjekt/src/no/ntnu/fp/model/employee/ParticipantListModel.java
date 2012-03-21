@@ -1,18 +1,23 @@
 package no.ntnu.fp.model.employee;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-public class EmployeeListModel implements ListModel {
+import no.ntnu.fp.model.appointment.Participant;
+
+public class ParticipantListModel implements ListModel {
 	
-	private List<Employee> employeeList;
-	private Set<ListDataListener> listDataListeners;
+	private List<Participant> participantList;
+	private List<ListDataListener> listDataListeners;
+	
+	public ParticipantListModel(List<Participant> data) {
+		participantList=data;
+		listDataListeners=new ArrayList<ListDataListener>();
+	}
 	
 	public void fireIntervalAdded(ListDataEvent e) {
 		for (ListDataListener listener : listDataListeners) {
@@ -25,11 +30,6 @@ public class EmployeeListModel implements ListModel {
 			listener.intervalRemoved(e);
 		}
 	}
-	
-	public EmployeeListModel() {
-		employeeList=new ArrayList<Employee>();
-		listDataListeners=new HashSet<ListDataListener>();
-	}
 
 	@Override
 	public void addListDataListener(ListDataListener listener) {
@@ -38,12 +38,12 @@ public class EmployeeListModel implements ListModel {
 
 	@Override
 	public Object getElementAt(int i) {
-		return employeeList.get(i);
+		return participantList.get(i);
 	}
 
 	@Override
 	public int getSize() {
-		return employeeList.size();
+		return participantList.size();
 	}
 
 	@Override

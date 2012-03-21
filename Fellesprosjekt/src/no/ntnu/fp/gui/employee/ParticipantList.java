@@ -4,16 +4,12 @@ import java.awt.Dimension;
 
 import javax.swing.JList;
 
-import no.ntnu.fp.model.employee.EmployeeListModel;
-
-public class EmployeeList extends JList {
+public class ParticipantList extends JList {
 	
-	private EmployeeListModel model;
 	public final static Dimension defaultSize=new Dimension(150, 100);
 	
-	public EmployeeList() {
+	public ParticipantList() {
 		super();
-		setModel(model=new EmployeeListModel());
 		setPreferredSize(defaultSize);
 		setMaximumSize(defaultSize);
 		setMinimumSize(defaultSize);

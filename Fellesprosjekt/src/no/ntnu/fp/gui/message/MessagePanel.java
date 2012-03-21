@@ -1,14 +1,9 @@
 package no.ntnu.fp.gui.message;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
 
-import no.ntnu.fp.gui.employee.EmployeeList;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.message.Message;
