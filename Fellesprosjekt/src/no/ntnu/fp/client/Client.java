@@ -16,7 +16,6 @@ public class Client {
 	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	private String message;
 	
 	public Client() throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException {
 		Socket socket = new Socket("localhost", 8000);
@@ -30,7 +29,7 @@ public class Client {
 	 * Method to send a message (String) to the Server.
 	 * @param msg
 	 */
-	private void sendMessage(String msg) {
+	public void sendMessage(String msg) {
 		try {
 			out.writeObject(msg);
 			out.flush();
@@ -39,6 +38,10 @@ public class Client {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public synchronized String receive() throws IOException, ClassNotFoundException {
+		return (String) in.readObject();
 	}
 	
 	public boolean logOn(String username, String password) throws IOException, ClassNotFoundException{
@@ -71,6 +74,11 @@ public class Client {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public void close() throws IOException {
+		out.close();
+		in.close();
 	}
 	
 	public static void main(String[] args) throws Exception {

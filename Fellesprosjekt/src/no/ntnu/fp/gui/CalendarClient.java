@@ -129,11 +129,14 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
 			
-		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
+		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
 			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
+			
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
-			toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment());
-			toolPanel.setSelectedComponent(toolPanel.getAppPanel());
+			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
+				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment());
+				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
+			}
 		}
 	}
 
