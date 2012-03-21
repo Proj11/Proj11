@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.swing.*;
 
+import no.ntnu.fp.gui.ApplicationToolbar;
+import no.ntnu.fp.gui.CalendarClient;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.message.Message;
@@ -29,21 +31,24 @@ public class MessagePanel extends JPanel {
 		b.setSubject("This is a subject txt");
 		tableModel.add(new Message(b));
 		
-		//making table to put in scrollpane
+		//making table to put in JScrollPane
 		elements = new JTable(tableModel);
 		elements.getTableHeader().setReorderingAllowed(false);
 		elements.setColumnSelectionAllowed(false);
 		elements.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		//adding scrollpane
+		gotoButton = new JButton("Go to");
+		
+		//adding JScrollPane
 		JScrollPane scrollPane = new JScrollPane(elements);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setPreferredSize(new Dimension(280, 550));
+		scrollPane.setMinimumSize(new Dimension(280, 200));
+		int h=CalendarClient.size.height-(150+ApplicationToolbar.size.height+gotoButton.getHeight());
+		scrollPane.setPreferredSize(new Dimension(280, h));
 		add(scrollPane);
 		
 		//adding gotoButton
-		gotoButton = new JButton("Go to");
 		add(gotoButton);
 	}
 	

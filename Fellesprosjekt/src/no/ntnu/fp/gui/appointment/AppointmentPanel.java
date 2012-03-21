@@ -1,5 +1,6 @@
 package no.ntnu.fp.gui.appointment;
 
+import no.ntnu.fp.gui.ApplicationSidePanel;
 import no.ntnu.fp.gui.time.TimeSpinner;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.ParticipantListModel;

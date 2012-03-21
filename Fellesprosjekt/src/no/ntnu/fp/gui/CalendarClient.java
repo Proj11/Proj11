@@ -147,7 +147,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getCalendar().getSelectedCell());
+		if (calendarPanel.getCalendar().getSelectedCell()!=null) {
+			toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getCalendar().getSelectedCell());
+			toolPanel.setSelectedComponent(toolPanel.getAppPanel());
+		}
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {}

@@ -16,7 +16,7 @@ import com.toedter.calendar.JYearChooser;
 
 public class ApplicationToolbar extends JPanel {
 	
-	public final Dimension size=new Dimension(CalendarClient.size.width, 40); //Default size of the component
+	public static final Dimension size=new Dimension(CalendarClient.size.width, 40); //Default size of the component
 	public JLabel messageLabel; //This label tells you if you have any messages
 	public WeekTextField week; //This TextField shows which week is displayed in the calendar
 	public JButton changeConnectivityButton, nextWeek, previousWeek;  //Some intuitive button
@@ -26,7 +26,7 @@ public class ApplicationToolbar extends JPanel {
 	
 	public ApplicationToolbar() {
 		super();
-		//Set paramenters
+		//Set parameters
 		setPreferredSize(size);
 		setMaximumSize(size);
 		setMinimumSize(size);
