@@ -37,9 +37,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public ApplicationToolbar toolbar; //The applications tool bar
 	public CalendarPanel calendarPanel; // This panel is used to display the calendar
 	public ApplicationSidePanel toolPanel; // The tool panel used to create new appointments, etc.
+	private Client client;
 	
-	public CalendarClient() {
+	public CalendarClient(Client c) {
 		super();
+		client = c;
 		
 		//Set values
 		setTitle("Calendar Client");
@@ -125,7 +127,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			calendarPanel.getCalendar().setDisplayedWeek(calendarPanel.getCalendar().getDisplayedWeek()-1);
 			updateCalendarPanel();
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
-			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to add an appointment into the database
+			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
+			
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
 			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
@@ -226,7 +229,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 				Client client = new Client();
 				boolean logon = client.logOn("brukernavn", "passord");
 				setVisible(false);
-				new CalendarClient();
+				new CalendarClient(client);
 			}
 			else {
 				Client client = new Client();
@@ -234,7 +237,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 				
 				if (logon){
 					setVisible(false);
-					new CalendarClient();
+					new CalendarClient(client);
 				}
 				else System.out.println("Incorrect username / password.");
 			}

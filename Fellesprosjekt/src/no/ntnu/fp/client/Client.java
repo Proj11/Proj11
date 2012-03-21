@@ -61,15 +61,24 @@ public class Client {
 		return false;
 	}
 	
+	public boolean editAppointment(Appointment a) {
+		try {
+			sendMessage("4"+a.toXML());
+			return true;
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		try {
 			new Client();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
