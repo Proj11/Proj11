@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import no.ntnu.fp.db.Database;
+import no.ntnu.fp.model.appointment.Appointment;
 
 public class CalendarServer extends JFrame {
 	
@@ -98,6 +99,21 @@ public class CalendarServer extends JFrame {
 		}
 		return false;
 	}
+	
+	/*public static boolean createAppointment(String appointmentString){
+		
+		Appointment a = Appointment.xmlToAppointment(appointmentString);
+		try {
+			Database db = Database.getDatabase();
+			db.insertWithReturnId("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy)
+					 values ('" + a.getDate() + "', '" + a.getStart() + "', '" + a.getEnd() + "', '" + a.getSubject() + "', '"
+					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "';");
+			return true;
+		}
+		catch (Exception exception){
+			return false;
+		}
+	}*/
 	
 	public static void main(String[] args) throws Exception {
 		try {
