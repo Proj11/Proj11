@@ -1,5 +1,7 @@
 package no.ntnu.fp.gui.calendar;
 
+import java.util.Collection;
+
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -46,6 +48,22 @@ public class CalendarTable extends JTable {
 	public void setDisplayedWeek(int week) {
 		model.setDisplayedWeek(week);
 		changeHeaderValues();
+	}
+	
+	public void addAppointment(Appointment a) {
+		model.addAppointment(a);
+	}
+	
+	public void removeAppointment(Appointment a) {
+		model.removeAppointment(a);
+	}
+	
+	public void addAllAppointments(Collection<Appointment> a) {
+		model.addAllAppointments(a);
+	}
+	
+	public void removeAllAppointments(Collection<Appointment> a) {
+		model.removeAllAppointments(a);
 	}
 	
 	private void changeHeaderValues() {

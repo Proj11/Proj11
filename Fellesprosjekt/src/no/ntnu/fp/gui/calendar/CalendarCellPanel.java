@@ -23,9 +23,6 @@ public class CalendarCellPanel extends JPanel {
 			if (row==a.getStart().HOUR) {
 				add(new JLabel(a.getLeader().getName()));
 				add(new JLabel(a.getSubject()));
-			} if (hasFocus) {
-				//TODO REMOVE THIS IT IS JUST FOR TESTING PURPOSES
-				setBorder(BorderFactory.createLineBorder(Color.CYAN));
 			}
 		} else if (value!=null && value instanceof Time) {
 			setBackground(timeColor);

@@ -32,6 +32,7 @@ public class CalendarTableModel extends AbstractTableModel {
 		columnCount=columnNames.length;
 		appointments=new ArrayList<Appointment>();
 		
+		//TODO REMOVE DUMMY DATA
 		Appointment temp;
 		temp=new Appointment(new Employee("Herp Derp"));
 		temp.setStart(new Time(7, 0));
@@ -87,18 +88,22 @@ public class CalendarTableModel extends AbstractTableModel {
 	
 	public void addAppointment(Appointment a) {
 		appointments.add(a);
+		fireTableDataChanged();
 	}
 	
 	public void removeAppointment(Appointment a) {
 		appointments.remove(a);
+		fireTableDataChanged();
 	}
 	
 	public void addAllAppointments(Collection<Appointment> a) {
 		appointments.addAll(a);
+		fireTableDataChanged();
 	}
 	
 	public void removeAllAppointments(Collection<Appointment> a) {
 		appointments.removeAll(a);
+		fireTableDataChanged();
 	}
 	
 	public int getDisplayedMonth() {
@@ -107,6 +112,7 @@ public class CalendarTableModel extends AbstractTableModel {
 	
 	public void setDisplayedMonth(int month) {
 		calendar.set(Calendar.MONTH, month);
+		fireTableDataChanged();
 	}
 	
 	public int getDisplayedYear() {
@@ -115,6 +121,7 @@ public class CalendarTableModel extends AbstractTableModel {
 	
 	public void setDisplayedYear(int year) {
 		calendar.set(Calendar.YEAR, year);
+		fireTableDataChanged();
 	}
 	
 	public int getDisplayedWeek() {
@@ -123,5 +130,6 @@ public class CalendarTableModel extends AbstractTableModel {
 	
 	public void setDisplayedWeek(int week) {
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		fireTableDataChanged();
 	}
 }

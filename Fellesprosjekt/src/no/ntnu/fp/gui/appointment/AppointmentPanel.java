@@ -1,9 +1,7 @@
 package no.ntnu.fp.gui.appointment;
 
-import no.ntnu.fp.gui.employee.ParticipantList;
 import no.ntnu.fp.gui.time.TimeSpinner;
 import no.ntnu.fp.model.appointment.Appointment;
-import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.employee.ParticipantListModel;
 import no.ntnu.fp.model.time.Time;
 
@@ -18,8 +16,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -223,9 +219,9 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 
 	public void setAppointmentModel(Appointment a) {
 		if (a!=null) {
-			model=a; //TODO Replace null with the currently logged in user.	
+			model=a;
 		} else {
-			model=new Appointment(null);
+			model=new Appointment(null); //TODO Replace null with the currently logged in user.	
 		}
 		dateChooser.setDate(model.getDate());
 		startTime.getModel().setValue(model.getStart()); 

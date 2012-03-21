@@ -32,42 +32,7 @@ public class CalendarPanel extends JPanel {
 		revalidate();
 	}
 	
-	public int getDisplayedMonth() {
-		return calendar.getDisplayedMonth();
-	}
-	
-	public void setDisplayedMonth(int month) {
-		calendar.setDisplayedMonth(month);
-		repaint();
-	}
-	
-	public int getDisplayedYear() {
-		return calendar.getDisplayedYear();
-	}
-	
-	public void setDisplayedYear(int year) {
-		calendar.setDisplayedYear(year);
-		repaint();
-	}
-	
-	public int getDisplayedWeek() {
-		return calendar.getDisplayedWeek();
-	}
-	
-	public void setDisplayedWeek(int week) {
-		calendar.setDisplayedWeek(week);
-		repaint();
-	}
-	
-	public void addMouseListenerToTable(MouseListener listener) {
-		calendar.addMouseListener(listener);
-	}
-	
-	public void removeMouseListenerFromTable(MouseListener listener) {
-		calendar.removeMouseListener(listener);
-	}
-	
-	public Appointment getSelectedCell() {
-		return calendar.getSelectedCell();
+	public CalendarTable getCalendar() {
+		return calendar;
 	}
 }

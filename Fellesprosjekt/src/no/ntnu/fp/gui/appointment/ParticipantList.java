@@ -1,4 +1,4 @@
-package no.ntnu.fp.gui.employee;
+package no.ntnu.fp.gui.appointment;
 
 import java.awt.Dimension;
 

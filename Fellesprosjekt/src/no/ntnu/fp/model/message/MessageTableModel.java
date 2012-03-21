@@ -1,23 +1,42 @@
 package no.ntnu.fp.model.message;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
 
 public class MessageTableModel extends AbstractTableModel {
 	
 	private List<Message> messages;
 	private String[] columnName = {"Leader", "Subject"};
-	JButton button = new JButton("-->");
 	
 	public MessageTableModel(){
 		messages = new ArrayList<Message>();
 	}
 	
-	public void add(Message message){
+	public Message getMessage(int i) {
+		return messages.get(i);
+	}
+	
+	public void add(Message message) {
 		messages.add(message);
+		fireTableDataChanged();
+	}
+	
+	public void remove(Message message) {
+		messages.remove(message);
+		fireTableDataChanged();
+	}
+	
+	public void addAllMessages(Collection<Message> messages) {
+		this.messages.addAll(messages);
+		fireTableDataChanged();
+	}
+	
+	public void removeAllMessages(Collection<Message> messages) {
+		this.messages.removeAll(messages);
+		fireTableDataChanged();
 	}
 
 	@Override

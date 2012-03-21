@@ -63,9 +63,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		calendarSize.height-=40; //Subtract 40 because of window decorations
 		calendarPanel=new CalendarPanel(calendarSize);
 		
-		toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
-		toolbar.year.setYear(calendarPanel.getDisplayedYear());
-		toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
+		toolbar.month.setMonth(calendarPanel.getCalendar().getDisplayedMonth());
+		toolbar.year.setYear(calendarPanel.getCalendar().getDisplayedYear());
+		toolbar.week.setWeek(calendarPanel.getCalendar().getDisplayedWeek());
 		
 		//Add components
 		add(toolbar, BorderLayout.NORTH);
@@ -85,7 +85,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolbar.year.addPropertyChangeListener(this);
 		toolPanel.getAppPanel().getSaveButton().addActionListener(this);
 		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
-		calendarPanel.addMouseListenerToTable(this);
+		toolPanel.getMsgPanel().getGoToButton().addActionListener(this);
+		calendarPanel.getCalendar().addMouseListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -110,59 +111,50 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	}
 	
 	private void updateCalendarPanel() {
-		toolbar.week.setWeek(calendarPanel.getDisplayedWeek());
-		toolbar.month.setMonth(calendarPanel.getDisplayedMonth());
-		toolbar.year.setYear(calendarPanel.getDisplayedYear());
+		toolbar.week.setWeek(calendarPanel.getCalendar().getDisplayedWeek());
+		toolbar.month.setMonth(calendarPanel.getCalendar().getDisplayedMonth());
+		toolbar.year.setYear(calendarPanel.getCalendar().getDisplayedYear());
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==toolbar.nextWeek) {
-			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()+1);
+			calendarPanel.getCalendar().setDisplayedWeek(calendarPanel.getCalendar().getDisplayedWeek()+1);
 			updateCalendarPanel();
 		} else if (e.getSource()==toolbar.previousWeek) {
-			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()-1);
+			calendarPanel.getCalendar().setDisplayedWeek(calendarPanel.getCalendar().getDisplayedWeek()-1);
 			updateCalendarPanel();
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
 			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to add an appointment into the database
-		}  else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
+		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
 			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
+		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
+			toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment());
+			toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		if (e.getSource()==toolbar.year && e.getPropertyName()=="year" && toolbar.year.getYear()!=calendarPanel.getDisplayedYear()) {
-			calendarPanel.setDisplayedYear(toolbar.year.getYear());
+		if (e.getSource()==toolbar.year && e.getPropertyName()=="year" && toolbar.year.getYear()!=calendarPanel.getCalendar().getDisplayedYear()) {
+			calendarPanel.getCalendar().setDisplayedYear(toolbar.year.getYear());
 			updateCalendarPanel();
-		} else if (e.getSource()==toolbar.month && e.getPropertyName()=="month" && toolbar.month.getMonth()!=calendarPanel.getDisplayedMonth()) {
-			calendarPanel.setDisplayedMonth(toolbar.month.getMonth());
+		} else if (e.getSource()==toolbar.month && e.getPropertyName()=="month" && toolbar.month.getMonth()!=calendarPanel.getCalendar().getDisplayedMonth()) {
+			calendarPanel.getCalendar().setDisplayedMonth(toolbar.month.getMonth());
 			updateCalendarPanel();
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getSelectedCell());
+		toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getCalendar().getSelectedCell());
 	}
-
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void mouseEntered(MouseEvent e) {}
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void mouseExited(MouseEvent e) {}
 	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 }
@@ -216,6 +208,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 		login=new JButton("Login");
 		login.addActionListener(this);
 		add(login, BorderLayout.SOUTH);
+		addKeyListener(this);
 		
 		pack();
 		setVisible(true);
