@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 
 import no.ntnu.fp.db.Database;
 import no.ntnu.fp.model.appointment.Appointment;
+import no.ntnu.fp.model.appointment.Participant;
 
 public class CalendarServer extends JFrame {
 	
@@ -62,6 +63,13 @@ public class CalendarServer extends JFrame {
 				else 
 					sendMessage("0");
 				break;
+			case '3':
+				boolean c = createAppointment(message.substring(1));
+				if (c){
+					sendMessage("1");
+				}
+				else sendMessage("0");
+				break;
 
 			default:
 				break;
@@ -100,25 +108,25 @@ public class CalendarServer extends JFrame {
 		return false;
 	}
 	
-	/*public static boolean createAppointment(String appointmentString){
+	public static boolean createAppointment(String appointmentString){
 		
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
 		try {
 			Database db = Database.getDatabase();
-			int id = db.insertWithReturnId("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy)"
+			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy)"
 					+ "values ('" + a.getDate() + "', '" + a.getStart() + "', '" + a.getEnd() + "', '" + a.getSubject() + "', '"
 					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "';");
-					for (Participant p : a.getParticipants){
+					for (Participant p : a.getParticipants()){
 						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
-						"('" + p.getEmployee.getUsername() + "', '" + id + "', 'PENDING');");
-						db.insert("UPDATE
+						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
+						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
 			return true;
 		}
 		catch (Exception exception){
 			return false;
 		}
-	}*/
+	}
 	
 	public static void main(String[] args) throws Exception {
 		try {
