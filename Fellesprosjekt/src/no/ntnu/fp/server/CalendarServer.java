@@ -147,18 +147,25 @@ public class CalendarServer extends JFrame {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		Employee emp = new Employee("herp", "derp");
-		Employee emp2 = new Employee("derp", "herp");
-		Appointment appo = new Appointment(emp);
-		appo.setDate(new java.util.Date(2012-1900, 3, 20));
-		appo.setStart(new Time(12, 00));
-		appo.setEnd(new Time(16, 00));
-		appo.setSubject("durr");
-		appo.setRoomNumber(123);
- 		appo.getParticipants().add(new Participant(emp2, State.PENDING));
-		appo.setDescription("lol hvis dette funker");
-		
+//		Employee emp = new Employee("herp", "derp");
+//		Employee emp2 = new Employee("derp", "herp");
+//		Appointment appo = new Appointment(emp);
+//		appo.setDate(new java.util.Date(2012-1900, 3, 20));
+//		appo.setStart(new Time(12, 00));
+//		appo.setEnd(new Time(16, 00));
+//		appo.setSubject("durr");
+//		appo.setRoomNumber(123);
+// 		appo.getParticipants().add(new Participant(emp2, State.PENDING));
+//		appo.setDescription("lol hvis dette funker");
 		//CalendarServer.createAppointment(appo.toXML());
 		//CalendarServer.deleteAppointment(0);
+		
+		try {
+			new CalendarServer();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
