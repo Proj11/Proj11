@@ -202,7 +202,6 @@ public class Appointment {
 			InputSource is = new InputSource(new StringReader(xml));
 			Document doc = db.parse(is);
 			doc.getDocumentElement().normalize();
-			System.out.println("Root element " + doc.getDocumentElement().getNodeName());
 
 			String loc="", roomnr="";
 
@@ -223,12 +222,14 @@ public class Appointment {
 					appointment.setEnd(Time.parseTime(endtime));
 					String subject = getTagValues("subject", element);
 					appointment.setSubject(subject);
-					if (element.hasAttribute("location"))
+					if (element.hasAttribute("location")) {
 						loc = getTagValues("location", element);
 						appointment.setLocation(loc);
-					if (element.hasAttribute("roomnr"))
+					}
+					if (element.hasAttribute("roomnr")) {
 						roomnr = getTagValues("roomnr", element);
 						appointment.setRoomNumber((Integer.parseInt(roomnr)));
+					}
 					String description = getTagValues("description", element);
 					appointment.setDescription(description);
 
@@ -253,7 +254,6 @@ public class Appointment {
 					}
 					appointment.setParticipants(participants);
 
-					System.out.println(month + "  " + year + "  " + dayInMonth + "  " + starttime);
 				}
 
 			}

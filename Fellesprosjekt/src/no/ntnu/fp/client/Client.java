@@ -6,6 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 
@@ -39,18 +42,25 @@ public class Client {
 	}
 	
 	public boolean logOn(String username, String password) throws IOException, ClassNotFoundException{
-		sendMessage("1" + username + "-" + password);
+		sendMessage("2" + username + "-" + password);
 		String result = (String)in.readObject();
 		if (result.charAt(0) == '1')
 			return true;
-			
 		return false;
 	}
 	
 	public boolean createAppointment(Appointment appointment){
-		
+		try {
+			sendMessage("3"+appointment.toXML());
+			return true;
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
+	
 	
 	public static void main(String[] args) throws Exception {
 		try {
