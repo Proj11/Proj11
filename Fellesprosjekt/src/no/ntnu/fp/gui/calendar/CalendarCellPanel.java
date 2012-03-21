@@ -22,7 +22,8 @@ public class CalendarCellPanel extends JPanel {
 			setBackground(appointmentColor);
 			if (row==a.getStart().HOUR) {
 				add(new JLabel(a.getLeader().getName()));
-				add(new JLabel(a.getSubject()));
+				add(new JLabel(a.getStart()+" - "+a.getEnd()));
+				add(new JLabel("Subject: "+a.getSubject()));
 			}
 		} else if (value!=null && value instanceof Time) {
 			setBackground(timeColor);

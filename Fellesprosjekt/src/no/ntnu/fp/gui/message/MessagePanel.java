@@ -69,7 +69,10 @@ public class MessagePanel extends JPanel {
 	}
 	
 	public Message getSelectedMessage() {
-		return tableModel.getMessage(elements.getSelectedRow());
+		if (elements.getSelectedRow()!=-1) {
+			return tableModel.getMessage(elements.getSelectedRow());
+		}
+		return null;
 	}
 	
 	public JButton getGoToButton() {
