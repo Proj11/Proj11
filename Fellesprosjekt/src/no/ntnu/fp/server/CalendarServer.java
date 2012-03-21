@@ -54,7 +54,7 @@ public class CalendarServer extends JFrame {
 			
 //			//Do something
 			switch (id) {
-			case '1':
+			case '2':
 				boolean b = logon(message.substring(1));
 				if (b){
 					sendMessage("1");
@@ -105,9 +105,14 @@ public class CalendarServer extends JFrame {
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
 		try {
 			Database db = Database.getDatabase();
-			db.insertWithReturnId("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy)
-					 values ('" + a.getDate() + "', '" + a.getStart() + "', '" + a.getEnd() + "', '" + a.getSubject() + "', '"
+			int id = db.insertWithReturnId("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy)"
+					+ "values ('" + a.getDate() + "', '" + a.getStart() + "', '" + a.getEnd() + "', '" + a.getSubject() + "', '"
 					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "';");
+					for (Participant p : a.getParticipants){
+						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
+						"('" + p.getEmployee.getUsername() + "', '" + id + "', 'PENDING');");
+						db.insert("UPDATE
+					}
 			return true;
 		}
 		catch (Exception exception){
