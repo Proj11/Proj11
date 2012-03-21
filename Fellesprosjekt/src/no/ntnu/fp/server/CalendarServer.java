@@ -7,7 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Date;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -16,6 +18,9 @@ import javax.swing.JTextArea;
 import no.ntnu.fp.db.Database;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
+import no.ntnu.fp.model.appointment.Participant.State;
+import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.time.Time;
 
 public class CalendarServer extends JFrame {
 	
@@ -109,13 +114,13 @@ public class CalendarServer extends JFrame {
 	}
 	
 	public static boolean createAppointment(String appointmentString){
-		
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
+		System.out.println("5: "+a.getRoomNumber());
 		try {
 			Database db = Database.getDatabase();
-			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy)"
-					+ "values ('" + a.getDate() + "', '" + a.getStart() + "', '" + a.getEnd() + "', '" + a.getSubject() + "', '"
-					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "';");
+			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
+			+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
+					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
 					for (Participant p : a.getParticipants()){
 						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
@@ -124,16 +129,36 @@ public class CalendarServer extends JFrame {
 			return true;
 		}
 		catch (Exception exception){
+			exception.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean deleteAppointment(int appointmentID){
+		try {
+			Database db = Database.getDatabase();
+			db.insert("DELETE FROM Appointment WHERE appointmentID = '" + appointmentID + "';");
+			return true;
+		}
+		catch (Exception deleteException){
+			deleteException.printStackTrace();
 			return false;
 		}
 	}
 	
 	public static void main(String[] args) throws Exception {
-		try {
-			new CalendarServer();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Employee emp = new Employee("herp", "derp");
+		Employee emp2 = new Employee("derp", "herp");
+		Appointment appo = new Appointment(emp);
+		appo.setDate(new java.util.Date(2012-1900, 3, 20));
+		appo.setStart(new Time(12, 00));
+		appo.setEnd(new Time(16, 00));
+		appo.setSubject("durr");
+		appo.setRoomNumber(123);
+ 		appo.getParticipants().add(new Participant(emp2, State.PENDING));
+		appo.setDescription("lol hvis dette funker");
+		
+		//CalendarServer.createAppointment(appo.toXML());
+		//CalendarServer.deleteAppointment(0);
 	}
 }

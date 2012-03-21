@@ -141,13 +141,13 @@ public class Appointment {
 		rootElement.appendChild(subject);
 		subject.appendChild(doc.createTextNode(getSubject()));
 
-		if (location != null) {
+		if (getLocation() != null) {
 			Element location = doc.createElement("location");
 			rootElement.appendChild(location);
 			location.appendChild(doc.createTextNode(getLocation()));
 		}
 
-		if (roomNumber != 0) {
+		if (getRoomNumber() != 0) {
 			Element roomnr = doc.createElement("roomnr");
 			rootElement.appendChild(roomnr);
 			roomnr.appendChild(doc.createTextNode(getRoomNumber()+""));
@@ -203,7 +203,7 @@ public class Appointment {
 			Document doc = db.parse(is);
 			doc.getDocumentElement().normalize();
 
-			String loc="", roomnr="";
+			String loc="", roomnr="13";
 
 			Appointment appointment = new Appointment();
 			List<Participant> participants = new ArrayList<Participant>();
@@ -222,14 +222,20 @@ public class Appointment {
 					appointment.setEnd(Time.parseTime(endtime));
 					String subject = getTagValues("subject", element);
 					appointment.setSubject(subject);
-					if (element.hasAttribute("location")) {
+					
+					
+					
+					//Element has no attributes, which is why element.hasAttribute("..."); never works
+					if (getTagValues("location", element)!=null) {
 						loc = getTagValues("location", element);
 						appointment.setLocation(loc);
 					}
-					if (element.hasAttribute("roomnr")) {
+					
+					if (getTagValues("roomnr", element)!=null) {
 						roomnr = getTagValues("roomnr", element);
 						appointment.setRoomNumber((Integer.parseInt(roomnr)));
 					}
+					
 					String description = getTagValues("description", element);
 					appointment.setDescription(description);
 
@@ -268,9 +274,12 @@ public class Appointment {
 	}
 
 	private static String getTagValues(String sTag, Element element) {
+		if (element.getElementsByTagName(sTag).item(0)==null) {
+			return null;
+		}
 		NodeList nList = element.getElementsByTagName(sTag).item(0).getChildNodes();
 		Node nValue = (Node) nList.item(0);
-		return nValue.getNodeValue();		
+		return nValue.getNodeValue();
 	}
 
 
