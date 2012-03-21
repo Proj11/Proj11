@@ -85,7 +85,7 @@ public class Database {
 		try {
 			Database db = Database.getDatabase();
 //			db.insert("INSERT INTO MeetingRoom (roomnr, roomsize) values(1, 2);");
-			db.insert("INSERT INTO Employee (name, username, password) values ('name','brukernavn', 'passord')");
+//			db.insert("INSERT INTO Employee (name, username, password) values ('name','brukernavn', 'passord')");
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
