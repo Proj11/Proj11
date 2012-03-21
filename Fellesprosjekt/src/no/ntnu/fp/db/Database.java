@@ -4,6 +4,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.mysql.jdbc.PreparedStatement;
+
 
 /**
  * A class for the database connection with methods for handling queries.
@@ -53,6 +55,17 @@ public class Database {
 		java.sql.PreparedStatement ps;
 		ps = connection.prepareStatement(query);
 		ps.executeUpdate();
+	}
+	
+	public int insertWithIdReturn(String query) throws SQLException {
+		java.sql.PreparedStatement ps;
+		ps = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+		ps.executeUpdate();
+		ResultSet rs = ps.getGeneratedKeys();
+		if (rs.next())
+			return rs.getInt(1);
+		return -1;
+		
 	}
 	
 	/**

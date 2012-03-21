@@ -1,6 +1,9 @@
 package no.ntnu.fp.model.appointment;
 
 import java.io.File;
+import java.io.ObjectOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -16,6 +20,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
@@ -29,7 +36,29 @@ public class Appointment {
 	private Employee leader;
 	private String description;
 	private List<Participant> participants;
-	
+	private int roomNumber;
+	private String location;
+
+	public int getRoomNumber() {
+		return roomNumber;
+	}
+
+	public void setRoomNumber(int roomNumber) {
+		this.roomNumber = roomNumber;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Appointment() {
+
+	}
+
 	public Appointment(Employee createdBy) {
 		participants = new ArrayList<Participant>();
 		participants.add(new Participant(createdBy, State.ACCEPTED));
@@ -43,7 +72,7 @@ public class Appointment {
 	public void setStart(Time start) {
 		this.start = start;
 	}
-	
+
 	public Employee getLeader(){
 		return this.leader;
 	}
@@ -63,15 +92,15 @@ public class Appointment {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date=date;
 	}
-	
+
 	public String toString() {
 		return subject+"\n"+leader.getName();
 	}
@@ -79,78 +108,193 @@ public class Appointment {
 	public String toXML() throws ParserConfigurationException, TransformerException {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		
+
 		Document doc = docBuilder.newDocument();
 		Element rootElement = doc.createElement("appointment");
 		doc.appendChild(rootElement);
-		
+
 		Element date = doc.createElement("date");
 		rootElement.appendChild(date);
-		date.appendChild(doc.createTextNode("12. mars bla bla"));
-		
-		
+
+		Element month = doc.createElement("month");
+		date.appendChild(month);
+		month.appendChild(doc.createTextNode(getDate().getMonth() + ""));
+
+		Element year = doc.createElement("year");
+		date.appendChild(year);
+		year.appendChild(doc.createTextNode(getDate().getYear() + ""));
+
+		Element dayInMonth = doc.createElement("dayInMonth");
+		date.appendChild(dayInMonth);
+		dayInMonth.appendChild(doc.createTextNode(getDate().getDate()+ ""));
+
+
 		Element startTime = doc.createElement("starttime");
 		rootElement.appendChild(startTime);
-		startTime.appendChild(doc.createTextNode("starttime"));
-		
+		startTime.appendChild(doc.createTextNode(getStart().toString()));
+
 		Element endTime = doc.createElement("endtime");
 		rootElement.appendChild(endTime);
-		endTime.appendChild(doc.createTextNode("getEndTIme"));
-		
+		endTime.appendChild(doc.createTextNode(getEnd().toString()));
+
 		Element subject = doc.createElement("subject");
 		rootElement.appendChild(subject);
 		subject.appendChild(doc.createTextNode(getSubject()));
-		
-		
-		
+
+		if (location != null) {
+			Element location = doc.createElement("location");
+			rootElement.appendChild(location);
+			location.appendChild(doc.createTextNode(getLocation()));
+		}
+
+		if (roomNumber != 0) {
+			Element roomnr = doc.createElement("roomnr");
+			rootElement.appendChild(roomnr);
+			roomnr.appendChild(doc.createTextNode(getRoomNumber()+""));
+		}
+
 		Element participants = doc.createElement("participants");
 		rootElement.appendChild(participants);
 		for (Participant p : this.participants) {
+			Element participant = doc.createElement("participant");
+			participants.appendChild(participant);
 			Element username = doc.createElement("username");
-			participants.appendChild(username);
-			username.appendChild(doc.createTextNode(p.getEmployee().getUsername()));			
+			participant.appendChild(username);
+			username.appendChild(doc.createTextNode(p.getEmployee().getUsername()));	
+			Element name = doc.createElement("name");
+			participant.appendChild(name);
+			name.appendChild(doc.createTextNode(p.getEmployee().getName()));
 		}
-		
+
 		Element leader = doc.createElement("leader");
 		rootElement.appendChild(leader);
-		leader.appendChild(doc.createTextNode(getLeader().getUsername()));
-		
+		Element username = doc.createElement("lusername");
+		leader.appendChild(username);
+		username.appendChild(doc.createTextNode(getLeader().getUsername()));
+		Element name = doc.createElement("lname");
+		leader.appendChild(name);
+		name.appendChild(doc.createTextNode(getLeader().getName()));
+
 		Element description = doc.createElement("description");
 		rootElement.appendChild(description);
 		description.appendChild(doc.createTextNode(getDescription()));
-		
-		// write the content into xml file
+
+		TransformerFactory transformerFactory2 = TransformerFactory.newInstance();
+		Transformer transformer2 = transformerFactory2.newTransformer();
+		// write the content into xml file for testing
+		DOMSource source = new DOMSource(doc);
+		StreamResult toFile = new StreamResult(new File("file.xml"));
+		transformer2.transform(source, toFile);
+
+
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File("file.xml"));
- 
-		// Output to console for testing
-		//StreamResult result = new StreamResult(System.out);
- 
+		StringWriter stringWriter = new StringWriter();
+		Result result = new StreamResult(stringWriter);
 		transformer.transform(source, result);
- 
-		System.out.println("File saved!");
-		
-		
-		
-		return null;
-		
-		
+		return stringWriter.getBuffer().toString();
 	}
-	
+
+	public static Appointment xmlToAppointment(String xml) {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource(new StringReader(xml));
+			Document doc = db.parse(is);
+			doc.getDocumentElement().normalize();
+			System.out.println("Root element " + doc.getDocumentElement().getNodeName());
+
+			String loc="", roomnr="";
+
+			Appointment appointment = new Appointment();
+			List<Participant> participants = new ArrayList<Participant>();
+			NodeList nodeLst = doc.getElementsByTagName("appointment");
+			for (int i = 0; i < nodeLst.getLength(); i++) {
+				Node nNode = nodeLst.item(i);
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) nNode;
+					int month = Integer.parseInt(getTagValues("month", element));
+					int year = Integer.parseInt(getTagValues("year", element));
+					int dayInMonth = Integer.parseInt(getTagValues("dayInMonth", element));
+					appointment.setDate(new Date(year, month, dayInMonth));
+					String starttime = getTagValues("starttime", element);
+					appointment.setStart(Time.parseTime(starttime));
+					String endtime = getTagValues("endtime", element);
+					appointment.setEnd(Time.parseTime(endtime));
+					String subject = getTagValues("subject", element);
+					appointment.setSubject(subject);
+					if (element.hasAttribute("location"))
+						loc = getTagValues("location", element);
+						appointment.setLocation(loc);
+					if (element.hasAttribute("roomnr"))
+						roomnr = getTagValues("roomnr", element);
+						appointment.setRoomNumber((Integer.parseInt(roomnr)));
+					String description = getTagValues("description", element);
+					appointment.setDescription(description);
+
+					NodeList pList = doc.getElementsByTagName("participant");
+					for (int j = 0; j < pList.getLength(); j++) {
+						Node pNode = pList.item(j);
+						if (pNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element pElement = (Element) pNode;
+							String username = getTagValues("username", pElement);
+							String name = getTagValues("name", pElement);
+							participants.add(new Participant(new Employee(name, username), State.PENDING));
+						}
+					}
+					String lusername = getTagValues("lusername", element);
+					String lname = getTagValues("lname", element);
+					appointment.setLeader(new Employee(lname, lusername));
+
+					//Set leader as accepted
+					for (Participant part : participants) {
+						if (part.getEmployee().getUsername().equals(lusername))
+							part.setState(State.ACCEPTED);
+					}
+					appointment.setParticipants(participants);
+
+					System.out.println(month + "  " + year + "  " + dayInMonth + "  " + starttime);
+				}
+
+			}
+
+			return appointment;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+
+	}
+
+	private static String getTagValues(String sTag, Element element) {
+		NodeList nList = element.getElementsByTagName(sTag).item(0).getChildNodes();
+		Node nValue = (Node) nList.item(0);
+		return nValue.getNodeValue();		
+	}
+
+
 	public static void main(String[] args) throws ParserConfigurationException, TransformerException {
 		Participant p = new Participant(new Employee("lylz"), State.PENDING);
-		Appointment a = new Appointment(new Employee("derp"));
+		p.getEmployee().setName("Sigurd");
+		Employee leader = new Employee("derp");
+		leader.setName("Derp Derper");
+		Appointment a = new Appointment(leader);
 		a.setDate(new Date(2012, 3, 20));
 		a.setStart(new Time(12, 00));
 		a.setEnd(new Time(13, 00));
+		a.setRoomNumber(123);
 		a.setDescription("dette blir kult!");
 		List<Participant> ps = a.getParticipants();
 		ps.add(p);
 		a.setParticipants(ps);
 		a.setSubject("sub");
-		a.toXML();
+		String test = a.toXML();
+		System.out.println(test);
+		Appointment app = xmlToAppointment(test);
+		
+		
+		
 	}
 
 	public void setLeader(Employee leader) {

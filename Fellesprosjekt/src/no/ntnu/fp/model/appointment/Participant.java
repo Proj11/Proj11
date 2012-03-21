@@ -3,10 +3,10 @@ package no.ntnu.fp.model.appointment;
 import no.ntnu.fp.model.employee.Employee;
 
 public class Participant {
-	
+
 	private Employee employee;
 	private State state;
-	
+
 	public Participant(Employee e, State s) {
 		employee = e;
 		state = s;
@@ -25,8 +25,7 @@ public class Participant {
 	}
 
 	public enum State {
-		PENDING, ACCEPTED, DENIED;		
-		
+		PENDING, ACCEPTED, DENIED;
+
 	};
 }
-
