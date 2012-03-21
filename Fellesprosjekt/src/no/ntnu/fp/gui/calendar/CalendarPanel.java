@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui.calendar;
 
 import java.awt.Dimension;
+import java.awt.event.MouseListener;
 import java.text.DateFormatSymbols;
 
 import javax.swing.JPanel;
@@ -56,6 +57,14 @@ public class CalendarPanel extends JPanel {
 	public void setDisplayedWeek(int week) {
 		calendar.setDisplayedWeek(week);
 		repaint();
+	}
+	
+	public void addMouseListenerToTable(MouseListener listener) {
+		calendar.addMouseListener(listener);
+	}
+	
+	public void removeMouseListenerFromTable(MouseListener listener) {
+		calendar.removeMouseListener(listener);
 	}
 	
 	public Appointment getSelectedCell() {

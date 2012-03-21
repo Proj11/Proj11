@@ -37,7 +37,7 @@ public class CalendarTableModel extends AbstractTableModel {
 		temp.setStart(new Time(7, 0));
 		temp.setEnd(new Time(12, 0));
 		temp.setSubject("Hurr durr");
-		temp.setDate(new Date(2012, 2, 21));
+		temp.setDate(new Date(2012-1900, 2, 21));
 		appointments.add(temp);
 	}
 
@@ -74,7 +74,7 @@ public class CalendarTableModel extends AbstractTableModel {
 			calendar.set(Calendar.DAY_OF_WEEK, columnIndex);
 			Appointment returnValue=null;
 			for (Appointment a : appointments) {
-				if (a.getDate().getDate()==calendar.get(Calendar.DAY_OF_MONTH) && a.getDate().getYear()==calendar.get(Calendar.YEAR) && a.getDate().getMonth()==calendar.get(Calendar.MONTH)) {
+				if (a.getDate().getDate()==calendar.get(Calendar.DAY_OF_MONTH) && a.getDate().getYear()+1900==calendar.get(Calendar.YEAR) && a.getDate().getMonth()==calendar.get(Calendar.MONTH)) {
 					if (a.getStart().compareTo(now)<=0 && a.getEnd().compareTo(now)>0) {
 						returnValue=a;
 					}

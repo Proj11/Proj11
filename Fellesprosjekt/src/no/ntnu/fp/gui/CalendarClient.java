@@ -1,7 +1,6 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
-import no.ntnu.fp.gui.appointment.AppointmentPanel;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 
 import java.awt.BorderLayout;
@@ -17,6 +16,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
@@ -29,7 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener {
+public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener, MouseListener {
 	
 	public static Locale calendarLocale=Locale.ENGLISH;
 	public final static Dimension size=Toolkit.getDefaultToolkit().getScreenSize(); //Get the information required to set the frame to full screen
@@ -84,6 +85,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolbar.year.addPropertyChangeListener(this);
 		toolPanel.getAppPanel().getSaveButton().addActionListener(this);
 		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
+		calendarPanel.addMouseListenerToTable(this);
 	}
 	
 	public static void main(String[] args) {
@@ -122,9 +124,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			calendarPanel.setDisplayedWeek(calendarPanel.getDisplayedWeek()-1);
 			updateCalendarPanel();
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
-			toolPanel.getAppPanel().getModel(); //TODO Code to add an appointment into the database
+			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to add an appointment into the database
 		}  else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
-			toolPanel.getAppPanel().getModel(); //TODO Code to remove an appointment from the database
+			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
 		}
 	}
 
@@ -138,6 +140,31 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			updateCalendarPanel();
 		}
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getSelectedCell());
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 }
 
 class CalendarLogin extends JFrame implements ActionListener, KeyListener {

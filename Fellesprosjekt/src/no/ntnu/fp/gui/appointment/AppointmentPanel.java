@@ -3,6 +3,7 @@ package no.ntnu.fp.gui.appointment;
 import no.ntnu.fp.gui.employee.ParticipantList;
 import no.ntnu.fp.gui.time.TimeSpinner;
 import no.ntnu.fp.model.appointment.Appointment;
+import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.employee.ParticipantListModel;
 import no.ntnu.fp.model.time.Time;
 
@@ -17,6 +18,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.BoxLayout;
@@ -193,7 +195,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		panel.add(clearButton,c);
 		add(panel);
 		
-		setAppointment(new Appointment(null));
+		setAppointmentModel(new Appointment(null));
 		
 		dateChooser.addPropertyChangeListener(this);
 		startTime.addChangeListener(this);
@@ -215,20 +217,22 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		return addParticipant;
 	}
 	
-	public Appointment getModel() {
+	public Appointment getAppointmentModel() {
 		return model;
 	}
 
-	public void setAppointment(Appointment a) {
-		model=a; //TODO Replace null with the currently logged in user.
+	public void setAppointmentModel(Appointment a) {
+		if (a!=null) {
+			model=a; //TODO Replace null with the currently logged in user.	
+		} else {
+			model=new Appointment(null);
+		}
 		dateChooser.setDate(model.getDate());
 		startTime.getModel().setValue(model.getStart()); 
 		endTime.getModel().setValue(model.getEnd());
 		participantList.setModel(new ParticipantListModel(model.getParticipants()));
 		subject.setText(model.getSubject());
 		description.setText(model.getDescription());
-		//rooms;
-		//place;
 	}
 
 
@@ -249,7 +253,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==clearButton) {
-			setAppointment(new Appointment(null));
+			setAppointmentModel(new Appointment(null));
 		}
 	}
 

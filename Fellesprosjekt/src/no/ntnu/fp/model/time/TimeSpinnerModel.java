@@ -34,6 +34,9 @@ public class TimeSpinnerModel extends AbstractSpinnerModel {
 		if (newValue instanceof Time) {
 			value=(Time)newValue;
 			fireStateChanged();
+		} else if (newValue==null) {
+			value=new Time(8, 0);
+			fireStateChanged();
 		}
 	}
 
