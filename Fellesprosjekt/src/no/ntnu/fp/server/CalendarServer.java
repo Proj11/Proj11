@@ -110,24 +110,10 @@ public class CalendarServer extends JFrame {
 		}
 	}
 	
-	public static boolean editAppointment(String appointmentString, int id){
+	public boolean editAppointment(String appointmentString){
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
-		try {
-			Database db = Database.getDatabase();
-			db.insert("UPDATE Appointment SET (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
-			+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
-					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
-					for (Participant p : a.getParticipants()){
-						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
-						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
-						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
-					}
-			return true;
-		}
-		catch (Exception exception){
-			exception.printStackTrace();
-			return false;
-		}
+		deleteAppointment(a.getId());
+		return createAppointment(appointmentString);
 	}
 
 	private void sendMessage(String msg) {
@@ -141,7 +127,7 @@ public class CalendarServer extends JFrame {
 		
 	}
 	
-	public static ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		ArrayList<Employee> empList = new ArrayList<Employee>();
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM Employee WHERE name LIKE '" + query + "';");
@@ -154,7 +140,7 @@ public class CalendarServer extends JFrame {
 		return empList;
 	}
 	
-	public static String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		return Employee.allEmployeesToXML(empList);
 	}
 	
@@ -170,9 +156,8 @@ public class CalendarServer extends JFrame {
 		return false;
 	}
 	
-	public static boolean createAppointment(String appointmentString){
+	public boolean createAppointment(String appointmentString){
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
-		System.out.println("5: "+a.getRoomNumber());
 		try {
 			Database db = Database.getDatabase();
 			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
@@ -183,6 +168,7 @@ public class CalendarServer extends JFrame {
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
+					sendMessage(a.toXML());
 			return true;
 		}
 		catch (Exception exception){
