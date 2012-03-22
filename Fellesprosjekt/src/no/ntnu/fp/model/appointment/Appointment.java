@@ -319,7 +319,9 @@ public class Appointment {
 		Appointment a = new Appointment(this.leader);
 		a.start=this.start;
 		a.end=this.end;
-		a.date=new Date(this.date.getTime());
+		if (this.date!=null) {
+			a.date=new Date(this.date.getTime());
+		}
 		a.subject=this.subject;
 		a.description=this.description;
 		a.roomNumber=this.roomNumber;
