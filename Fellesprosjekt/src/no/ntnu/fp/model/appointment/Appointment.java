@@ -112,8 +112,13 @@ public class Appointment {
 	public List<Participant> getParticipants() {
 		return participants;
 	}
+	
 	public void addParticipant(Employee e){
 		participants.add(new Participant(e, State.PENDING));
+	}
+	
+	public void addParticipant(Employee e, State s) {
+		participants.add(new Participant(e, s));
 	}
 
 	public String getDescription() {

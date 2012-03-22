@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import no.ntnu.fp.model.appointment.Appointment;
-import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.time.Time;
@@ -35,12 +34,13 @@ public class CalendarTableModel extends AbstractTableModel {
 		
 		//TODO REMOVE DUMMY DATA
 		Appointment temp;
-		temp=new Appointment(new Employee("Herp Derp", "Herp Derp"));
-		List<Participant> pList=new ArrayList<Participant>();
-		pList.add(new Participant(new Employee("Hurr Durr", "Hurr Durr"), State.PENDING));
-		pList.add(new Participant(new Employee("Mordi", "Mordi"), State.ACCEPTED));
-		pList.add(new Participant(new Employee("Ole Bull", "Ole Bull"), State.DENIED));
-		temp.setParticipants(pList);
+		temp=new Appointment(new Employee("Leader"));
+		temp.addParticipant(new Employee("Hurr Durr"), State.PENDING);
+		temp.addParticipant(new Employee("Mordi"), State.ACCEPTED);
+		temp.addParticipant(new Employee("Ole Bull"), State.DENIED);
+		temp.addParticipant(new Employee("Fardi"), State.DENIED);
+		temp.addParticipant(new Employee("Martin"), State.PENDING);
+		temp.addParticipant(new Employee("Test"), State.PENDING);
 		temp.setStart(new Time(7, 0));
 		temp.setEnd(new Time(12, 0));
 		temp.setSubject("Hurr durr");

@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
+import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 import no.ntnu.fp.model.employee.Employee;
@@ -20,8 +21,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -32,7 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener, MouseListener {
+public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener, MouseListener, WindowListener {
 	
 	public static Locale calendarLocale=Locale.ENGLISH;
 	public final static Dimension size=Toolkit.getDefaultToolkit().getScreenSize(); //Get the information required to set the frame to full screen
@@ -91,7 +95,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
 		toolPanel.getMsgPanel().getGoToButton().addActionListener(this);
 		calendarPanel.getCalendar().addMouseListener(this);
-//		new PopupEmployees(client);
+		toolPanel.getAppPanel().getAddParticipantButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -133,18 +137,22 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
 			
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
-			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
-			
+			System.out.println("lol");
+			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
+				toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
+			}
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
-		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()){
-			//litt skeptisk
+		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()) {
+			//TODO test when recieve works
 			Employee participant = new PopupEmployees(client).getParticipant();
 			toolPanel.getAppPanel().getAppointmentModel().addParticipant(participant);
-		}
+			}
+		
+		
 	}
 
 	@Override
@@ -173,6 +181,40 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+
+	@Override
+	public void windowActivated(WindowEvent e) {	
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		try {
+			client.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+	}
 	
 }
 
@@ -244,9 +286,11 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 			}
 			else {
 				Client client = new Client();
+				System.out.println("test");
 				boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
-				
+				System.out.println("test1");
 				if (logon){
+					System.out.println("test2");
 					setVisible(false);
 					new CalendarClient(client);
 				}

@@ -8,4 +8,5 @@ public class Constants {
 	public final static char EDIT_APPOINTMENT = '4';
 	public final static char DELETE_APPOINTMENT = '5';
 	public final static char GET_EMPLOYEES = '6';
+	public final static char CLOSE_CONNECTION = '7';
 }

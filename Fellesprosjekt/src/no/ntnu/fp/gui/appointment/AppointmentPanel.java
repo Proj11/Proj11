@@ -196,7 +196,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		panel.add(clearButton,c);
 		add(panel);
 		
-		setAppointmentModel(new Appointment(null));
+		setAppointmentModel(null);
 		
 		dateChooser.addPropertyChangeListener(this);
 		startTime.addChangeListener(this);
@@ -224,8 +224,6 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		}
 	}
 	
-	
-	
 	public Appointment getAppointmentModel() {
 		return model;
 	}
@@ -237,7 +235,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 			model=new Appointment(new Employee("Hans Hansen", "Hans Hansen")); //TODO Replace this with the currently logged in user.	
 		}
 		dateChooser.setDate(model.getDate());
-		startTime.getModel().setValue(model.getStart()); 
+		startTime.getModel().setValue(model.getStart());
 		endTime.getModel().setValue(model.getEnd());
 		participantList.setModel(new ParticipantListModel(model.getParticipants()));
 		subject.setText(model.getSubject());
@@ -262,7 +260,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==clearButton) {
-			setAppointmentModel(new Appointment(null));
+			setAppointmentModel(null);
 		}
 	}
 
