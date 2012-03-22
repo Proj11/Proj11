@@ -64,17 +64,20 @@ public class CalendarServer extends JFrame {
 			case '2':
 				boolean b = logon(message.substring(1));
 				if (b){
-					sendMessage("1");
+					sendMessage(Constants.TRUE);
 				}
 				else 
-					sendMessage("0");
+					sendMessage(Constants.FALSE);
 				break;
 			case '3':
 				boolean c = createAppointment(message.substring(1));
 				if (c){
-					sendMessage("1");
+					sendMessage(Constants.TRUE);
 				}
-				else sendMessage("0");
+				else sendMessage(Constants.FALSE);
+				break;
+			case '4':
+				getEmployeesFromDB();
 				break;
 
 			default:
@@ -102,7 +105,7 @@ public class CalendarServer extends JFrame {
 		
 	}
 	
-	public static ArrayList<Employee> getEmployees() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public static ArrayList<Employee> getEmployeesFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		ArrayList<Employee> empList = new ArrayList<Employee>();
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM Employee;");
@@ -113,6 +116,10 @@ public class CalendarServer extends JFrame {
 			empList.add(new Employee(name, username));
 		}
 		return empList;
+	}
+	
+	public static String getEmployees(){
+		return null;
 	}
 	
 	public static boolean logon(String logonString) throws Exception{
