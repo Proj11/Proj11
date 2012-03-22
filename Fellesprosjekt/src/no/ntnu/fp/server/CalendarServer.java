@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -99,6 +100,19 @@ public class CalendarServer extends JFrame {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static ArrayList<Employee> getEmployees() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		ArrayList<Employee> empList = new ArrayList<Employee>();
+		Database db = Database.getDatabase();
+		ResultSet rs = db.query("SELECT * FROM Employee;");
+		while (rs.next()){
+			String username, name;
+			username = rs.getString("username");
+			name = rs.getString("name");
+			empList.add(new Employee(name, username));
+		}
+		return empList;
 	}
 	
 	public static boolean logon(String logonString) throws Exception{
