@@ -23,9 +23,6 @@ public class ParticipantListRenderer implements ListCellRenderer {
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		if (value instanceof Participant) {
 			Participant p=(Participant) value;
-			if (p.getEmployee()==null) {
-				return new JLabel(p.toString()); //TODO REMOVE THIS, p.getEmployee() SHOULD NEVER BE NULL!
-			}
 			JLabel label = new JLabel();
 			if (cellHasFocus) {
 				label.setBorder(BorderFactory.createLineBorder(borderColor, borderSize));

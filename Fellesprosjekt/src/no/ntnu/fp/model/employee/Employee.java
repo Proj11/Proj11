@@ -1,11 +1,9 @@
 package no.ntnu.fp.model.employee;
 
-import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,12 +15,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import no.ntnu.fp.model.appointment.Appointment;
-import no.ntnu.fp.model.appointment.Participant;
-import no.ntnu.fp.model.appointment.Participant.State;
-import no.ntnu.fp.model.time.Time;
-import no.ntnu.fp.server.CalendarServer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
