@@ -6,6 +6,7 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import no.ntnu.fp.model.appointment.Participant;
@@ -23,21 +24,21 @@ public class ParticipantListRenderer implements ListCellRenderer {
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		if (value instanceof Participant) {
 			Participant p=(Participant) value;
-			JLabel label = new JLabel();
-			if (cellHasFocus) {
-				label.setBorder(BorderFactory.createLineBorder(borderColor, borderSize));
-			} else {
-				label.setBorder(BorderFactory.createEmptyBorder(borderSize, borderSize, borderSize, borderSize));
-			}
+			JLabel comp = new JLabel();
 			if (p.getState()==State.PENDING) {
-				label.setBackground(pendingBgColor);
+				comp.setBackground(pendingBgColor);
 			} else if (p.getState()==State.ACCEPTED) {
-				label.setBackground(acceptedBgColor);
+				comp.setBackground(acceptedBgColor);
 			} else if (p.getState()==State.DENIED) {
-				label.setBackground(declinedBgColor);
+				comp.setBackground(declinedBgColor);
 			}
-			label.setText(p.getEmployee().getName());
-			return label;
+			if (cellHasFocus) {
+				comp.setBorder(BorderFactory.createLineBorder(borderColor, borderSize));
+			} else {
+				comp.setBorder(BorderFactory.createEmptyBorder(borderSize, borderSize, borderSize, borderSize));
+			}
+			comp.setText(p.getEmployee().getName());
+			return comp;
 		}
 		return null;
 	}
