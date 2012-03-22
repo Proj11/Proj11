@@ -90,6 +90,7 @@ public class Employee {
 			username.appendChild(doc.createTextNode(e.getUsername()));
 		}
 
+		DOMSource source = new DOMSource(doc);
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		StringWriter stringWriter = new StringWriter();
