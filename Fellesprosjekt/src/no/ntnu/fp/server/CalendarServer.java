@@ -64,22 +64,36 @@ public class CalendarServer extends JFrame {
 //			//Do something
 			switch (id) {
 			case '2':
-				boolean b = logon(message.substring(1));
-				if (b){
+				boolean blogon = logon(message.substring(1));
+				if (blogon){
 					sendMessage(Constants.TRUE);
 				}
 				else 
 					sendMessage(Constants.FALSE);
 				break;
 			case '3':
-				boolean c = createAppointment(message.substring(1));
-				if (c){
+				boolean create = createAppointment(message.substring(1));
+				if (create){
 					sendMessage(Constants.TRUE);
 				}
 				else sendMessage(Constants.FALSE);
 				break;
 			case '4':
-				getEmployeesFromDB();
+				boolean edit = editAppointment(message.substring(1));
+				if (edit){
+					sendMessage(Constants.TRUE);
+				}
+				else sendMessage(Constants.FALSE);
+				break;
+			case '5':
+				boolean del = deleteAppointment(Integer.parseInt(message.substring(1)));
+				if (del){
+					sendMessage(Constants.TRUE);
+				}
+				else sendMessage(Constants.FALSE);
+				break;
+			case '6':
+				getEmployeesFromDB("");
 				break;
 
 			default:
@@ -95,6 +109,11 @@ public class CalendarServer extends JFrame {
 		
 	}
 	
+	private boolean editAppointment(String substring) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	private void sendMessage(String msg) {
 		try {
 			out.writeObject(msg);
@@ -107,10 +126,10 @@ public class CalendarServer extends JFrame {
 		
 	}
 	
-	public static ArrayList<Employee> getEmployeesFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public static ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		ArrayList<Employee> empList = new ArrayList<Employee>();
 		Database db = Database.getDatabase();
-		ResultSet rs = db.query("SELECT * FROM Employee;");
+		ResultSet rs = db.query("SELECT * FROM Employee WHERE name LIKE '" + query + "';");
 		while (rs.next()){
 			String username, name;
 			username = rs.getString("username");
