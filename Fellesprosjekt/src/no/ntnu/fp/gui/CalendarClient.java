@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
+import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 import no.ntnu.fp.model.employee.Employee;
@@ -91,7 +92,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
 		toolPanel.getMsgPanel().getGoToButton().addActionListener(this);
 		calendarPanel.getCalendar().addMouseListener(this);
-//		new PopupEmployees(client);
+		toolPanel.getAppPanel().getAddParticipantButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -133,18 +134,22 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
 			
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
-			toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
-			
+			System.out.println("lol");
+			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
+				toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
+			}
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
-		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()){
-			//litt skeptisk
+		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()) {
+			//TODO test when recieve works
 			Employee participant = new PopupEmployees(client).getParticipant();
 			toolPanel.getAppPanel().getAppointmentModel().addParticipant(participant);
-		}
+			}
+		
+		
 	}
 
 	@Override
