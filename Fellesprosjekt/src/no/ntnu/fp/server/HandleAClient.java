@@ -83,21 +83,24 @@ public class HandleAClient extends JFrame implements Runnable {
 			if (create){
 				sendMessage(Constants.TRUE + "");
 			}
-			else sendMessage(Constants.FALSE + "");
+			else 
+				sendMessage(Constants.FALSE + "");
 			break;
 		case Constants.EDIT_APPOINTMENT:
 			boolean edit = editAppointment(message.substring(1));
 			if (edit){
 				sendMessage(Constants.TRUE + "");
 			}
-			else sendMessage(Constants.FALSE + "");
+			else 
+				sendMessage(Constants.FALSE + "");
 			break;
 		case Constants.DELETE_APPOINTMENT:
 			boolean del = deleteAppointment(Integer.parseInt(message.substring(1)));
 			if (del){
 				sendMessage(Constants.TRUE + "");
 			}
-			else sendMessage(Constants.FALSE + "");
+			else 
+				sendMessage(Constants.FALSE + "");
 			break;
 		case Constants.GET_EMPLOYEES:
 			ArrayList<Employee> empList = getEmployeesFromDB("");
