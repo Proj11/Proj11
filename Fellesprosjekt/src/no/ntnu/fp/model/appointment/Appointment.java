@@ -39,6 +39,15 @@ public class Appointment {
 	private int roomNumber;
 	private String location;
 
+	private Appointment() {
+	}
+
+	public Appointment(Employee createdBy) {
+		participants = new ArrayList<Participant>();
+		participants.add(new Participant(createdBy, State.ACCEPTED));
+		this.leader=createdBy;
+	}
+	
 	public int getRoomNumber() {
 		return roomNumber;
 	}
@@ -55,26 +64,12 @@ public class Appointment {
 		this.location = location;
 	}
 
-	public Appointment() {
-
-	}
-
-	public Appointment(Employee createdBy) {
-		participants = new ArrayList<Participant>();
-		participants.add(new Participant(createdBy, State.ACCEPTED));
-		this.leader=createdBy;
-	}
-
 	public Time getStart() {
 		return start;
 	}
 
 	public void setStart(Time start) {
 		this.start = start;
-	}
-
-	public Employee getLeader(){
-		return this.leader;
 	}
 
 	public Time getEnd() {
@@ -100,9 +95,33 @@ public class Appointment {
 	public void setDate(Date date) {
 		this.date=date;
 	}
+	
+	public Employee getLeader(){
+		return this.leader;
+	}
+	
+	public void setLeader(Employee leader) {
+		this.leader = leader;
+	}
+
+	public void setParticipants(List<Participant> participants) {
+		this.participants = participants;
+	}
+	
+	public List<Participant> getParticipants() {
+		return participants;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public String toString() {
-		return subject+"\n"+leader.getName();
+		return subject+" \n"+leader.getName();
 	}
 	//Lager en xml fil med data fra appointment
 	public String toXML() throws ParserConfigurationException, TransformerException {
@@ -223,8 +242,6 @@ public class Appointment {
 					String subject = getTagValues("subject", element);
 					appointment.setSubject(subject);
 					
-					
-					
 					//Element has no attributes, which is why element.hasAttribute("..."); never works
 					if (getTagValues("location", element)!=null) {
 						loc = getTagValues("location", element);
@@ -259,18 +276,13 @@ public class Appointment {
 							part.setState(State.ACCEPTED);
 					}
 					appointment.setParticipants(participants);
-
 				}
-
 			}
-
 			return appointment;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-
-
 	}
 
 	private static String getTagValues(String sTag, Element element) {
@@ -301,28 +313,22 @@ public class Appointment {
 		String test = a.toXML();
 		System.out.println(test);
 		Appointment app = xmlToAppointment(test);
-		
-		
-		
 	}
-
-	public void setLeader(Employee leader) {
-		this.leader = leader;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public void setParticipants(List<Participant> participants) {
-		this.participants = participants;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public List<Participant> getParticipants() {
-		return participants;
+	
+	public Appointment getCopy() {
+		Appointment a = new Appointment(this.leader);
+		a.start=this.start;
+		a.end=this.end;
+		a.date=new Date(this.date.getTime());
+		a.subject=this.subject;
+		a.description=this.description;
+		a.roomNumber=this.roomNumber;
+		a.location=this.location;
+		List<Participant> list = new ArrayList<Participant>(this.getParticipants().size());
+		for (int i = 0; i < this.getParticipants().size(); i++) {
+			list.add(new Participant(this.getParticipants().get(i).getEmployee(), this.getParticipants().get(i).getState()));
+		}
+		a.participants=list;
+		return a;
 	}
 }

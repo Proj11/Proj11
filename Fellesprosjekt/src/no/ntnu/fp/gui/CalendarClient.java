@@ -34,9 +34,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	
 	public static Locale calendarLocale=Locale.ENGLISH;
 	public final static Dimension size=Toolkit.getDefaultToolkit().getScreenSize(); //Get the information required to set the frame to full screen
-	public ApplicationToolbar toolbar; //The applications tool bar
-	public CalendarPanel calendarPanel; // This panel is used to display the calendar
-	public ApplicationSidePanel toolPanel; // The tool panel used to create new appointments, etc.
+	private ApplicationToolbar toolbar; //The applications tool bar
+	private CalendarPanel calendarPanel; // This panel is used to display the calendar
+	private ApplicationSidePanel toolPanel; // The tool panel used to create new appointments, etc.
 	private Client client;
 	
 	public CalendarClient(Client c) {
@@ -134,7 +134,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
-				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment());
+				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
 		}
@@ -154,7 +154,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (calendarPanel.getCalendar().getSelectedCell()!=null) {
-			toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getCalendar().getSelectedCell());
+			toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getCalendar().getSelectedCell().getCopy());
 			toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 		}
 	}
