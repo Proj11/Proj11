@@ -249,9 +249,11 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 			}
 			else {
 				Client client = new Client();
+				System.out.println("test");
 				boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
-				
+				System.out.println("test1");
 				if (logon){
+					System.out.println("test2");
 					setVisible(false);
 					new CalendarClient(client);
 				}
