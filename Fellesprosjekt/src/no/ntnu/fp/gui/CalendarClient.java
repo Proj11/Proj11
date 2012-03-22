@@ -1,7 +1,9 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
+import no.ntnu.fp.gui.appointment.PopupEmployees;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
+import no.ntnu.fp.model.employee.Employee;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -89,6 +91,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
 		toolPanel.getMsgPanel().getGoToButton().addActionListener(this);
 		calendarPanel.getCalendar().addMouseListener(this);
+//		new PopupEmployees(client);
 	}
 	
 	public static void main(String[] args) {
@@ -137,6 +140,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
+		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()){
+			//litt skeptisk
+			Employee participant = new PopupEmployees(client).getParticipant();
+			toolPanel.getAppPanel().getAppointmentModel().addParticipant(participant);
 		}
 	}
 
@@ -166,6 +173,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public void mousePressed(MouseEvent e) {}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+	
 }
 
 class CalendarLogin extends JFrame implements ActionListener, KeyListener {

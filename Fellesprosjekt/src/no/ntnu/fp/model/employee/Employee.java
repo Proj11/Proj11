@@ -36,6 +36,11 @@ public class Employee {
 	private String username;
 	private String password;
 	
+	
+	public String toString(){
+		return name;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
