@@ -72,7 +72,7 @@ public class Client {
 	public List<Employee> getEmployees() {
 		String employeesAsXML;
 		try {
-			sendMessage(Constants.GET_EMPLOYEES);
+			sendMessage(Constants.GET_EMPLOYEES+"");
 			employeesAsXML = receive();
 			return Employee.xmlToEmployeeList(employeesAsXML);
 		} catch (ClassNotFoundException e) {
