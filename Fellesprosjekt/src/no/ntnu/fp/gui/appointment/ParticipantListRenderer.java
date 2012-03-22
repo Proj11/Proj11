@@ -15,10 +15,10 @@ import no.ntnu.fp.model.appointment.Participant.State;
 public class ParticipantListRenderer implements ListCellRenderer {
 	
 	public final static int borderSize=3;
-	public final static Color borderColor=new Color(125, 125, 125, 125);
+	public final static Color borderColor=new Color(50, 50, 50, 225);
 	public final static Color pendingBgColor=new Color(200, 200, 200);
-	public final static Color acceptedBgColor=new Color(255, 100, 100);
-	public final static Color declinedBgColor=new Color(227, 66, 52);
+	public final static Color acceptedBgColor=new Color(100, 255, 100);
+	public final static Color declinedBgColor=new Color(227, 120, 120);
 
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
