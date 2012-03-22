@@ -5,12 +5,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.net.co.SendTimer;
+import no.ntnu.fp.server.CalendarServer;
+import no.ntnu.fp.server.Constants;
 
 public class Client {
 	
@@ -45,7 +50,7 @@ public class Client {
 	}
 	
 	public boolean logOn(String username, String password) throws IOException, ClassNotFoundException{
-		sendMessage("2" + username + "-" + password);
+		sendMessage(Constants.LOGON + username + "-" + password);
 		String result = (String)in.readObject();
 		if (result.charAt(0) == '1')
 			return true;
@@ -54,7 +59,7 @@ public class Client {
 	
 	public boolean createAppointment(Appointment appointment){
 		try {
-			sendMessage("3"+appointment.toXML());
+			sendMessage(Constants.CREATE_APPOINTMENT + appointment.toXML());
 			return true;
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -64,9 +69,23 @@ public class Client {
 		return false;
 	}
 	
+	public List<Employee> getEmployees() {
+		String employeesAsXML;
+		try {
+			sendMessage(Constants.GET_EMPLOYEES);
+			employeesAsXML = receive();
+			return Employee.xmlToEmployeeList(employeesAsXML);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public boolean editAppointment(Appointment a) {
 		try {
-			sendMessage("4"+a.toXML());
+			sendMessage(Constants.EDIT_APPOINTMENT + a.toXML());
 			return true;
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();

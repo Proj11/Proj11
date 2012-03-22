@@ -38,6 +38,7 @@ public class Appointment {
 	private List<Participant> participants;
 	private int roomNumber;
 	private String location;
+	private int id;
 
 	private Appointment() {
 	}
@@ -111,6 +112,9 @@ public class Appointment {
 	public List<Participant> getParticipants() {
 		return participants;
 	}
+	public void addParticipant(Employee e){
+		participants.add(new Participant(e, State.PENDING));
+	}
 
 	public String getDescription() {
 		return description;
@@ -159,6 +163,10 @@ public class Appointment {
 		Element subject = doc.createElement("subject");
 		rootElement.appendChild(subject);
 		subject.appendChild(doc.createTextNode(getSubject()));
+		
+		Element id = doc.createElement("id");
+		rootElement.appendChild(id);
+		id.appendChild(doc.createTextNode(getId() + ""));
 
 		if (getLocation() != null) {
 			Element location = doc.createElement("location");
@@ -241,6 +249,8 @@ public class Appointment {
 					appointment.setEnd(Time.parseTime(endtime));
 					String subject = getTagValues("subject", element);
 					appointment.setSubject(subject);
+					int id = Integer.parseInt(getTagValues("id", element));
+					appointment.setId(id);
 					
 					//Element has no attributes, which is why element.hasAttribute("..."); never works
 					if (getTagValues("location", element)!=null) {
@@ -283,6 +293,14 @@ public class Appointment {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	private static String getTagValues(String sTag, Element element) {
