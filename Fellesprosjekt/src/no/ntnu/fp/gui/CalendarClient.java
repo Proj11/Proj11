@@ -140,7 +140,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
-		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipant()){
+		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()){
 			//litt skeptisk
 			Employee participant = new PopupEmployees(client).getParticipant();
 			toolPanel.getAppPanel().getAppointmentModel().addParticipant(participant);
