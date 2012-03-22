@@ -91,7 +91,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getDeleteButton().addActionListener(this);
 		toolPanel.getMsgPanel().getGoToButton().addActionListener(this);
 		calendarPanel.getCalendar().addMouseListener(this);
-//		new PopupEmployees(client);
+		toolPanel.getAppPanel().getAddParticipantButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -140,8 +140,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
-		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()){
-			//litt skeptisk
+		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()) {
+			//TODO test when recieve works
 			Employee participant = new PopupEmployees(client).getParticipant();
 			toolPanel.getAppPanel().getAppointmentModel().addParticipant(participant);
 		}
