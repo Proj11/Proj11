@@ -25,6 +25,7 @@ public class ParticipantListRenderer implements ListCellRenderer {
 		if (value instanceof Participant) {
 			Participant p=(Participant) value;
 			JLabel comp = new JLabel();
+			comp.setOpaque(true);
 			if (p.getState()==State.PENDING) {
 				comp.setBackground(pendingBgColor);
 			} else if (p.getState()==State.ACCEPTED) {
