@@ -96,6 +96,7 @@ public class Client {
 	}
 	
 	public void close() throws IOException {
+		sendMessage(Constants.CLOSE_CONNECTION + "");
 		out.close();
 		in.close();
 	}
