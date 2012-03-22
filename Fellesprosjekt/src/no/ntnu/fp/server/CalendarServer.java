@@ -92,10 +92,10 @@ public class CalendarServer extends JFrame {
 				}
 				else sendMessage(Constants.FALSE);
 				break;
-			/*case '6':
-				String msg = getEmployeesFromDB("");
-				sendMessage(msg);
-				break;*/
+			case '6':
+				ArrayList<Employee> empList = getEmployeesFromDB("");
+				sendMessage(parseEmployeesToXML(empList));
+				break;
 
 			default:
 				break;
@@ -155,7 +155,7 @@ public class CalendarServer extends JFrame {
 		return empList;
 	}
 	
-	public static String getEmployees(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public static String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		return Employee.allEmployeesToXML(empList);
 	}
 	
