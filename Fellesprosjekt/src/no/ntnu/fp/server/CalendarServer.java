@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import no.ntnu.fp.db.Database;
 import no.ntnu.fp.model.appointment.Appointment;
@@ -118,8 +120,8 @@ public class CalendarServer extends JFrame {
 		return empList;
 	}
 	
-	public static String getEmployees(){
-		return null;
+	public static String getEmployees() throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		return Employee.allEmployeesToXML();
 	}
 	
 	public static boolean logon(String logonString) throws Exception{
