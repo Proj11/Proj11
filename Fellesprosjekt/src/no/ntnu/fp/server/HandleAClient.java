@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -145,6 +146,27 @@ public class HandleAClient extends JFrame implements Runnable {
 			empList.add(new Employee(name, username));
 		}
 		return empList;
+	}
+	
+	public ArrayList<Appointment> getAppointmentsFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		// TODO: Spør Martin i morgen, evt Sigurd på mandag.
+		// IDÉ: lage getAppointmentFromDB(int appointmentID) som kalles av getAppointmentsFromDB()?
+		Database db = Database.getDatabase();
+		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+		ResultSet rs = db.query("SELECT * FROM Appointment Join Employee ON (Appointment.createdBy = Employee.username;");
+		String leader, name, date, starttime, endtime, subject, description, location, roomnr;
+		while (rs.next()){
+			roomnr="";
+			location="";
+			leader = rs.getString("createdBy");
+			date = rs.getString("date");
+			starttime = rs.getString("starttime");
+			endtime = rs.getString("endtime");
+			subject = rs.getString("subject");
+			description = rs.getString("description");
+			
+		}
+		return appointments;
 	}
 	
 	public String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
