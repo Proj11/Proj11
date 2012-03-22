@@ -51,6 +51,7 @@ public class Employee {
 
 	public Employee(String name) {
 		this.username=name;
+		this.name=name;
 	}
 	
 	public Employee(String name, String username) {

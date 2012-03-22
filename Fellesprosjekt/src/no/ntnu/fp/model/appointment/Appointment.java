@@ -314,9 +314,9 @@ public class Appointment {
 
 
 	public static void main(String[] args) throws ParserConfigurationException, TransformerException {
-		Participant p = new Participant(new Employee("lylz"), State.PENDING);
+		Participant p = new Participant(new Employee("lylz", "lylz"), State.PENDING);
 		p.getEmployee().setName("Sigurd");
-		Employee leader = new Employee("derp");
+		Employee leader = new Employee("derp", "derp");
 		leader.setName("Derp Derper");
 		Appointment a = new Appointment(leader);
 		a.setDate(new Date(2012, 3, 20));
