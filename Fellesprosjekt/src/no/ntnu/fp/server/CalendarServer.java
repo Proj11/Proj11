@@ -1,13 +1,10 @@
 package no.ntnu.fp.server;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,9 +18,7 @@ import javax.xml.transform.TransformerException;
 import no.ntnu.fp.db.Database;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
-import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
-import no.ntnu.fp.model.time.Time;
 
 public class CalendarServer extends JFrame {
 	
@@ -58,48 +53,6 @@ public class CalendarServer extends JFrame {
 			in = new ObjectInputStream(socket.getInputStream());
 			
 			message = (String) in.readObject();
-			textArea.append(message+"\n");
-			char id = message.charAt(0);
-			
-//			//Do something
-			switch (id) {
-			case '2':
-				boolean blogon = logon(message.substring(1));
-				if (blogon){
-					sendMessage(Constants.TRUE);
-				}
-				else 
-					sendMessage(Constants.FALSE);
-				break;
-			case '3':
-				boolean create = createAppointment(message.substring(1));
-				if (create){
-					sendMessage(Constants.TRUE);
-				}
-				else sendMessage(Constants.FALSE);
-				break;
-			case '4':
-				boolean edit = editAppointment(message.substring(1));
-				if (edit){
-					sendMessage(Constants.TRUE);
-				}
-				else sendMessage(Constants.FALSE);
-				break;
-			case '5':
-				boolean del = deleteAppointment(Integer.parseInt(message.substring(1)));
-				if (del){
-					sendMessage(Constants.TRUE);
-				}
-				else sendMessage(Constants.FALSE);
-				break;
-			case '6':
-				ArrayList<Employee> empList = getEmployeesFromDB("");
-				sendMessage(parseEmployeesToXML(empList));
-				break;
-
-			default:
-				break;
-			}
 			
 			out.close();
 			in.close();
@@ -110,11 +63,58 @@ public class CalendarServer extends JFrame {
 		
 	}
 	
-	public static boolean editAppointment(String appointmentString){
+	private String receive() throws IOException, ClassNotFoundException {
+		return (String) in.readObject();
+	}
+	
+	private void doSomething(String message) throws Exception {
+		textArea.append(message+"\n");
+		char id = message.charAt(0);
+		switch (id) {
+		case Constants.LOGON:
+			boolean blogon = logon(message.substring(1));
+			if (blogon){
+				sendMessage(Constants.TRUE + "");
+			}
+			else 
+				sendMessage(Constants.FALSE + "");
+			break;
+		case Constants.CREATE_APPOINTMENT:
+			boolean create = createAppointment(message.substring(1));
+			if (create){
+				sendMessage(Constants.TRUE + "");
+			}
+			else sendMessage(Constants.FALSE + "");
+			break;
+		case Constants.EDIT_APPOINTMENT:
+			boolean edit = editAppointment(message.substring(1));
+			if (edit){
+				sendMessage(Constants.TRUE + "");
+			}
+			else sendMessage(Constants.FALSE + "");
+			break;
+		case Constants.DELETE_APPOINTMENT:
+			boolean del = deleteAppointment(Integer.parseInt(message.substring(1)));
+			if (del){
+				sendMessage(Constants.TRUE + "");
+			}
+			else sendMessage(Constants.FALSE + "");
+			break;
+		case Constants.GET_EMPLOYEES:
+			ArrayList<Employee> empList = getEmployeesFromDB("");
+			sendMessage(parseEmployeesToXML(empList));
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	public static boolean editAppointment(String appointmentString, int id){
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
 		try {
 			Database db = Database.getDatabase();
-			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
+			db.insert("UPDATE Appointment SET (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
 			+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
 					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
 					for (Participant p : a.getParticipants()){
@@ -136,7 +136,6 @@ public class CalendarServer extends JFrame {
 			out.flush();
 			textArea.append("Message sent: "+msg+"\n");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -226,4 +225,6 @@ public class CalendarServer extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+
 }
