@@ -1,9 +1,11 @@
 package no.ntnu.fp.gui.appointment;
 
-import no.ntnu.fp.gui.ApplicationSidePanel;
 import no.ntnu.fp.gui.time.TimeSpinner;
 import no.ntnu.fp.model.appointment.Appointment;
-import no.ntnu.fp.model.employee.ParticipantListModel;
+import no.ntnu.fp.model.appointment.Participant;
+import no.ntnu.fp.model.appointment.ParticipantListModel;
+import no.ntnu.fp.model.appointment.Participant.State;
+import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.time.Time;
 
 import java.awt.Dimension;
@@ -19,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -106,9 +109,10 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		c.gridx=0;
 		c.gridy=1;
 		participantList=new ParticipantList();
-		JScrollPane employeeScrollPane=new JScrollPane();
-		employeeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		employeeScrollPane.add(participantList);
+		participantList.setCellRenderer(new ParticipantListRenderer());
+		JScrollPane employeeScrollPane=new JScrollPane(participantList);
+		employeeScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		employeeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		employeeScrollPane.setPreferredSize(ParticipantList.defaultSize);
 		employeeScrollPane.setMaximumSize(ParticipantList.defaultSize);
 		employeeScrollPane.setMinimumSize(ParticipantList.defaultSize);
@@ -210,9 +214,17 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		return saveButton;
 	}
 	
-	public JButton getAddParticipant() {
+	public JButton getAddParticipantButton() {
 		return addParticipant;
 	}
+	
+	public void addParticipants(Employee[] e) {
+		for (int i = 0; i < e.length; i++) {
+			model.getParticipants().add(new Participant(e[i], State.PENDING));
+		}
+	}
+	
+	
 	
 	public Appointment getAppointmentModel() {
 		return model;
@@ -222,7 +234,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		if (a!=null) {
 			model=a;
 		} else {
-			model=new Appointment(null); //TODO Replace null with the currently logged in user.	
+			model=new Appointment(new Employee("Hans Hansen", "Hans Hansen")); //TODO Replace this with the currently logged in user.	
 		}
 		dateChooser.setDate(model.getDate());
 		startTime.getModel().setValue(model.getStart()); 
