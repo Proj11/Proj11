@@ -92,9 +92,10 @@ public class CalendarServer extends JFrame {
 				}
 				else sendMessage(Constants.FALSE);
 				break;
-			case '6':
-				getEmployeesFromDB("");
-				break;
+			/*case '6':
+				String msg = getEmployeesFromDB("");
+				sendMessage(msg);
+				break;*/
 
 			default:
 				break;
@@ -109,9 +110,24 @@ public class CalendarServer extends JFrame {
 		
 	}
 	
-	private boolean editAppointment(String substring) {
-		// TODO Auto-generated method stub
-		return false;
+	public static boolean editAppointment(String appointmentString){
+		Appointment a = Appointment.xmlToAppointment(appointmentString);
+		try {
+			Database db = Database.getDatabase();
+			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
+			+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
+					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
+					for (Participant p : a.getParticipants()){
+						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
+						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
+						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
+					}
+			return true;
+		}
+		catch (Exception exception){
+			exception.printStackTrace();
+			return false;
+		}
 	}
 
 	private void sendMessage(String msg) {
@@ -139,8 +155,8 @@ public class CalendarServer extends JFrame {
 		return empList;
 	}
 	
-	public static String getEmployees() throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		return Employee.allEmployeesToXML();
+	public static String getEmployees(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		return Employee.allEmployeesToXML(empList);
 	}
 	
 	public static boolean logon(String logonString) throws Exception{
