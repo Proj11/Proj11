@@ -69,11 +69,10 @@ public class Employee {
 		this.password = password;
 	}
 	
-	public static String allEmployeesToXML() throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public static String allEmployeesToXML(List<Employee> allEmployees) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-		List<Employee> allEmployees = CalendarServer.getEmployees();
 		Document doc = docBuilder.newDocument();
 		Element rootElement = doc.createElement("employees");
 		doc.appendChild(rootElement);
@@ -90,14 +89,6 @@ public class Employee {
 			employee.appendChild(username);
 			username.appendChild(doc.createTextNode(e.getUsername()));
 		}
-		
-		TransformerFactory transformerFactory2 = TransformerFactory.newInstance();
-		Transformer transformer2 = transformerFactory2.newTransformer();
-		// write the content into xml file for testing
-		DOMSource source = new DOMSource(doc);
-		StreamResult toFile = new StreamResult(new File("file.xml"));
-		transformer2.transform(source, toFile);
-
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
@@ -140,13 +131,5 @@ public class Employee {
 		NodeList nList = element.getElementsByTagName(sTag).item(0).getChildNodes();
 		Node nValue = (Node) nList.item(0);
 		return nValue.getNodeValue();
-	}
-	
-	public static void main(String[] args) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		String xml = allEmployeesToXML();
-		List<Employee> emp = xmlToEmployeeList(xml);
-		for (Employee employee : emp) {
-			System.out.println(employee.getName());
-		}
 	}
 }
