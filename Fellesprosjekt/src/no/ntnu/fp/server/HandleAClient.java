@@ -102,6 +102,10 @@ public class HandleAClient extends JFrame implements Runnable {
 			ArrayList<Employee> empList = getEmployeesFromDB("");
 			sendMessage(parseEmployeesToXML(empList));
 			break;
+		case Constants.GET_ROOMS:
+			ArrayList<Room> roomList = getRoomsFromDB("");
+			sendMessage(parseRoomsToXML(roomList));
+			break;
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();
@@ -141,8 +145,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			roomList.add(new Room(roomnr, size));
 		}
 		//TODO: Dette skal funke ^_^
-		sendMessage(Room.allRoomsToXML(roomList));
-		return null;
+		return roomList;
 	}
 	
 	public ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
@@ -213,6 +216,9 @@ public class HandleAClient extends JFrame implements Runnable {
 	
 	public String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		return Employee.allEmployeesToXML(empList);
+	}
+	public String parseRoomsToXML(ArrayList<Room> roomList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		return Room.allRoomsToXML(roomList);
 	}
 	
 	public static boolean logon(String logonString) throws Exception{
