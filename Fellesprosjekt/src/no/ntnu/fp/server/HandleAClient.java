@@ -130,7 +130,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		
 	}
 	
-	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, ParserConfigurationException, TransformerException{
 		ArrayList<Room> roomList = new ArrayList<Room>();
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
@@ -140,9 +140,9 @@ public class HandleAClient extends JFrame implements Runnable {
 			size = Integer.parseInt(rs.getString("name"));
 			roomList.add(new Room(roomnr, size));
 		}
-		//TODO: Dette funker ikke, XML conversion?
-		sendMessage(roomList.toString());
-		return roomList;
+		//TODO: Dette skal funke ^_^
+		sendMessage(Room.allRoomsToXML(roomList));
+		return null;
 	}
 	
 	public ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
