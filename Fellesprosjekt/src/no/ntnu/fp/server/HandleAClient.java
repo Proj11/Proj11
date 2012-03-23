@@ -20,7 +20,11 @@ import javax.xml.transform.TransformerException;
 import no.ntnu.fp.db.Database;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
+import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.room.Room;
+import no.ntnu.fp.model.time.Time;
+import no.ntnu.fp.timeexception.TimeException;
 
 public class HandleAClient extends JFrame implements Runnable {
 
@@ -126,6 +130,21 @@ public class HandleAClient extends JFrame implements Runnable {
 		
 	}
 	
+	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		ArrayList<Room> roomList = new ArrayList<Room>();
+		Database db = Database.getDatabase();
+		ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
+		while (rs.next()){
+			int roomnr, size;
+			roomnr = Integer.parseInt(rs.getString("roomnr"));
+			size = Integer.parseInt(rs.getString("name"));
+			roomList.add(new Room(roomnr, size));
+		}
+		//TODO: Dette funker ikke, XML conversion?
+		sendMessage(roomList.toString());
+		return roomList;
+	}
+	
 	public ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		ArrayList<Employee> empList = new ArrayList<Employee>();
 		Database db = Database.getDatabase();
@@ -139,24 +158,56 @@ public class HandleAClient extends JFrame implements Runnable {
 		return empList;
 	}
 	
-	public ArrayList<Appointment> getAppointmentsFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		// TODO: Spør Martin i morgen, evt Sigurd på mandag.
-		// IDÉ: lage getAppointmentFromDB(int appointmentID) som kalles av getAppointmentsFromDB()?
+	public Appointment getAppointmentFromDB(int appointmentID) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, TimeException, ParserConfigurationException, TransformerException{
 		Database db = Database.getDatabase();
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-		ResultSet rs = db.query("SELECT * FROM Appointment Join Employee ON (Appointment.createdBy = Employee.username;");
-		String leader, name, date, starttime, endtime, subject, description, location, roomnr;
+		ResultSet rs = db.query("SELECT * FROM Appointment JOIN Employee ON (Appointment.createdBy = Employee.username) WHERE appointmentID= '" + appointmentID + "';");
+		String leader="", name="", date="", starttime="", endtime="", subject="", description="", location="", roomnr="";
 		while (rs.next()){
-			roomnr="";
-			location="";
-			leader = rs.getString("createdBy");
+			name = rs.getString("name");
+			leader = rs.getString("username");
 			date = rs.getString("date");
 			starttime = rs.getString("starttime");
 			endtime = rs.getString("endtime");
 			subject = rs.getString("subject");
 			description = rs.getString("description");
-			
+			if (rs.getString("roomnr") == null)
+				location = rs.getString("location");
+			else roomnr = rs.getString("roomnr");
 		}
+		Appointment app = new Appointment(new Employee(name, leader));
+		app.setDate(new Date(Long.parseLong(date)));
+		app.setId(appointmentID);
+		app.setStart(Time.parseTime(starttime));
+		app.setEnd(Time.parseTime(endtime));
+		app.setSubject(subject);
+		app.setDescription(description);
+		app.setRoomNumber(Integer.parseInt(roomnr));
+		app.setLocation(location);
+		ArrayList<Participant> participants = new ArrayList<Participant>();
+		participants.add(new Participant(new Employee(name, leader), State.ACCEPTED));
+		
+		ResultSet rsPart = db.query("SELECT * FROM Participant JOIN Employee ON (Participant.username = Employee.username) WHERE appointmentID= '" + appointmentID + "';");
+		String username, emName;
+		Participant.State state;
+		while (rsPart.next()){
+			username = rsPart.getString("username");
+			emName = rsPart.getString("name");
+			state = (Participant.State.valueOf(rsPart.getString("state")));
+			participants.add(new Participant(new Employee(emName, username), state));
+		}
+		app.setParticipants(participants);
+		sendMessage(app.toXML());
+		return app;
+	}
+	
+	public ArrayList<Appointment> getAppointmentsFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		// TODO: Spør Martin i morgen, evt Sigurd på mandag.
+		// IDÉ: lage getAppointmentFromDB(int appointmentID) som kalles av getAppointmentsFromDB()?
+		Database db = Database.getDatabase();
+		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+		ResultSet rs = db.query("SELECT * FROM Appointment;");
+		
+		
 		return appointments;
 	}
 	
@@ -208,5 +259,4 @@ public class HandleAClient extends JFrame implements Runnable {
 			return false;
 		}
 	}
-	
 }
