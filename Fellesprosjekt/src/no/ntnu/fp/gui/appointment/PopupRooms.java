@@ -24,8 +24,9 @@ private int choice;
 		roomList.setListData(roomsArray);
 		
 		Object[] options = new Object[]{"Book selected", "Auto-book", "Cancel"};
-		choice = JOptionPane.showInternalOptionDialog(null, roomList, "Rooms", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
-		
+		//choice = JOptionPane.showInputDialog(null, roomList, "Rooms", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+		System.out.println(JOptionPane.showInputDialog(null, roomList, "Rooms", JOptionPane.PLAIN_MESSAGE, null, options, null));
+		choice=2;
 		switch(choice){
 		case 0:
 			room = (Room)roomList.getSelectedValue();
