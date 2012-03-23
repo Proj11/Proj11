@@ -25,4 +25,8 @@ public class Room {
 	public void setSize(int size) {
 		this.size = size;
 	}
+	
+	public String toString() {
+		return "Room: "+roomnr+" - Size: "+size;
+	}
 }

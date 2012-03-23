@@ -6,6 +6,7 @@ import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.appointment.ParticipantListModel;
 import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.model.time.Time;
 
 import java.awt.Dimension;
@@ -221,6 +222,18 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		return roomsButton;
 	}
 	
+	public void setRoom(Room r) {
+		model.setRoomNumber(r.getRoomnr());
+		model.setLocation("");
+		location.setText("Room: "+r.getRoomnr());
+	}
+	
+	public void setRoom(int r) {
+		model.setRoomNumber(r);
+		model.setLocation("");
+		location.setText("Room: "+r);
+	}
+	
 	public void addParticipant(Employee e) {
 		boolean alreadyParticipating=false;
 		for (int i = 0; i < model.getParticipants().size(); i++) {
@@ -236,14 +249,6 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	
 	public void removeSelectedParticipant() {
 		((ParticipantListModel)participantList.getModel()).remove((Participant)participantList.getSelectedValue());
-	}
-	
-	private void debug() {
-		//TODO REMOVE THIS METHOD BEFORE DEADLINE
-		System.out.println("AppointmentPanel private debug() method");
-		for (int i = 0; i < model.getParticipants().size(); i++) {
-			System.out.println(model.getParticipants().get(i).getEmployee());
-		}
 	}
 	
 	public Appointment getAppointmentModel() {
@@ -262,7 +267,11 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		participantList.setModel(new ParticipantListModel(model.getParticipants()));
 		subject.setText(model.getSubject());
 		description.setText(model.getDescription());
-		location.setText(model.getLocation());
+		if (model.getRoomNumber()!=0) {
+			location.setText("Room: "+model.getRoomNumber());
+		} else {
+			location.setText(model.getLocation());
+		}
 		
 	}
 
@@ -315,10 +324,11 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		if (e.getSource()==location && location.getText()!="" && model.getRoomNumber()!=0) {
+		if (e.getSource()==location && !location.getText().equals("") && model.getRoomNumber()!=0) {
 			model.setRoomNumber(0);
+		} else if (e.getSource()==location && location.getText().equals("") && model.getRoomNumber()!=0) {
+			location.setText("Room: "+model.getRoomNumber());
+			model.setLocation("");
 		}
 	}
-	
-	
 }

@@ -1,7 +1,6 @@
 package no.ntnu.fp.model.appointment;
 
 import java.io.File;
-import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -41,12 +40,14 @@ public class Appointment {
 	private int id;
 
 	private Appointment() {
+		roomNumber=0;
 	}
 
 	public Appointment(Employee createdBy) {
 		participants = new ArrayList<Participant>();
 		participants.add(new Participant(createdBy, State.ACCEPTED));
 		this.leader=createdBy;
+		roomNumber=0;
 	}
 	
 	public int getRoomNumber() {

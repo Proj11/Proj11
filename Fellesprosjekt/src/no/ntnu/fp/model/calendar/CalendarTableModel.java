@@ -45,6 +45,7 @@ public class CalendarTableModel extends AbstractTableModel {
 		temp.setEnd(new Time(12, 0));
 		temp.setSubject("Hurr durr");
 		temp.setDate(new Date(2012-1900, 2, 21));
+		temp.setRoomNumber(6);
 		appointments.add(temp);
 	}
 

@@ -195,7 +195,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		try {
 			client.close();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
@@ -275,8 +274,6 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 	
 	@SuppressWarnings("deprecation")
 	public void login() {
-		//TODO A connection should be established here
-		//TODO The connection should then be passed as an argument to the CalendarClient class
 		try { 
 			if (usernameText.getText() == "" || passwordText.getText() == ""){
 				Client client = new Client();
