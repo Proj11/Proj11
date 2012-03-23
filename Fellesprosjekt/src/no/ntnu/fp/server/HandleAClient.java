@@ -141,7 +141,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		while (rs.next()){
 			int roomnr, size;
 			roomnr = Integer.parseInt(rs.getString("roomnr"));
-			size = Integer.parseInt(rs.getString("size"));
+			size = Integer.parseInt(rs.getString("roomsize"));
 			roomList.add(new Room(roomnr, size));
 		}
 		//TODO: Dette skal funke ^_^
