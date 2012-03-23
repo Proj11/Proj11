@@ -13,6 +13,7 @@ import javax.xml.transform.TransformerException;
 
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.net.co.SendTimer;
 import no.ntnu.fp.server.CalendarServer;
 import no.ntnu.fp.server.Constants;
@@ -75,6 +76,21 @@ public class Client {
 			sendMessage(Constants.GET_EMPLOYEES+"");
 			employeesAsXML = receive();
 			return Employee.xmlToEmployeeList(employeesAsXML);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	//rooms --> xml bitches
+	public List<Room> getRooms() {
+		String roomsAsXML;
+		try {
+			sendMessage(Constants.GET_ROOMS+"");
+			roomsAsXML = receive();
+			return Room.xmlToRoomList(roomsAsXML);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
