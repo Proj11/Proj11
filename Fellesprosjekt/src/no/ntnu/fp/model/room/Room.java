@@ -114,4 +114,8 @@ public class Room {
 		Node nValue = (Node) nList.item(0);
 		return nValue.getNodeValue();
 	}
+	
+	public String toString() {
+		return "Room: "+roomnr+" - Size: "+size;
+	}
 }

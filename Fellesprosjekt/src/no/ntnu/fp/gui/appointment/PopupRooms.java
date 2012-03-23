@@ -1,15 +1,11 @@
 package no.ntnu.fp.gui.appointment;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
 
 import no.ntnu.fp.client.Client;
-import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
 
 public class PopupRooms {
@@ -21,7 +17,7 @@ private int choice;
 		
 		List<Room> rooms = client.getRooms();
 		Room[] roomsArray = new Room[rooms.size()];
-		JList<Room> roomList = new JList<Room>();
+		JList roomList = new JList();
 		for (int i=0; i<rooms.size(); i++){
 			roomsArray[i]=rooms.get(i);
 		}
@@ -32,7 +28,7 @@ private int choice;
 		
 		switch(choice){
 		case 0:
-			room = roomList.getSelectedValue();
+			room = (Room)roomList.getSelectedValue();
 			break;
 		case 1:
 			room=autoReserve(rooms, size);
