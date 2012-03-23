@@ -203,14 +203,21 @@ public class HandleAClient extends JFrame implements Runnable {
 		return app;
 	}
 	
-	public ArrayList<Appointment> getAppointmentsFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		// TODO: Spør Martin i morgen, evt Sigurd på mandag.
-		// IDÉ: lage getAppointmentFromDB(int appointmentID) som kalles av getAppointmentsFromDB()?
+	public ArrayList<Appointment> getAppointmentsFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, TimeException, ParserConfigurationException, TransformerException{
 		Database db = Database.getDatabase();
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+		ArrayList<String> appointmentSize = new ArrayList<String>();
 		ResultSet rs = db.query("SELECT * FROM Appointment;");
-		
-		
+		while (rs.next()){
+			String appointment = rs.getString("appointmentID");
+			appointmentSize.add(appointment);
+		}
+		for (String stringAppointmentID : appointmentSize) {
+			int appointmentID = Integer.parseInt(stringAppointmentID);
+			appointments.add(getAppointmentFromDB(appointmentID));
+		}
+		//TODO: Sende dette til klienten.
+		//sendMessage(appointments);
 		return appointments;
 	}
 	
