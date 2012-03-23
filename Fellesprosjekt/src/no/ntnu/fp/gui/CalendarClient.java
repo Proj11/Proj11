@@ -3,8 +3,10 @@ package no.ntnu.fp.gui;
 import no.ntnu.fp.client.Client;
 import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
+import no.ntnu.fp.gui.appointment.PopupRooms;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.room.Room;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -97,6 +99,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		calendarPanel.getCalendar().addMouseListener(this);
 		toolPanel.getAppPanel().getAddParticipantButton().addActionListener(this);
 		toolPanel.getAppPanel().getRemoveParticipantButton().addActionListener(this);
+		toolPanel.getAppPanel().getRoomsButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -150,8 +153,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			Employee participant = new PopupEmployees(client).getParticipant();
 			toolPanel.getAppPanel().addParticipant(participant);
 		} else if (e.getSource()==toolPanel.getAppPanel().getRemoveParticipantButton()) {
-			System.out.println("CalendarClient line 154");
 			toolPanel.getAppPanel().removeSelectedParticipant();
+		} else if (e.getSource()==toolPanel.getAppPanel().getRoomsButton()) {
+			Room r = new PopupRooms(client, toolPanel.getAppPanel().getAppointmentModel().getParticipants().size()).getRoom();
+			toolPanel.getAppPanel().setRoom(r);
 		}
 	}
 

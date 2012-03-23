@@ -223,9 +223,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	}
 	
 	public void setRoom(Room r) {
-		model.setRoomNumber(r.getRoomnr());
-		model.setLocation("");
-		location.setText("Room: "+r.getRoomnr());
+		this.setRoom(r.getRoomnr());
 	}
 	
 	public void setRoom(int r) {
