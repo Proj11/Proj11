@@ -15,6 +15,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
@@ -38,7 +40,7 @@ import javax.swing.event.ChangeListener;
 
 import com.toedter.calendar.JDateChooser;
 
-public class AppointmentPanel extends JPanel implements ActionListener, KeyListener, PropertyChangeListener, ChangeListener {
+public class AppointmentPanel extends JPanel implements ActionListener, KeyListener, PropertyChangeListener, ChangeListener, FocusListener {
 	
 	private Appointment model;
 	private JDateChooser dateChooser;
@@ -47,9 +49,8 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	private JButton addParticipant, removeParticipant;
 	private JTextField subject;
 	private JTextArea description;
-	private JCheckBox autoReserve;
-	private JComboBox rooms;
-	private JTextField place;
+	private JButton roomsButton;
+	private JTextField location;
 	private JButton deleteButton;
 	private JButton saveButton;
 	private JButton clearButton;
@@ -105,7 +106,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		panel.setLayout(new GridBagLayout());
 		c.gridx=0;
 		c.gridy=0;
-		panel.add(new JLabel("Employees:"), c);
+		panel.add(new JLabel("Participants:"), c);
 		c.gridx=0;
 		c.gridy=1;
 		participantList=new ParticipantList();
@@ -120,12 +121,12 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		JPanel buttonPanel=new JPanel();
 		Dimension d = new Dimension(140, 25);
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-		addParticipant=new JButton("Add Participant");
+		addParticipant=new JButton("Add");
 		addParticipant.setPreferredSize(d);
 		addParticipant.setMaximumSize(d);
 		addParticipant.setMinimumSize(d);
 		buttonPanel.add(addParticipant);
-		removeParticipant=new JButton("Remove Participant");
+		removeParticipant=new JButton("Remove");
 		removeParticipant.setPreferredSize(d);
 		removeParticipant.setMaximumSize(d);
 		removeParticipant.setMinimumSize(d);
@@ -150,30 +151,22 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		//The manual-reservation panel
 		//The auto-reservation panel
 		d = new Dimension(120, 24);
-		panel = new JPanel();
-		autoReserve = new JCheckBox("Auto reserve?");
-		panel.add(autoReserve);
-		add(panel);
 		panel=new JPanel();
-		rooms = new JComboBox();
-		rooms.setPreferredSize(d);
-		place = new JTextField(10);
-		place.setPreferredSize(d);
 		panel.setLayout(new GridBagLayout());
+		location = new JTextField(10);
+		location.setPreferredSize(d);
+		roomsButton=new JButton("Get Rooms");
 		c=new GridBagConstraints();
 		c.insets=new Insets(2, 2, 2, 2);
 		c.gridx=0;
 		c.gridy=0;
-		panel.add(new JLabel("Available rooms:"), c);
-		c.gridx=1;
-		c.gridy=0;
 		panel.add(new JLabel("Location:"), c);
 		c.gridx=0;
 		c.gridy=1;
-		panel.add(rooms, c);
+		panel.add(location, c);
 		c.gridx=1;
 		c.gridy=1;
-		panel.add(place, c);
+		panel.add(roomsButton, c);
 		add(panel);
 		
 		//The edit buttons panel
@@ -203,6 +196,8 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		endTime.addChangeListener(this);
 		subject.addKeyListener(this);
 		description.addKeyListener(this);
+		location.addKeyListener(this);
+		location.addFocusListener(this);
 		clearButton.addActionListener(this);
 	}
 	
@@ -218,9 +213,36 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		return addParticipant;
 	}
 	
-	public void addParticipants(Employee[] e) {
-		for (int i = 0; i < e.length; i++) {
-			model.getParticipants().add(new Participant(e[i], State.PENDING));
+	public JButton getRemoveParticipantButton() {
+		return removeParticipant;
+	}
+	
+	public JButton getRoomsButton() {
+		return roomsButton;
+	}
+	
+	public void addParticipant(Employee e) {
+		boolean alreadyParticipating=false;
+		for (int i = 0; i < model.getParticipants().size(); i++) {
+			if (model.getParticipants().get(i).getEmployee().getUsername().equals(e.getUsername())) {
+				alreadyParticipating=true;
+				break;
+			}
+		}
+		if (!alreadyParticipating) {
+			((ParticipantListModel)participantList.getModel()).add(new Participant(e, State.PENDING));
+		}
+	}
+	
+	public void removeSelectedParticipant() {
+		((ParticipantListModel)participantList.getModel()).remove((Participant)participantList.getSelectedValue());
+	}
+	
+	private void debug() {
+		//TODO REMOVE THIS METHOD BEFORE DEADLINE
+		System.out.println("AppointmentPanel private debug() method");
+		for (int i = 0; i < model.getParticipants().size(); i++) {
+			System.out.println(model.getParticipants().get(i).getEmployee());
 		}
 	}
 	
@@ -240,6 +262,8 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		participantList.setModel(new ParticipantListModel(model.getParticipants()));
 		subject.setText(model.getSubject());
 		description.setText(model.getDescription());
+		location.setText(model.getLocation());
+		
 	}
 
 
@@ -251,6 +275,8 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 			model.setSubject(subject.getText());
 		} else if (e.getSource()==description) {
 			model.setDescription(description.getText());
+		} else if (e.getSource()==location) {
+			model.setLocation(location.getText());
 		}
 	}
 	@Override
@@ -279,4 +305,20 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 			model.setEnd((Time)endTime.getValue());
 		}
 	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		if (e.getSource()==location && model.getRoomNumber()!=0) {
+			location.setText("");
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		if (e.getSource()==location && location.getText()!="" && model.getRoomNumber()!=0) {
+			model.setRoomNumber(0);
+		}
+	}
+	
+	
 }

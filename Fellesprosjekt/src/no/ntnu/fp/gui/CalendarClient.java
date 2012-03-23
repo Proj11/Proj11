@@ -96,6 +96,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getMsgPanel().getGoToButton().addActionListener(this);
 		calendarPanel.getCalendar().addMouseListener(this);
 		toolPanel.getAppPanel().getAddParticipantButton().addActionListener(this);
+		toolPanel.getAppPanel().getRemoveParticipantButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -137,7 +138,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
 			
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
-			System.out.println("lol");
 			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
 				toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
 			}
@@ -147,12 +147,12 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 			}
 		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()) {
-			//TODO test when recieve works
 			Employee participant = new PopupEmployees(client).getParticipant();
-			toolPanel.getAppPanel().getAppointmentModel().addParticipant(participant);
-			}
-		
-		
+			toolPanel.getAppPanel().addParticipant(participant);
+		} else if (e.getSource()==toolPanel.getAppPanel().getRemoveParticipantButton()) {
+			System.out.println("CalendarClient line 154");
+			toolPanel.getAppPanel().removeSelectedParticipant();
+		}
 	}
 
 	@Override
@@ -286,11 +286,8 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 			}
 			else {
 				Client client = new Client();
-				System.out.println("test");
 				boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
-				System.out.println("test1");
 				if (logon){
-					System.out.println("test2");
 					setVisible(false);
 					new CalendarClient(client);
 				}
