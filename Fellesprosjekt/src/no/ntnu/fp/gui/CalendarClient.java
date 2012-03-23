@@ -28,6 +28,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -100,6 +101,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getAddParticipantButton().addActionListener(this);
 		toolPanel.getAppPanel().getRemoveParticipantButton().addActionListener(this);
 		toolPanel.getAppPanel().getRoomsButton().addActionListener(this);
+		toolPanel.getAppPanel().getAutoReserveButton().addActionListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -156,7 +158,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			toolPanel.getAppPanel().removeSelectedParticipant();
 		} else if (e.getSource()==toolPanel.getAppPanel().getRoomsButton()) {
 			Room r = new PopupRooms(client, toolPanel.getAppPanel().getAppointmentModel().getParticipants().size()).getRoom();
-			toolPanel.getAppPanel().setRoom(r);
+			if (r!=null) {
+				toolPanel.getAppPanel().setRoom(r);
+			}
+		} else if(e.getSource()==toolPanel.getAppPanel().getAutoReserveButton()){
+			toolPanel.getAppPanel().setRoom(autoReserve(client, 0));
 		}
 	}
 
@@ -220,6 +226,16 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public void windowOpened(WindowEvent e) {
 	}
 	
+	private Room autoReserve(Client client, int size){
+		List<Room> rooms = client.getRooms();
+		for(int i=0; i<rooms.size(); i++){
+			if(size <= rooms.get(i).getSize()){
+				return rooms.get(i);
+			}
+		}
+		return null;
+		
+	}
 }
 
 class CalendarLogin extends JFrame implements ActionListener, KeyListener {

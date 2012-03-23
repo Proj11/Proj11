@@ -55,6 +55,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	private JButton deleteButton;
 	private JButton saveButton;
 	private JButton clearButton;
+	private JButton autoReserveButton;
 	
 	public AppointmentPanel() {
 		super();
@@ -149,8 +150,18 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		panel.add(scrollPane);
 		add(panel);
 		
-		//The manual-reservation panel
 		//The auto-reservation panel
+		d = new Dimension(120, 24);
+		panel=new JPanel();
+		panel.setLayout(new GridBagLayout());
+		autoReserveButton=new JButton("Autoreserve");
+		c=new GridBagConstraints();
+		c.insets=new Insets(2, 2, 2, 2);
+		c.gridx=0;
+		c.gridy=0;
+		panel.add(autoReserveButton, c);
+		add(panel);
+		//Location panel
 		d = new Dimension(120, 24);
 		panel=new JPanel();
 		panel.setLayout(new GridBagLayout());
@@ -224,6 +235,9 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	
 	public void setRoom(Room r) {
 		this.setRoom(r.getRoomnr());
+	}
+	public JButton getAutoReserveButton(){
+		return autoReserveButton;
 	}
 	
 	public void setRoom(int r) {
