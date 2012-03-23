@@ -13,18 +13,13 @@ public class PopupEmployees{
 	private Employee participant;
 	
 	public PopupEmployees(Client client){
-	
-	
 	Employee[] choices = null;
 	List<Employee> employees = client.getEmployees();
 	choices = new Employee[employees.size()];
 	for(int i=0; i < choices.length; i++){
 		choices[i] = employees.get(i);
 	}
-		
-		participant = (Employee) JOptionPane.showInputDialog(null, "Select Employee:", "Employees",JOptionPane.QUESTION_MESSAGE,
-				null,choices, choices[0]);
-
+	participant = (Employee) JOptionPane.showInputDialog(null, "Select Employee:", "Employees",JOptionPane.QUESTION_MESSAGE,null,choices, choices[0]);
 	}
 	public Employee getParticipant(){
 		return participant;
