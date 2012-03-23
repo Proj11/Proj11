@@ -102,6 +102,10 @@ public class HandleAClient extends JFrame implements Runnable {
 			ArrayList<Employee> empList = getEmployeesFromDB("");
 			sendMessage(parseEmployeesToXML(empList));
 			break;
+		case Constants.GET_ROOMS:
+			ArrayList<Room> roomList = getRoomsFromDB("");
+			sendMessage(parseRoomsToXML(roomList));
+			break;
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();
@@ -130,7 +134,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		
 	}
 	
-	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, ParserConfigurationException, TransformerException{
 		ArrayList<Room> roomList = new ArrayList<Room>();
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
@@ -140,8 +144,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			size = Integer.parseInt(rs.getString("name"));
 			roomList.add(new Room(roomnr, size));
 		}
-		//TODO: Dette funker ikke, XML conversion?
-		sendMessage(roomList.toString());
+		//TODO: Dette skal funke ^_^
 		return roomList;
 	}
 	
@@ -213,6 +216,9 @@ public class HandleAClient extends JFrame implements Runnable {
 	
 	public String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		return Employee.allEmployeesToXML(empList);
+	}
+	public String parseRoomsToXML(ArrayList<Room> roomList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		return Room.allRoomsToXML(roomList);
 	}
 	
 	public static boolean logon(String logonString) throws Exception{
