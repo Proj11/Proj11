@@ -217,6 +217,8 @@ public class Appointment {
 		// write the content into xml file for testing
 		DOMSource source = new DOMSource(doc);
 		StreamResult toFile = new StreamResult(new File("file.xml"));
+		System.out.println("Appointment line 220");
+		System.out.println(source.getNode()); //TODO SOMETHING IS WRONG WITH SOURCE MARTIN THINKS, BUT HE MAY BE WRONG, ASK SIGURD
 		transformer2.transform(source, toFile);
 
 
@@ -318,7 +320,7 @@ public class Appointment {
 		return nValue.getNodeValue();
 	}
 
-
+	//TODO: delete before deadline
 	public static void main(String[] args) throws ParserConfigurationException, TransformerException {
 		Participant p = new Participant(new Employee("lylz", "lylz"), State.PENDING);
 		p.getEmployee().setName("Sigurd");

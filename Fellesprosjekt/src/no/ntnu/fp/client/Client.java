@@ -68,6 +68,7 @@ public class Client {
 			e.printStackTrace();
 		}
 		return false;
+		//TODO: code to send message to participants
 	}
 	
 	public List<Employee> getEmployees() {
