@@ -27,20 +27,11 @@ public class HandleAClient extends JFrame implements Runnable {
 	private Socket socket;
 	ObjectOutputStream out;
 	ObjectInputStream in;
-	JTextArea textArea;
+	JTextArea textArea; 
 	
-	public HandleAClient(Socket socket) throws IOException {
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setTitle("Calendar Server");
-		textArea = new JTextArea();
-		textArea.setColumns(50);
-		textArea.setRows(30);
-		JScrollPane scrollPane=new JScrollPane(textArea);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		add(scrollPane);
-		pack();
-		setVisible(true);
+	public HandleAClient(Socket socket, JTextArea textArea) throws IOException {
 		this.socket = socket;
+		this.textArea=textArea;
 		
 	}
 	@Override

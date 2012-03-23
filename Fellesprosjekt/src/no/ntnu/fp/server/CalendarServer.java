@@ -30,6 +30,18 @@ public class CalendarServer extends JFrame {
 	JTextArea textArea;
 	
 	public CalendarServer() throws Exception{
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("Calendar Server");
+		textArea = new JTextArea();
+		textArea.setColumns(50);
+		textArea.setRows(30);
+		textArea.setLineWrap(true);
+		JScrollPane scrollPane=new JScrollPane(textArea);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		add(scrollPane);
+		pack();
+		setVisible(true);
+		
 		serverSocket = new ServerSocket(8000);
 		Socket socket;
 		int clientNo = 0;
@@ -41,7 +53,7 @@ public class CalendarServer extends JFrame {
 //			in = new ObjectInputStream(socket.getInputStream());
 //			message = (String) in.readObject();
 			
-			HandleAClient task = new HandleAClient(socket);
+			HandleAClient task = new HandleAClient(socket, textArea);
 			new Thread(task).start();
 			clientNo++;
 			
