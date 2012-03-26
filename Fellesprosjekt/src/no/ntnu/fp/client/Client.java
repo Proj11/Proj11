@@ -76,7 +76,7 @@ public class Client {
 		try{
 			sendMessage(Constants.GET_APPOINTMENTS + username);
 			appointmentsAsXML = receive();
-			return Appointment.XMLToAppoinmentList(appointmentsAsXML);
+			return Appointment.xmlToAppoinmentList(appointmentsAsXML);
 		} catch (ClassNotFoundException e){
 			e.printStackTrace();
 		} catch (IOException e){
