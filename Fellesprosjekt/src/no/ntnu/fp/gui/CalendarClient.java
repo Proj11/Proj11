@@ -162,14 +162,19 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		} else if (e.getSource()==toolPanel.getAppPanel().getRemoveParticipantButton()) {
 			toolPanel.getAppPanel().removeSelectedParticipant();
 		} else if (e.getSource()==toolPanel.getAppPanel().getRoomsButton()) {
-			Room r = new PopupRooms(client, toolPanel.getAppPanel().getAppointmentModel().getParticipants().size()).getRoom();
+			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
+			Room r = new PopupRooms(client, a.getParticipants().size(), a);
 			if (r!=null) {
 				toolPanel.getAppPanel().setRoom(r);
 			}
 		} else if(e.getSource()==toolPanel.getAppPanel().getAutoReserveButton()){
 			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
 			System.out.println(a.getDate() + "\n" + a.getStart() + "\n" + a.getEnd());
-			toolPanel.getAppPanel().setRoom(autoReserve(client, 0));
+			Room r = autoReserve(client, a.getParticipants().size());
+			if (r != null)
+				toolPanel.getAppPanel().setRoom(r);
+			else
+				toolPanel.getAppPanel().getAppointmentModel().setLocation("Ingen tilgjenlige");
 		}
 	}
 
@@ -237,6 +242,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		List<Room> rooms;
 		try {
 			rooms = client.getRooms(toolPanel.getAppPanel().getAppointmentModel());
+			if (rooms.size() == 0)
+				return null;
 			for(int i=0; i<rooms.size(); i++){
 				if(size <= rooms.get(i).getSize()){
 					return rooms.get(i);

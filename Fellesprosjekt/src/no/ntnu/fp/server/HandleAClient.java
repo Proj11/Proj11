@@ -159,11 +159,15 @@ public class HandleAClient extends JFrame implements Runnable {
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query(
 				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + 
-				" AND mr.roomnr=" + roomID + " AND DATE=" + a.getDate().getTime());
+				" AND mr.roomnr=" + roomID);
 		while (rs.next()) {
 			try {
 				Time start = Time.parseTime(rs.getString("starttime"));
 				Time end = Time.parseTime(rs.getString("endtime"));
+				Date date = new Date(rs.getLong("date"));
+				if (date.getTime() != a.getDate().getTime()) {
+					return true;
+				}
 				if ((a.getStart().compareTo(start) < 0) && (a.getEnd().compareTo(start) < 0)) 
 					return true;
 				if (a.getStart().compareTo(end) > 0)
