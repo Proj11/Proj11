@@ -80,7 +80,13 @@ public class Message {
 	}
 	
 	public Message() {
-		// TODO Auto-generated constructor stub
+		
+	}
+	
+	public Message(Employee messageCreatedBy, Employee recipient, String messageText){
+		this.recipient = recipient;
+		this.messageCreatedBy = messageCreatedBy;
+		this.messageText = messageText;
 	}
 
 	public Appointment getAppointment(){
@@ -154,6 +160,86 @@ public class Message {
 				}
 			}
 			return message;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String allMessagesToXML(ArrayList<Message> allMessages) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+		Document doc = docBuilder.newDocument();
+		Element rootElement = doc.createElement("messages");
+		doc.appendChild(rootElement);
+
+		for (Message m : allMessages) {
+			Element message = doc.createElement("message");
+			rootElement.appendChild(message);
+			
+			Element messageID = doc.createElement("messageID");
+			rootElement.appendChild(messageID);
+			messageID.appendChild(doc.createTextNode(m.getMessageID()+ ""));
+			
+			Element appointmentID = doc.createElement("appointmentID");
+			message.appendChild(appointmentID);
+			appointmentID.appendChild(doc.createTextNode(m.getAppointmentId()+ ""));
+			
+			Element recipient = doc.createElement("recipient");
+			message.appendChild(recipient);
+			recipient.appendChild(doc.createTextNode(m.getRecipient().getUsername()));
+			
+			Element recipientName = doc.createElement("recipientName");
+			message.appendChild(recipientName);
+			recipientName.appendChild(doc.createTextNode(m.getRecipient().getName()));
+			
+			Element messageCreatedBy = doc.createElement("messageCreatedBy");
+			message.appendChild(messageCreatedBy);
+			messageCreatedBy.appendChild(doc.createTextNode(m.getMessageCreatedBy().getUsername()));
+			
+			Element messageCreatedByName = doc.createElement("messageCreatedByName");
+			message.appendChild(messageCreatedByName);
+			messageCreatedByName.appendChild(doc.createTextNode(m.getMessageCreatedBy().getName()));
+			
+			Element messageText = doc.createElement("messageText");
+			message.appendChild(messageText);
+			messageText.appendChild(doc.createTextNode(m.getMessageText()));
+		}
+
+		DOMSource source = new DOMSource(doc);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		StringWriter stringWriter = new StringWriter();
+		Result result = new StreamResult(stringWriter);
+		transformer.transform(source, result);
+		return stringWriter.getBuffer().toString();
+	}
+	
+	public static List<Message> xmlToMessageList(String xml) {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			InputSource is = new InputSource(new StringReader(xml));
+			Document doc = db.parse(is);
+			doc.getDocumentElement().normalize();
+
+			List<Message> messages = new ArrayList<Message>();
+			NodeList nodeLst = doc.getElementsByTagName("message");
+			for (int i = 0; i < nodeLst.getLength(); i++) {
+				Node nNode = nodeLst.item(i);
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) nNode;
+					int messageID = Integer.parseInt(getTagValues("messageID", element));
+					String recipient = getTagValues("recipient", element);
+					String recipientName = getTagValues("recipientName", element);
+					String messageCreatedBy = getTagValues("messageCreatedBy", element);
+					String messageCreatedByName = getTagValues("messageCreatedByName", element);
+					String messageText = getTagValues("messageText", element);
+					messages.add(new Message(new Employee(recipientName, recipient), new Employee(messageCreatedByName, messageCreatedBy), messageText));
+				}
+			}
+			return messages;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
