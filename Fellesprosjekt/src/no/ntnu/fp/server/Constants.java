@@ -10,4 +10,5 @@ public class Constants {
 	public final static char GET_EMPLOYEES = '6';
 	public final static char CLOSE_CONNECTION = '7';
 	public final static char GET_ROOMS = '8';
+	public final static char GET_APPOINTMENTS= '9';
 }
