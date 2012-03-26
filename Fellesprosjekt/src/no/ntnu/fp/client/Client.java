@@ -50,12 +50,12 @@ public class Client {
 		return (String) in.readObject();
 	}
 	
-	public boolean logOn(String username, String password) throws IOException, ClassNotFoundException{
+	public Employee logOn(String username, String password) throws IOException, ClassNotFoundException{
 		sendMessage(Constants.LOGON + username + "-" + password);
 		String result = (String)in.readObject();
 		if (result.charAt(0) == '1')
-			return true;
-		return false;
+			return Employee.fromXML(result.substring(1));
+		return null;
 	}
 	
 	public boolean createAppointment(Appointment appointment){

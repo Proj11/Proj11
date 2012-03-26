@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -65,9 +66,9 @@ public class HandleAClient extends JFrame implements Runnable {
 		char id = message.charAt(0);
 		switch (id) {
 		case Constants.LOGON:
-			boolean blogon = logon(message.substring(1));
-			if (blogon){
-				sendMessage(Constants.TRUE + "");
+			Employee emp = logon(message.substring(1));
+			if (emp != null){
+				sendMessage(Constants.TRUE + emp.toXML());
 			}
 			else 
 				sendMessage(Constants.FALSE + "");
@@ -142,8 +143,27 @@ public class HandleAClient extends JFrame implements Runnable {
 			size = Integer.parseInt(rs.getString("roomsize"));
 			roomList.add(new Room(roomnr, size));
 		}
-		//TODO: Dette skal funke ^_^
 		return roomList;
+	}
+	
+	private boolean isRoomAvailable(int roomID, Appointment a) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Database db = Database.getDatabase();
+		ResultSet rs = db.query(
+				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + " AND mr.roomnr=" + roomID + " AND DATE=" + a.getDate());
+		while (rs.next()) {
+			try {
+				Time start = Time.parseTime(rs.getString("starttime"));
+				Time end = Time.parseTime(rs.getString("endtime"));
+				if ((a.getStart().compareTo(start) < 0) && (a.getEnd().compareTo(start) < 0)) 
+					return true;
+				if (a.getStart().compareTo(end) > 0)
+					return true;			
+			} catch (TimeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 	
 	public ArrayList<Employee> getEmployeesFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
@@ -226,16 +246,17 @@ public class HandleAClient extends JFrame implements Runnable {
 		return Room.allRoomsToXML(roomList);
 	}
 	
-	public static boolean logon(String logonString) throws Exception{
+	public static Employee logon(String logonString) throws Exception{
 		String[] logonArray = logonString.split("-");
 		String username = logonArray[0];
 		String password = logonArray[1];
+		Employee emp;
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM Employee WHERE username='" + username + "' AND password='" + password + "'");
 		if (rs.next()){
-			return true;
+			return new Employee(rs.getNString("name"), rs.getString("username"));
 		}
-		return false;
+		return null;
 	}
 	
 	public boolean createAppointment(String appointmentString){

@@ -47,6 +47,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	private CalendarPanel calendarPanel; // This panel is used to display the calendar
 	private ApplicationSidePanel toolPanel; // The tool panel used to create new appointments, etc.
 	private Client client;
+	public static Employee USER;
 	
 	public CalendarClient(Client c) {
 		super();
@@ -298,16 +299,18 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 		try { 
 			if (usernameText.getText() == "" || passwordText.getText() == ""){
 				Client client = new Client();
-				boolean logon = client.logOn("brukernavn", "passord");
+				Employee logon = client.logOn("brukernavn", "passord");
 				setVisible(false);
 				new CalendarClient(client);
 			}
 			else {
 				Client client = new Client();
-				boolean logon = client.logOn(usernameText.getText(), passwordText.getText());
-				if (logon){
+				CalendarClient.USER = client.logOn(usernameText.getText(), passwordText.getText());
+				if (CalendarClient.USER != null){
 					setVisible(false);
 					new CalendarClient(client);
+					System.out.println(CalendarClient.USER.getName());
+					System.out.println(CalendarClient.USER.getUsername());
 				}
 				else System.out.println("Incorrect username / password.");
 			}
