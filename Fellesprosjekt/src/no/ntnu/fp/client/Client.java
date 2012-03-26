@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,6 +14,7 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
 import no.ntnu.fp.model.appointment.Appointment;
+import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.server.Constants;
@@ -76,7 +78,16 @@ public class Client {
 		try{
 			sendMessage(Constants.GET_APPOINTMENTS + username);
 			appointmentsAsXML = receive();
-			return Appointment.xmlToAppoinmentList(appointmentsAsXML);
+			ArrayList<Appointment> allApps = Appointment.xmlToAppoinmentList(appointmentsAsXML);
+			ArrayList<Appointment> appList = new ArrayList<Appointment>();
+			for (Appointment a : allApps) {
+				for (Participant p : a.getParticipants()) {
+					if(p.getEmployee().getUsername().equals(username)){
+						appList.add(a);
+					}
+				}
+			}
+			return appList;
 		} catch (ClassNotFoundException e){
 			e.printStackTrace();
 		} catch (IOException e){
