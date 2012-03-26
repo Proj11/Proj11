@@ -24,6 +24,7 @@ import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.message.Message;
 import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.model.time.Time;
 import no.ntnu.fp.timeexception.TimeException;
@@ -102,9 +103,19 @@ public class HandleAClient extends JFrame implements Runnable {
 			sendMessage(parseEmployeesToXML(empList));
 			break;
 		case Constants.GET_ROOMS:
-			ArrayList<Room> roomList = getRoomsFromDB("");
+			textArea.append("\n GetROOMS mottatt!!");
+			Appointment a = Appointment.xmlToAppointment(message.substring(1));
+			textArea.append("\n xml parsed!");
+			ArrayList<Room> roomList = getAvailableRooms(a);
+			textArea.append("\n Appointment: " +message);
+			textArea.append("\n Antall rom: " +roomList.size());
 			sendMessage(parseRoomsToXML(roomList));
 			break;
+		case Constants.GET_APPOINTMENTS:
+			textArea.append("\n GetAPPOINTMENTS mottatt!!");
+			ArrayList<Appointment> appList = Appointment.xmlToAppoinmentList(message.substring(1));
+			textArea.append("\n xml parsed!");
+			sendMessage(parseAppointmentsToXML(appList));
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();
@@ -116,11 +127,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}
 	
-	public boolean editAppointment(String appointmentString){
-		Appointment a = Appointment.xmlToAppointment(appointmentString);
-		deleteAppointment(a.getId());
-		return createAppointment(appointmentString);
-	}
+	
 
 	private void sendMessage(String msg) {
 		try {
@@ -130,18 +137,25 @@ public class HandleAClient extends JFrame implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
-	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, ParserConfigurationException, TransformerException{
+	private ArrayList<Room> getAvailableRooms(Appointment a) {
 		ArrayList<Room> roomList = new ArrayList<Room>();
-		Database db = Database.getDatabase();
-		ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
-		while (rs.next()){
-			int roomnr, size;
-			roomnr = Integer.parseInt(rs.getString("roomnr"));
-			size = Integer.parseInt(rs.getString("roomsize"));
-			roomList.add(new Room(roomnr, size));
+		Database db;
+		try {
+			db = Database.getDatabase();
+			ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
+			while (rs.next()){
+				int roomnr, size;
+				roomnr = Integer.parseInt(rs.getString("roomnr"));
+				size = Integer.parseInt(rs.getString("roomsize"));
+				if (size >= a.getParticipants().size()) {
+					if (isRoomAvailable(roomnr, a))
+						roomList.add(new Room(roomnr, size));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return roomList;
 	}
@@ -149,20 +163,31 @@ public class HandleAClient extends JFrame implements Runnable {
 	private boolean isRoomAvailable(int roomID, Appointment a) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query(
-				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + " AND mr.roomnr=" + roomID + " AND DATE=" + a.getDate());
+				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + 
+				" AND mr.roomnr=" + roomID);
+		boolean available = true;
 		while (rs.next()) {
 			try {
 				Time start = Time.parseTime(rs.getString("starttime"));
 				Time end = Time.parseTime(rs.getString("endtime"));
+				Date date = new Date(rs.getLong("date"));
+				if (date.getTime() != a.getDate().getTime()) {
+					return true;
+				}
 				if ((a.getStart().compareTo(start) < 0) && (a.getEnd().compareTo(start) < 0)) 
 					return true;
 				if (a.getStart().compareTo(end) > 0)
-					return true;			
+					return true;
+				if (rs.getInt("roomnr") == roomID) {
+					available = false;
+				}
 			} catch (TimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		if (available)
+			return true;
 		return false;
 	}
 	
@@ -234,8 +259,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			int appointmentID = Integer.parseInt(stringAppointmentID);
 			appointments.add(getAppointmentFromDB(appointmentID));
 		}
-		//TODO: Sende dette til klienten.
-		//sendMessage(appointments);
+		sendMessage(parseAppointmentsToXML(appointments));
 		return appointments;
 	}
 	
@@ -244,6 +268,11 @@ public class HandleAClient extends JFrame implements Runnable {
 	}
 	public String parseRoomsToXML(ArrayList<Room> roomList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		return Room.allRoomsToXML(roomList);
+	}
+	
+	//TODO: Lage allAppointmentsToXML(appList)
+	public String parseAppointmentsToXML(ArrayList<Appointment> appList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		return Appointment.appointmentListToXML(appList);
 	}
 	
 	public static Employee logon(String logonString) throws Exception{
@@ -280,6 +309,27 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}
 	
+	public boolean createAppointment(String appointmentString, int appID){
+		Appointment a = Appointment.xmlToAppointment(appointmentString);
+		try {
+			Database db = Database.getDatabase();
+			db.insert("INSERT INTO Appointment (appointmentID, date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
+			+ appID + "', '"+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
+					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
+					for (Participant p : a.getParticipants()){
+						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
+						"('" + p.getEmployee().getUsername() + "', '" + appID + "', 'PENDING');");
+						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
+					}
+					sendMessage(a.toXML());
+			return true;
+		}
+		catch (Exception exception){
+			exception.printStackTrace();
+			return false;
+		}
+	}
+	
 	public static boolean deleteAppointment(int appointmentID){
 		try {
 			Database db = Database.getDatabase();
@@ -290,5 +340,108 @@ public class HandleAClient extends JFrame implements Runnable {
 			deleteException.printStackTrace();
 			return false;
 		}
+	}
+	
+	public boolean editAppointment(String appointmentString){
+		Appointment a = Appointment.xmlToAppointment(appointmentString);
+		int appID = a.getId();
+		deleteAppointment(a.getId());
+		return createAppointment(appointmentString, appID);
+	}
+	
+	public boolean createMessage(String messageString, int i){
+		Message message = Message.xmlToMessage(messageString);
+		String sentMessage=null;
+		String invitedMessage = "You have been invited to a meeting.";
+		String deniedMessage = "Participant " + message.getMessageCreatedBy().getName() + " has declined your invitation.";
+		String deletedMessage = message.getMessageCreatedBy().getName() + " has deleted an appointment which affects you.";
+		if (i == 1){
+			sentMessage = invitedMessage;
+		}
+		if (i == 2){
+			sentMessage = deniedMessage;
+		}
+		if (i == 3){
+			sentMessage = deletedMessage;
+		}
+		try {
+			Database db = Database.getDatabase();
+			int mId = db.insertWithIdReturn("INSERT INTO Message (recipient, appointmentID, messageCreatedBy messageText)" +
+					"values ('" + message.getRecipient().getUsername() +"', '" + message.getAppointmentId() +
+					"', '" + message.getMessageCreatedBy().getName() + "', '" + sentMessage + "');");
+			message.setMessageID(mId);
+			sendMessage(message.toXML());
+			return true;
+		}
+		catch (Exception createMessageException) {
+			createMessageException.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean deleteMessage(int mId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		Database db = Database.getDatabase();
+		try {
+			db.insert("DELETE FROM Message WHERE messageID = '" + mId + "';");
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public Message getMessageFromDB(int messageID) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, ParserConfigurationException, TransformerException{
+		Database db = Database.getDatabase();
+		Message messageFromDB = new Message();
+		String createdBy="", recipient="", createdByName="", recipientName="", appointmentID="", messageText="";
+		ResultSet rs = db.query("SELECT * FROM Message JOIN Employee ON (Message.messageCreatedBy = Employee.username) WHERE messageID = '" + messageID + "';");
+		if (rs.next()){
+			createdBy = rs.getString("messageCreatedBy");
+			createdByName = rs.getString("name");
+			if (rs.getString("appointmentID") == null)
+				appointmentID = "0";
+			else appointmentID = rs.getString("appointmentID");
+			messageText = rs.getString("messageText");
+		}
+		ResultSet rs2 = db.query("SELECT * FROM Message JOIN Employee ON (Message.recipient = Employee.username) WHERE messageID = '" + messageID + "';");
+		if (rs2.next()){
+			recipient = rs2.getString("recipient");
+			recipientName = rs2.getString("name");
+		}
+		messageFromDB.setMessageID(messageID);
+		messageFromDB.setMessageCreatedBy(new Employee(createdByName, createdBy));
+		messageFromDB.setRecipient(new Employee(recipientName, recipient));
+		messageFromDB.setMessageText(messageText);
+		messageFromDB.setAppointmentId(Integer.parseInt(appointmentID));
+		
+		sendMessage(messageFromDB.toXML());
+		return messageFromDB;
+	}
+	
+	public ArrayList<Message> getAllMessagesFromDB(){
+		ArrayList<Message> messages = new ArrayList<Message>();
+		try {
+			Database db = Database.getDatabase();
+			ArrayList<String> messagesSize = new ArrayList<String>();
+			ResultSet rs = db.query("SELECT * FROM Message;");
+			while (rs.next()){
+				String messageID = rs.getString("messageID");
+				messagesSize.add(messageID);
+			}
+			for (String stringMessageID : messagesSize) {
+				int messageID = Integer.parseInt(stringMessageID);
+				messages.add(getMessageFromDB(messageID));
+			}
+			sendMessage(parseMessagesToXML(messages));
+			return messages;
+		}
+		catch (Exception getAllMsgsException){
+			getAllMsgsException.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String parseMessagesToXML(ArrayList<Message> msgList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+		return Message.allMessagesToXML(msgList);
 	}
 }

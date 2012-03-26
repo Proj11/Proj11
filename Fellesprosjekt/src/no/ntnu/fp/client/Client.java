@@ -5,18 +5,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.xml.sax.SAXException;
+
 import no.ntnu.fp.model.appointment.Appointment;
+import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
-import no.ntnu.fp.net.co.SendTimer;
-import no.ntnu.fp.server.CalendarServer;
 import no.ntnu.fp.server.Constants;
+import no.ntnu.fp.timeexception.TimeException;
 
 public class Client {
 	
@@ -71,6 +73,31 @@ public class Client {
 		//TODO: code to send message to participants
 	}
 	
+	public List<Appointment> getAppointmenList(String username) throws ParserConfigurationException, SAXException, TimeException{
+		String appointmentsAsXML;
+		try{
+			sendMessage(Constants.GET_APPOINTMENTS + username);
+			appointmentsAsXML = receive();
+			ArrayList<Appointment> allApps = Appointment.xmlToAppoinmentList(appointmentsAsXML);
+			ArrayList<Appointment> appList = new ArrayList<Appointment>();
+			for (Appointment a : allApps) {
+				for (Participant p : a.getParticipants()) {
+					if(p.getEmployee().getUsername().equals(username)){
+						appList.add(a);
+					}
+				}
+			}
+			return appList;
+		} catch (ClassNotFoundException e){
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	
 	public List<Employee> getEmployees() {
 		String employeesAsXML;
 		try {
@@ -86,10 +113,10 @@ public class Client {
 	}
 	
 	//rooms --> xml bitches
-	public List<Room> getRooms() {
+	public List<Room> getRooms(Appointment a) throws ParserConfigurationException, TransformerException {
 		String roomsAsXML;
 		try {
-			sendMessage(Constants.GET_ROOMS+"");
+			sendMessage(Constants.GET_ROOMS + a.toXML());
 			roomsAsXML = receive();
 			return Room.xmlToRoomList(roomsAsXML);
 		} catch (ClassNotFoundException e) {

@@ -26,6 +26,8 @@ public class Participant {
 
 	public enum State {
 		PENDING, ACCEPTED, DENIED;
+		
+		
 
 	};
 }

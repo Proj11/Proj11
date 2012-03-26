@@ -1,10 +1,12 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
+import no.ntnu.fp.gui.appointment.AppointmentPanel;
 import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
 import no.ntnu.fp.gui.appointment.PopupRooms;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
+import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
 
@@ -38,6 +40,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener, MouseListener, WindowListener {
 	
@@ -158,12 +162,17 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		} else if (e.getSource()==toolPanel.getAppPanel().getRemoveParticipantButton()) {
 			toolPanel.getAppPanel().removeSelectedParticipant();
 		} else if (e.getSource()==toolPanel.getAppPanel().getRoomsButton()) {
-			Room r = new PopupRooms(client, toolPanel.getAppPanel().getAppointmentModel().getParticipants().size()).getRoom();
-			if (r!=null) {
-				toolPanel.getAppPanel().setRoom(r);
-			}
+			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
+			PopupRooms r = new PopupRooms(client, a.getParticipants().size(), a);
+			toolPanel.getAppPanel().setRoom(r.getRoom());
 		} else if(e.getSource()==toolPanel.getAppPanel().getAutoReserveButton()){
-			toolPanel.getAppPanel().setRoom(autoReserve(client, 0));
+			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
+			System.out.println(a.getDate() + "\n" + a.getStart() + "\n" + a.getEnd());
+			Room r = autoReserve(client, a.getParticipants().size());
+			if (r != null)
+				toolPanel.getAppPanel().setRoom(r);
+			else
+				toolPanel.getAppPanel().getAppointmentModel().setLocation("Ingen tilgjenlige");
 		}
 	}
 
@@ -228,11 +237,22 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	}
 	
 	private Room autoReserve(Client client, int size){
-		List<Room> rooms = client.getRooms();
-		for(int i=0; i<rooms.size(); i++){
-			if(size <= rooms.get(i).getSize()){
-				return rooms.get(i);
+		List<Room> rooms;
+		try {
+			rooms = client.getRooms(toolPanel.getAppPanel().getAppointmentModel());
+			if (rooms.size() == 0)
+				return null;
+			for(int i=0; i<rooms.size(); i++){
+				if(size <= rooms.get(i).getSize()){
+					return rooms.get(i);
+				}
 			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 		
