@@ -154,6 +154,7 @@ public class HandleAClient extends JFrame implements Runnable {
 						roomList.add(new Room(roomnr, size));
 				}
 			}
+			System.out.println(roomList.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
