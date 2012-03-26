@@ -34,13 +34,7 @@ public class CalendarTableModel extends AbstractTableModel {
 		
 		//TODO REMOVE DUMMY DATA
 		Appointment temp;
-		temp=new Appointment(new Employee("Leader"));
-		temp.addParticipant(new Employee("Hurr Durr"), State.PENDING);
-		temp.addParticipant(new Employee("Mordi"), State.ACCEPTED);
-		temp.addParticipant(new Employee("Ole Bull"), State.DENIED);
-		temp.addParticipant(new Employee("Fardi"), State.DENIED);
-		temp.addParticipant(new Employee("Martin"), State.PENDING);
-		temp.addParticipant(new Employee("Test"), State.PENDING);
+		temp=new Appointment(new Employee("name"));
 		temp.setStart(new Time(7, 0));
 		temp.setEnd(new Time(12, 0));
 		temp.setSubject("Hurr durr");
