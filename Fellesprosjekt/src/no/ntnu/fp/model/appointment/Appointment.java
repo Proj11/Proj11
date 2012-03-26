@@ -384,7 +384,7 @@ public class Appointment {
 	}
 	
 	//TODO: test this!
-	public String appointmentListToXML(ArrayList<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
+	public static String appointmentListToXML(ArrayList<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		
