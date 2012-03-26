@@ -329,8 +329,6 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 				if (CalendarClient.USER != null){
 					setVisible(false);
 					new CalendarClient(client);
-					System.out.println(CalendarClient.USER.getName());
-					System.out.println(CalendarClient.USER.getUsername());
 				}
 				else System.out.println("Incorrect username / password.");
 			}

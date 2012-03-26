@@ -1,5 +1,6 @@
 package no.ntnu.fp.gui.appointment;
 
+import no.ntnu.fp.gui.CalendarClient;
 import no.ntnu.fp.gui.time.TimeSpinner;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
@@ -271,7 +272,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		if (a!=null) {
 			model=a;
 		} else {
-			model=new Appointment(new Employee("Hans Hansen", "Hans Hansen")); //TODO Replace this with the currently logged in user.	
+			model=new Appointment(CalendarClient.USER);	
 		}
 		dateChooser.setDate(model.getDate());
 		startTime.getModel().setValue(model.getStart());
