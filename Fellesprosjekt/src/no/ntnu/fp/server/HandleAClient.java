@@ -2,6 +2,7 @@ package no.ntnu.fp.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -49,15 +50,12 @@ public class HandleAClient extends JFrame implements Runnable {
 				
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
 			try {
 				in.close();
 				out.close();
 				Thread.currentThread().interrupt();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 		}
 	}
