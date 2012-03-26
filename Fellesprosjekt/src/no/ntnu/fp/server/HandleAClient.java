@@ -154,7 +154,6 @@ public class HandleAClient extends JFrame implements Runnable {
 						roomList.add(new Room(roomnr, size));
 				}
 			}
-			System.out.println(roomList.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -166,6 +165,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		ResultSet rs = db.query(
 				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + 
 				" AND mr.roomnr=" + roomID);
+		boolean available = true;
 		while (rs.next()) {
 			try {
 				Time start = Time.parseTime(rs.getString("starttime"));
@@ -177,12 +177,17 @@ public class HandleAClient extends JFrame implements Runnable {
 				if ((a.getStart().compareTo(start) < 0) && (a.getEnd().compareTo(start) < 0)) 
 					return true;
 				if (a.getStart().compareTo(end) > 0)
-					return true;			
+					return true;
+				if (rs.getInt("roomnr") == roomID) {
+					available = false;
+				}
 			} catch (TimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		if (available)
+			return true;
 		return false;
 	}
 	
