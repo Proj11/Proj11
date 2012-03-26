@@ -384,7 +384,7 @@ public class Appointment {
 	}
 	
 	//TODO: test this!
-	public String appointmentListToXML(ArrayList<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
+	public static String appointmentListToXML(ArrayList<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		
@@ -428,13 +428,13 @@ public class Appointment {
 			appointment.appendChild(id);
 			id.appendChild(doc.createTextNode(a.getId() + ""));
 
-			if (getLocation() != null) {
+			if (a.getLocation() != null) {
 				Element location = doc.createElement("location");
 				appointment.appendChild(location);
 				location.appendChild(doc.createTextNode(a.getLocation()));
 			}
 
-			if (getRoomNumber() != 0) {
+			if (a.getRoomNumber() != 0) {
 				Element roomnr = doc.createElement("roomnr");
 				appointment.appendChild(roomnr);
 				roomnr.appendChild(doc.createTextNode(a.getRoomNumber()+""));
@@ -442,7 +442,7 @@ public class Appointment {
 
 			Element participants = doc.createElement("participants");
 			appointment.appendChild(participants);
-			for (Participant p : this.participants) {
+			for (Participant p : a.participants) {
 				Element participant = doc.createElement("participant");
 				participants.appendChild(participant);
 				Element username = doc.createElement("username");
@@ -453,21 +453,21 @@ public class Appointment {
 				name.appendChild(doc.createTextNode(p.getEmployee().getName()));
 				Element state = doc.createElement("state");
 				participant.appendChild(state);
-				state.appendChild(doc.createTextNode(stateToString(p.getState())));
+				state.appendChild(doc.createTextNode(a.stateToString(p.getState())));
 			}
 
 			Element leader = doc.createElement("leader");
 			appointment.appendChild(leader);
 			Element username = doc.createElement("lusername");
 			leader.appendChild(username);
-			username.appendChild(doc.createTextNode(getLeader().getUsername()));
+			username.appendChild(doc.createTextNode(a.getLeader().getUsername()));
 			Element name = doc.createElement("lname");
 			leader.appendChild(name);
-			name.appendChild(doc.createTextNode(getLeader().getName()));
+			name.appendChild(doc.createTextNode(a.getLeader().getName()));
 
 			Element description = doc.createElement("description");
 			appointment.appendChild(description);
-			description.appendChild(doc.createTextNode(getDescription()));
+			description.appendChild(doc.createTextNode(a.getDescription()));
 		}
 
 		DOMSource source = new DOMSource(doc);

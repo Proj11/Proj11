@@ -112,7 +112,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			sendMessage(parseRoomsToXML(roomList));
 			break;
 		case Constants.GET_APPOINTMENTS:
-			textArea.append("\n GetAAPPOINTMENTS mottatt!!");
+			textArea.append("\n GetAPPOINTMENTS mottatt!!");
 			ArrayList<Appointment> appList = Appointment.xmlToAppoinmentList(message.substring(1));
 			textArea.append("\n xml parsed!");
 			sendMessage(parseAppointmentsToXML(appList));
@@ -154,6 +154,7 @@ public class HandleAClient extends JFrame implements Runnable {
 						roomList.add(new Room(roomnr, size));
 				}
 			}
+			System.out.println(roomList.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -253,7 +254,6 @@ public class HandleAClient extends JFrame implements Runnable {
 			int appointmentID = Integer.parseInt(stringAppointmentID);
 			appointments.add(getAppointmentFromDB(appointmentID));
 		}
-		//TODO: Sende dette til klienten.
 		sendMessage(parseAppointmentsToXML(appointments));
 		return appointments;
 	}
@@ -267,7 +267,7 @@ public class HandleAClient extends JFrame implements Runnable {
 	
 	//TODO: Lage allAppointmentsToXML(appList)
 	public String parseAppointmentsToXML(ArrayList<Appointment> appList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		return null;
+		return Appointment.appointmentListToXML(appList);
 	}
 	
 	public static Employee logon(String logonString) throws Exception{

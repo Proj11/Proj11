@@ -163,10 +163,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			toolPanel.getAppPanel().removeSelectedParticipant();
 		} else if (e.getSource()==toolPanel.getAppPanel().getRoomsButton()) {
 			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
-			Room r = new PopupRooms(client, a.getParticipants().size(), a);
-			if (r!=null) {
-				toolPanel.getAppPanel().setRoom(r);
-			}
+			PopupRooms r = new PopupRooms(client, a.getParticipants().size(), a);
+			toolPanel.getAppPanel().setRoom(r.getRoom());
 		} else if(e.getSource()==toolPanel.getAppPanel().getAutoReserveButton()){
 			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
 			System.out.println(a.getDate() + "\n" + a.getStart() + "\n" + a.getEnd());
