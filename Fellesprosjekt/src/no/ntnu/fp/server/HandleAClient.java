@@ -103,19 +103,18 @@ public class HandleAClient extends JFrame implements Runnable {
 			sendMessage(parseEmployeesToXML(empList));
 			break;
 		case Constants.GET_ROOMS:
-			textArea.append("\n GetROOMS mottatt!!");
+			textArea.append("GetROOMS mottatt!!\n");
 			Appointment a = Appointment.xmlToAppointment(message.substring(1));
-			textArea.append("\n xml parsed!");
+			textArea.append("xml parsed!\n");
 			ArrayList<Room> roomList = getAvailableRooms(a);
-			textArea.append("\n Appointment: " +message);
-			textArea.append("\n Antall rom: " +roomList.size());
+			textArea.append("Appointment: " +message+"\n");
+			textArea.append("Antall rom: " +roomList.size()+"\n");
 			sendMessage(parseRoomsToXML(roomList));
 			break;
 		case Constants.GET_APPOINTMENTS:
-			textArea.append("\n GetAPPOINTMENTS mottatt!!");
-			System.out.println("HandleAClient linje 117");
+			textArea.append("GetAPPOINTMENTS mottatt!!\n");
 			ArrayList<Appointment> appList = getAppointmentsFromDB();
-			textArea.append("\n xml parsed!");
+			textArea.append("xml parsed!\n");
 			sendMessage(parseAppointmentsToXML(appList));
 		case Constants.CLOSE_CONNECTION:
 			in.close();
@@ -246,7 +245,6 @@ public class HandleAClient extends JFrame implements Runnable {
 			participants.add(new Participant(new Employee(emName, username), state));
 		}
 		app.setParticipants(participants);
-		sendMessage(app.toXML());
 		return app;
 	}
 	
@@ -266,7 +264,6 @@ public class HandleAClient extends JFrame implements Runnable {
 				appointments.add(getAppointmentFromDB(appointmentID));
 			}
 			sendMessage(parseAppointmentsToXML(appointments));
-			System.out.println("HandleAClient line 269");
 			return appointments;
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
@@ -331,6 +328,7 @@ public class HandleAClient extends JFrame implements Runnable {
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
+					//TODO: Ikke sendMessage noe annet sted enn i doSomething
 					sendMessage(a.toXML());
 			return true;
 		}

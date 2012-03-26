@@ -49,7 +49,9 @@ public class Client {
 	}
 	
 	public synchronized String receive() throws IOException, ClassNotFoundException {
-		return (String) in.readObject();
+		String s=(String) in.readObject();
+		System.out.println("Client recieve(): "+s);
+		return s;
 	}
 	
 	public Employee logOn(String username, String password) throws IOException, ClassNotFoundException{
@@ -73,7 +75,7 @@ public class Client {
 		//TODO: code to send message to participants
 	}
 	
-	public List<Appointment> getAppointmenList(String username) throws ParserConfigurationException, SAXException, TimeException{
+	public List<Appointment> getAppointmentList(String username) throws ParserConfigurationException, SAXException, TimeException{
 		String appointmentsAsXML;
 		try{
 			sendMessage(Constants.GET_APPOINTMENTS + username);
@@ -82,7 +84,7 @@ public class Client {
 			ArrayList<Appointment> appList = new ArrayList<Appointment>();
 			for (Appointment a : allApps) {
 				for (Participant p : a.getParticipants()) {
-					if(p.getEmployee().getUsername().equals(username)){
+					if(p.getEmployee().getUsername().equals(username) || a.getLeader().getUsername().equals(username)){
 						appList.add(a);
 					}
 				}

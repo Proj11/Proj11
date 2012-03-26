@@ -112,7 +112,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getAutoReserveButton().addActionListener(this);
 		
 		try {
-			calendarPanel.getCalendar().addAllAppointments(client.getAppointmenList(USER.getUsername()));
+			System.out.println("Dette funker");
+			List<Appointment> q =client.getAppointmentList(USER.getUsername());
+			calendarPanel.getCalendar().addAllAppointments(q);
+			System.out.println("Funker dette?");
+			calendarPanel.revalidate();
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

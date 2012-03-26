@@ -388,47 +388,43 @@ public class Appointment {
 	public static String appointmentListToXML(ArrayList<Appointment> appointmentList){
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
-		System.out.println("0");
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
 			Element rootElement = doc.createElement("appointments");
 			doc.appendChild(rootElement);
-			System.out.println("1");
-			int q=0;
+			
 			for (Appointment a : appointmentList) {
-				System.out.println("1:"+(q++));
 				Element appointment = doc.createElement("appointment");
 				rootElement.appendChild(appointment);
-				System.out.println("1:"+(q++));
+				
 				Element date = doc.createElement("date");
 				appointment.appendChild(date);
-				System.out.println("1:"+(q++));
+				
 				Element month = doc.createElement("month");
 				date.appendChild(month);
 				month.appendChild(doc.createTextNode(a.getDate().getMonth() + ""));
-				System.out.println("1:"+(q++));
+				
 				Element year = doc.createElement("year");
 				date.appendChild(year);
 				year.appendChild(doc.createTextNode(a.getDate().getYear() + ""));
-				System.out.println("1:"+(q++));
+				
 				Element dayInMonth = doc.createElement("dayInMonth");
 				date.appendChild(dayInMonth);
 				dayInMonth.appendChild(doc.createTextNode(a.getDate().getDate()+ ""));
-				System.out.println("1:"+(q++));
 				
 				Element startTime = doc.createElement("starttime");
 				appointment.appendChild(startTime);
 				startTime.appendChild(doc.createTextNode(a.getStart().toString()));
-				System.out.println("1:"+(q++));
+				
 				Element endTime = doc.createElement("endtime");
 				appointment.appendChild(endTime);
 				endTime.appendChild(doc.createTextNode(a.getEnd().toString()));
-				System.out.println("1:"+(q++));
+				
 				Element subject = doc.createElement("subject");
 				appointment.appendChild(subject);
 				subject.appendChild(doc.createTextNode(a.getSubject()));
-				System.out.println("1:"+(q++));
+				
 				Element id = doc.createElement("id");
 				appointment.appendChild(id);
 				id.appendChild(doc.createTextNode(a.getId() + ""));
@@ -442,7 +438,7 @@ public class Appointment {
 					appointment.appendChild(roomnr);
 					roomnr.appendChild(doc.createTextNode(a.getRoomNumber()+""));
 				}
-				System.out.println("1:3");
+				
 				Element participants = doc.createElement("participants");
 				appointment.appendChild(participants);
 				for (Participant p : a.participants) {
@@ -458,7 +454,7 @@ public class Appointment {
 					participant.appendChild(state);
 					state.appendChild(doc.createTextNode(a.stateToString(p.getState())));
 				}
-				System.out.println("1:4");
+				
 				Element leader = doc.createElement("leader");
 				appointment.appendChild(leader);
 				Element username = doc.createElement("lusername");
@@ -471,16 +467,16 @@ public class Appointment {
 				Element description = doc.createElement("description");
 				appointment.appendChild(description);
 				description.appendChild(doc.createTextNode(a.getDescription()));
-				System.out.println("1:5");
+				
 			}
-			System.out.println("2");
+			
 			DOMSource source = new DOMSource(doc);
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer optimusPrime = transformerFactory.newTransformer();
 			StringWriter stringWriter = new StringWriter();
 			Result result = new StreamResult(stringWriter);
 			optimusPrime.transform(source, result);
-			System.out.println("Appointment line 481");
+			
 			return stringWriter.getBuffer().toString();
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
