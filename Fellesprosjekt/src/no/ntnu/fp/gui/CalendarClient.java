@@ -9,6 +9,7 @@ import no.ntnu.fp.gui.calendar.CalendarPanel;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
+import no.ntnu.fp.timeexception.TimeException;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -42,6 +43,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.xml.sax.SAXException;
 
 public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener, MouseListener, WindowListener {
 	
@@ -107,6 +110,19 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getRemoveParticipantButton().addActionListener(this);
 		toolPanel.getAppPanel().getRoomsButton().addActionListener(this);
 		toolPanel.getAppPanel().getAutoReserveButton().addActionListener(this);
+		
+		try {
+			calendarPanel.getCalendar().addAllAppointments(client.getAppointmenList(USER.getUsername()));
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -292,7 +308,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 		c.gridx=1;
 		c.gridy=0;
 		usernameText=new JTextField(10);
-		usernameText.setText("brukernavn");
+		usernameText.setText("name");
 		panel.add(usernameText, c);
 		c.gridx=0;
 		c.gridy=1;

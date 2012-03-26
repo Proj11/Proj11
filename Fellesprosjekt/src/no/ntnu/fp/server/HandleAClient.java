@@ -113,7 +113,8 @@ public class HandleAClient extends JFrame implements Runnable {
 			break;
 		case Constants.GET_APPOINTMENTS:
 			textArea.append("\n GetAPPOINTMENTS mottatt!!");
-			ArrayList<Appointment> appList = Appointment.xmlToAppoinmentList(message.substring(1));
+			System.out.println("HandleAClient linje 117");
+			ArrayList<Appointment> appList = getAppointmentsFromDB();
 			textArea.append("\n xml parsed!");
 			sendMessage(parseAppointmentsToXML(appList));
 		case Constants.CLOSE_CONNECTION:
@@ -207,11 +208,12 @@ public class HandleAClient extends JFrame implements Runnable {
 	public Appointment getAppointmentFromDB(int appointmentID) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, TimeException, ParserConfigurationException, TransformerException{
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM Appointment JOIN Employee ON (Appointment.createdBy = Employee.username) WHERE appointmentID= '" + appointmentID + "';");
-		String leader="", name="", date="", starttime="", endtime="", subject="", description="", location="", roomnr="";
-		while (rs.next()){
+		String leader="", name="", starttime="00:00", endtime="00:00", subject="", description="", location="", roomnr="0";
+		Date date = null;
+		if (rs.next()){
 			name = rs.getString("name");
 			leader = rs.getString("username");
-			date = rs.getString("date");
+			date = new Date(rs.getLong("date"));
 			starttime = rs.getString("starttime");
 			endtime = rs.getString("endtime");
 			subject = rs.getString("subject");
@@ -221,14 +223,16 @@ public class HandleAClient extends JFrame implements Runnable {
 			else roomnr = rs.getString("roomnr");
 		}
 		Appointment app = new Appointment(new Employee(name, leader));
-		app.setDate(new Date(Long.parseLong(date)));
+		app.setDate(date);
 		app.setId(appointmentID);
 		app.setStart(Time.parseTime(starttime));
 		app.setEnd(Time.parseTime(endtime));
 		app.setSubject(subject);
 		app.setDescription(description);
 		app.setRoomNumber(Integer.parseInt(roomnr));
-		app.setLocation(location);
+		if (location != null)
+			app.setLocation(location);
+		else app.setLocation(location);
 		ArrayList<Participant> participants = new ArrayList<Participant>();
 		participants.add(new Participant(new Employee(name, leader), State.ACCEPTED));
 		
@@ -246,21 +250,48 @@ public class HandleAClient extends JFrame implements Runnable {
 		return app;
 	}
 	
-	public ArrayList<Appointment> getAppointmentsFromDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, TimeException, ParserConfigurationException, TransformerException{
-		Database db = Database.getDatabase();
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-		ArrayList<String> appointmentSize = new ArrayList<String>();
-		ResultSet rs = db.query("SELECT * FROM Appointment;");
-		while (rs.next()){
-			String appointment = rs.getString("appointmentID");
-			appointmentSize.add(appointment);
+	public ArrayList<Appointment> getAppointmentsFromDB(){
+		Database db;
+		try {
+			db = Database.getDatabase();
+			ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+			ArrayList<String> appointmentSize = new ArrayList<String>();
+			ResultSet rs = db.query("SELECT * FROM Appointment;");
+			while (rs.next()){
+				String appointment = rs.getString("appointmentID");
+				appointmentSize.add(appointment);
+			}
+			for (String stringAppointmentID : appointmentSize) {
+				int appointmentID = Integer.parseInt(stringAppointmentID);
+				appointments.add(getAppointmentFromDB(appointmentID));
+			}
+			sendMessage(parseAppointmentsToXML(appointments));
+			System.out.println("HandleAClient line 269");
+			return appointments;
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		for (String stringAppointmentID : appointmentSize) {
-			int appointmentID = Integer.parseInt(stringAppointmentID);
-			appointments.add(getAppointmentFromDB(appointmentID));
-		}
-		sendMessage(parseAppointmentsToXML(appointments));
-		return appointments;
+		return null;
+		
 	}
 	
 	public String parseEmployeesToXML(ArrayList<Employee> empList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
@@ -315,7 +346,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			Database db = Database.getDatabase();
 			db.insert("INSERT INTO Appointment (appointmentID, date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
 			+ appID + "', '"+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
-					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
+					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getUsername() + "');");
 					for (Participant p : a.getParticipants()){
 						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
 						"('" + p.getEmployee().getUsername() + "', '" + appID + "', 'PENDING');");
