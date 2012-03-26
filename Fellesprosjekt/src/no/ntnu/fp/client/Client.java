@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,8 +13,6 @@ import javax.xml.transform.TransformerException;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
-import no.ntnu.fp.net.co.SendTimer;
-import no.ntnu.fp.server.CalendarServer;
 import no.ntnu.fp.server.Constants;
 
 public class Client {

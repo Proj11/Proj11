@@ -104,6 +104,8 @@ public class HandleAClient extends JFrame implements Runnable {
 		case Constants.GET_ROOMS:
 			Appointment a = Appointment.xmlToAppointment(message.substring(1));
 			ArrayList<Room> roomList = getAvailableRooms(a);
+			textArea.append("\n Appointment: " +message);
+			textArea.append("\n Antall rom: " +roomList.size());
 			sendMessage(parseRoomsToXML(roomList));
 			break;
 		case Constants.CLOSE_CONNECTION:

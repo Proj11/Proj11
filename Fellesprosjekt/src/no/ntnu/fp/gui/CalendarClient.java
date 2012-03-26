@@ -6,6 +6,7 @@ import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
 import no.ntnu.fp.gui.appointment.PopupRooms;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
+import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
 
@@ -166,6 +167,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				toolPanel.getAppPanel().setRoom(r);
 			}
 		} else if(e.getSource()==toolPanel.getAppPanel().getAutoReserveButton()){
+			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
+			System.out.println(a.getDate() + "\n" + a.getStart() + "\n" + a.getEnd());
 			toolPanel.getAppPanel().setRoom(autoReserve(client, 0));
 		}
 	}
