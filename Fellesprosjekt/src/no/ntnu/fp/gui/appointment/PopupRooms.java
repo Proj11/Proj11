@@ -12,7 +12,7 @@ public class PopupRooms {
 	
 private Room room;
 	
-	public PopupRooms(Client client, int size){
+	public PopupRooms(Client client, int size, Appointment a){
 		
 		List<Room> rooms = client.getRooms();
 		Room[] roomsArray = new Room[rooms.size()];
