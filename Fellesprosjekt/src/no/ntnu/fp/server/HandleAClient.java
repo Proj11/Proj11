@@ -111,6 +111,11 @@ public class HandleAClient extends JFrame implements Runnable {
 			textArea.append("\n Antall rom: " +roomList.size());
 			sendMessage(parseRoomsToXML(roomList));
 			break;
+		case Constants.GET_APPOINTMENTS:
+			textArea.append("\n GetAAPPOINTMENTS mottatt!!");
+			ArrayList<Appointment> appList = Appointment.xmlToAppoinmentList(message.substring(1));
+			textArea.append("\n xml parsed!");
+			sendMessage(parseAppointmentsToXML(appList));
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();
@@ -413,7 +418,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		try {
 			Database db = Database.getDatabase();
 			ArrayList<String> messagesSize = new ArrayList<String>();
-			ResultSet rs = db.query("SELECT * Message;");
+			ResultSet rs = db.query("SELECT * FROM Message;");
 			while (rs.next()){
 				String messageID = rs.getString("messageID");
 				messagesSize.add(messageID);
@@ -422,7 +427,6 @@ public class HandleAClient extends JFrame implements Runnable {
 				int messageID = Integer.parseInt(stringMessageID);
 				messages.add(getMessageFromDB(messageID));
 			}
-			//TODO: Sende dette til klienten.
 			sendMessage(parseMessagesToXML(messages));
 			return messages;
 		}
@@ -432,8 +436,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}
 	
-	//TODO: Lage allMessagesToXML
 	public String parseMessagesToXML(ArrayList<Message> msgList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
-		return null;
+		return Message.allMessagesToXML(msgList);
 	}
 }

@@ -311,7 +311,7 @@ public class Appointment {
 	}
 	
 	//TODO: xmlToAppointmentList
-	public static List<Appointment> XMLToAppoinmentList(String xml) throws ParserConfigurationException, SAXException, IOException, TimeException{
+	public static ArrayList<Appointment> xmlToAppoinmentList(String xml) throws ParserConfigurationException, SAXException, IOException, TimeException{
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		InputSource is = new InputSource(new StringReader(xml));
@@ -321,7 +321,7 @@ public class Appointment {
 		String loc="", roomnr="13";
 		
 		Appointment appointment = new Appointment();
-		List<Appointment> appointmentList = new ArrayList<Appointment>();
+		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 		NodeList nodeLst = doc.getElementsByTagName("appointment");
 		
 		for (int i = 0; i < nodeLst.getLength(); i++) {
@@ -384,7 +384,7 @@ public class Appointment {
 	}
 	
 	//TODO: test this!
-	public String AppointmentListToXML(List<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
+	public String appointmentListToXML(ArrayList<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		
