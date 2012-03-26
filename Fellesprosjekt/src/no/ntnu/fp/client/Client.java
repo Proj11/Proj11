@@ -86,10 +86,10 @@ public class Client {
 	}
 	
 	//rooms --> xml bitches
-	public List<Room> getRooms() {
+	public List<Room> getRooms(Appointment a) throws ParserConfigurationException, TransformerException {
 		String roomsAsXML;
 		try {
-			sendMessage(Constants.GET_ROOMS+"");
+			sendMessage(Constants.GET_ROOMS + a.toXML());
 			roomsAsXML = receive();
 			return Room.xmlToRoomList(roomsAsXML);
 		} catch (ClassNotFoundException e) {

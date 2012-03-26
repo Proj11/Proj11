@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import no.ntnu.fp.client.Client;
+import no.ntnu.fp.gui.appointment.AppointmentPanel;
 import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
 import no.ntnu.fp.gui.appointment.PopupRooms;
@@ -38,6 +39,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class CalendarClient extends JFrame implements ComponentListener, ActionListener, PropertyChangeListener, MouseListener, WindowListener {
 	
@@ -228,11 +231,20 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	}
 	
 	private Room autoReserve(Client client, int size){
-		List<Room> rooms = client.getRooms();
-		for(int i=0; i<rooms.size(); i++){
-			if(size <= rooms.get(i).getSize()){
-				return rooms.get(i);
+		List<Room> rooms;
+		try {
+			rooms = client.getRooms(toolPanel.getAppPanel().getAppointmentModel());
+			for(int i=0; i<rooms.size(); i++){
+				if(size <= rooms.get(i).getSize()){
+					return rooms.get(i);
+				}
 			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 		

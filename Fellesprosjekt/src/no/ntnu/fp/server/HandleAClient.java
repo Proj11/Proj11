@@ -102,7 +102,8 @@ public class HandleAClient extends JFrame implements Runnable {
 			sendMessage(parseEmployeesToXML(empList));
 			break;
 		case Constants.GET_ROOMS:
-			ArrayList<Room> roomList = getRoomsFromDB("");
+			Appointment a = Appointment.xmlToAppointment(message.substring(1));
+			ArrayList<Room> roomList = getAvailableRooms(a);
 			sendMessage(parseRoomsToXML(roomList));
 			break;
 		case Constants.CLOSE_CONNECTION:
@@ -133,7 +134,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		
 	}
 	
-	public ArrayList<Room> getRoomsFromDB(String query) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, ParserConfigurationException, TransformerException{
+	private ArrayList<Room> getAvailableRooms(Appointment a) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException, ParserConfigurationException, TransformerException{
 		ArrayList<Room> roomList = new ArrayList<Room>();
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
@@ -141,7 +142,10 @@ public class HandleAClient extends JFrame implements Runnable {
 			int roomnr, size;
 			roomnr = Integer.parseInt(rs.getString("roomnr"));
 			size = Integer.parseInt(rs.getString("roomsize"));
-			roomList.add(new Room(roomnr, size));
+			if (size >= a.getParticipants().size()) {
+				if (isRoomAvailable(roomnr, a))
+					roomList.add(new Room(roomnr, size));
+			}
 		}
 		return roomList;
 	}
@@ -149,7 +153,8 @@ public class HandleAClient extends JFrame implements Runnable {
 	private boolean isRoomAvailable(int roomID, Appointment a) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query(
-				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + " AND mr.roomnr=" + roomID + " AND DATE=" + a.getDate());
+				"SELECT * FROM Appointment AS a JOIN MeetingRoom AS mr on a.roomnr=" + roomID + 
+				" AND mr.roomnr=" + roomID + " AND DATE=" + a.getDate());
 		while (rs.next()) {
 			try {
 				Time start = Time.parseTime(rs.getString("starttime"));
