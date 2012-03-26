@@ -216,10 +216,8 @@ public class Appointment {
 		Transformer transformer2 = transformerFactory2.newTransformer();
 		// write the content into xml file for testing
 		DOMSource source = new DOMSource(doc);
-		StreamResult toFile = new StreamResult(new File("file.xml"));
-		System.out.println("Appointment line 220");
-		System.out.println(source.getNode()); //TODO SOMETHING IS WRONG WITH SOURCE MARTIN THINKS, BUT HE MAY BE WRONG, ASK SIGURD
-		transformer2.transform(source, toFile);
+//		StreamResult toFile = new StreamResult(new File("file.xml"));
+//		transformer2.transform(source, toFile);
 
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -317,6 +315,9 @@ public class Appointment {
 		}
 		NodeList nList = element.getElementsByTagName(sTag).item(0).getChildNodes();
 		Node nValue = (Node) nList.item(0);
+		if (nValue==null) {
+			return null;
+		}
 		return nValue.getNodeValue();
 	}
 
@@ -339,6 +340,7 @@ public class Appointment {
 		String test = a.toXML();
 		System.out.println(test);
 		Appointment app = xmlToAppointment(test);
+		System.out.println(app.toXML());
 	}
 	
 	public Appointment getCopy() {
