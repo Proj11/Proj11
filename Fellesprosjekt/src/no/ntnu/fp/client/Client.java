@@ -68,6 +68,21 @@ public class Client {
 		//TODO: code to send message to participants
 	}
 	
+	public List<Appointment> getAppointmenList(String username){
+		String appointmentsAsXML;
+		try{
+			sendMessage(Constants.GET_APPOINTMENTS + username);
+			appointmentsAsXML = receive();
+			return Appointment.xmlToAppointmentList(appointmentsAsXML);
+		} catch (ClassNotFoundException e){
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	public List<Employee> getEmployees() {
 		String employeesAsXML;
 		try {

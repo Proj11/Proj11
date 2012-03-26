@@ -1,6 +1,7 @@
 package no.ntnu.fp.model.appointment;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -22,10 +23,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import no.ntnu.fp.model.appointment.Participant.State;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.model.time.Time;
+import no.ntnu.fp.timeexception.TimeException;
 
 public class Appointment {
 	private Time start;
@@ -197,6 +201,10 @@ public class Appointment {
 			Element name = doc.createElement("name");
 			participant.appendChild(name);
 			name.appendChild(doc.createTextNode(p.getEmployee().getName()));
+			Element state = doc.createElement("state");
+			participant.appendChild(state);
+			state.appendChild(doc.createTextNode(stateToString(p.getState())));
+
 		}
 
 		Element leader = doc.createElement("leader");
@@ -235,8 +243,8 @@ public class Appointment {
 			InputSource is = new InputSource(new StringReader(xml));
 			Document doc = db.parse(is);
 			doc.getDocumentElement().normalize();
-
-			String loc="", roomnr="13";
+			//TODO: delete?
+			String loc="", roomnr="0";
 
 			Appointment appointment = new Appointment();
 			List<Participant> participants = new ArrayList<Participant>();
@@ -279,7 +287,8 @@ public class Appointment {
 							Element pElement = (Element) pNode;
 							String username = getTagValues("username", pElement);
 							String name = getTagValues("name", pElement);
-							participants.add(new Participant(new Employee(name, username), State.PENDING));
+							String state = getTagValues("state",pElement);
+							participants.add(new Participant(new Employee(name, username), getState(state)));
 						}
 					}
 					String lusername = getTagValues("lusername", element);
@@ -299,6 +308,175 @@ public class Appointment {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	//TODO: xmlToAppointmentList
+	public static List<Appointment> XMLToAppoinmentList(String xml) throws ParserConfigurationException, SAXException, IOException, TimeException{
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		InputSource is = new InputSource(new StringReader(xml));
+		Document doc = db.parse(is);
+		doc.getDocumentElement().normalize();
+
+		String loc="", roomnr="13";
+		
+		Appointment appointment = new Appointment();
+		List<Appointment> appointmentList = new ArrayList<Appointment>();
+		NodeList nodeLst = doc.getElementsByTagName("appointment");
+		
+		for (int i = 0; i < nodeLst.getLength(); i++) {
+			List<Participant> participants = new ArrayList<Participant>();
+			Node nNode = nodeLst.item(i);
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element element = (Element) nNode;
+				int month = Integer.parseInt(getTagValues("month", element));
+				int year = Integer.parseInt(getTagValues("year", element));
+				int dayInMonth = Integer.parseInt(getTagValues("dayInMonth", element));
+				appointment.setDate(new Date(year, month, dayInMonth));
+				String starttime = getTagValues("starttime", element);
+				appointment.setStart(Time.parseTime(starttime));
+				String endtime = getTagValues("endtime", element);
+				appointment.setEnd(Time.parseTime(endtime));
+				String subject = getTagValues("subject", element);
+				appointment.setSubject(subject);
+				int id = Integer.parseInt(getTagValues("id", element));
+				appointment.setId(id);
+				
+				//Element has no attributes, which is why element.hasAttribute("..."); never works
+				if (getTagValues("location", element)!=null) {
+					loc = getTagValues("location", element);
+					appointment.setLocation(loc);
+				}
+				
+				if (getTagValues("roomnr", element)!=null) {
+					roomnr = getTagValues("roomnr", element);
+					appointment.setRoomNumber((Integer.parseInt(roomnr)));
+				}
+				
+				String description = getTagValues("description", element);
+				appointment.setDescription(description);
+
+				NodeList pList = doc.getElementsByTagName("participant");
+				for (int j = 0; j < pList.getLength(); j++) {
+					Node pNode = pList.item(j);
+					if (pNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element pElement = (Element) pNode;
+						String username = getTagValues("username", pElement);
+						String name = getTagValues("name", pElement);
+						String state = getTagValues("state", pElement);
+						participants.add(new Participant(new Employee(name, username), getState(state)));
+					}
+				}
+				String lusername = getTagValues("lusername", element);
+				String lname = getTagValues("lname", element);
+				appointment.setLeader(new Employee(lname, lusername));
+
+				//Set leader as accepted
+				for (Participant part : participants) {
+					if (part.getEmployee().getUsername().equals(lusername))
+						part.setState(State.ACCEPTED);
+				}
+				appointment.setParticipants(participants);
+				appointmentList.add(appointment);
+			}
+		}
+		return appointmentList;
+	}
+	
+	//TODO: test this!
+	public String AppointmentListToXML(List<Appointment> appointmentList) throws ParserConfigurationException, TransformerException{
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		
+		Document doc = docBuilder.newDocument();
+		Element rootElement = doc.createElement("appointments");
+		doc.appendChild(rootElement);
+
+		for (Appointment a : appointmentList) {
+			Element appointment = doc.createElement("appointments");
+			doc.appendChild(appointment);
+			
+			Element date = doc.createElement("date");
+			appointment.appendChild(date);
+
+			Element month = doc.createElement("month");
+			date.appendChild(month);
+			month.appendChild(doc.createTextNode(a.getDate().getMonth() + ""));
+
+			Element year = doc.createElement("year");
+			date.appendChild(year);
+			year.appendChild(doc.createTextNode(a.getDate().getYear() + ""));
+
+			Element dayInMonth = doc.createElement("dayInMonth");
+			date.appendChild(dayInMonth);
+			dayInMonth.appendChild(doc.createTextNode(a.getDate().getDate()+ ""));
+
+
+			Element startTime = doc.createElement("starttime");
+			appointment.appendChild(startTime);
+			startTime.appendChild(doc.createTextNode(a.getStart().toString()));
+
+			Element endTime = doc.createElement("endtime");
+			appointment.appendChild(endTime);
+			endTime.appendChild(doc.createTextNode(a.getEnd().toString()));
+
+			Element subject = doc.createElement("subject");
+			appointment.appendChild(subject);
+			subject.appendChild(doc.createTextNode(a.getSubject()));
+			
+			Element id = doc.createElement("id");
+			appointment.appendChild(id);
+			id.appendChild(doc.createTextNode(a.getId() + ""));
+
+			if (getLocation() != null) {
+				Element location = doc.createElement("location");
+				appointment.appendChild(location);
+				location.appendChild(doc.createTextNode(a.getLocation()));
+			}
+
+			if (getRoomNumber() != 0) {
+				Element roomnr = doc.createElement("roomnr");
+				appointment.appendChild(roomnr);
+				roomnr.appendChild(doc.createTextNode(a.getRoomNumber()+""));
+			}
+
+			Element participants = doc.createElement("participants");
+			appointment.appendChild(participants);
+			for (Participant p : this.participants) {
+				Element participant = doc.createElement("participant");
+				participants.appendChild(participant);
+				Element username = doc.createElement("username");
+				participant.appendChild(username);
+				username.appendChild(doc.createTextNode(p.getEmployee().getUsername()));	
+				Element name = doc.createElement("name");
+				participant.appendChild(name);
+				name.appendChild(doc.createTextNode(p.getEmployee().getName()));
+				Element state = doc.createElement("state");
+				participant.appendChild(state);
+				state.appendChild(doc.createTextNode(stateToString(p.getState())));
+			}
+
+			Element leader = doc.createElement("leader");
+			appointment.appendChild(leader);
+			Element username = doc.createElement("lusername");
+			leader.appendChild(username);
+			username.appendChild(doc.createTextNode(getLeader().getUsername()));
+			Element name = doc.createElement("lname");
+			leader.appendChild(name);
+			name.appendChild(doc.createTextNode(getLeader().getName()));
+
+			Element description = doc.createElement("description");
+			appointment.appendChild(description);
+			description.appendChild(doc.createTextNode(getDescription()));
+		}
+
+		DOMSource source = new DOMSource(doc);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer optimusPrime = transformerFactory.newTransformer();
+		StringWriter stringWriter = new StringWriter();
+		Result result = new StreamResult(stringWriter);
+		optimusPrime.transform(source, result);
+		return stringWriter.getBuffer().toString();
 	}
 
 	public int getId() {
@@ -360,5 +538,26 @@ public class Appointment {
 		}
 		a.participants=list;
 		return a;
+	}
+	
+	public static State getState(String state){
+		if (state.equals("accepted")){
+			return State.ACCEPTED;
+		} else if(state.equals("denied")){
+			return State.DENIED;
+		}else{
+			return State.PENDING;
+		}
+	
+	}
+	
+	public String stateToString(State e){
+		switch(e){
+		case ACCEPTED:
+			return "accepted";
+		case DENIED:
+			return "denied";
+		default: return "pending";
+		}
 	}
 }
