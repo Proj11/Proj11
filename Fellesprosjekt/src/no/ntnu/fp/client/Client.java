@@ -10,10 +10,13 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.xml.sax.SAXException;
+
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.server.Constants;
+import no.ntnu.fp.timeexception.TimeException;
 
 public class Client {
 	
@@ -68,17 +71,18 @@ public class Client {
 		//TODO: code to send message to participants
 	}
 	
-	public List<Appointment> getAppointmenList(String username){
+	public List<Appointment> getAppointmenList(String username) throws ParserConfigurationException, SAXException, TimeException{
 		String appointmentsAsXML;
 		try{
 			sendMessage(Constants.GET_APPOINTMENTS + username);
 			appointmentsAsXML = receive();
-			return Appointment.xmlToAppointmentList(appointmentsAsXML);
+			return Appointment.XMLToAppoinmentList(appointmentsAsXML);
 		} catch (ClassNotFoundException e){
 			e.printStackTrace();
 		} catch (IOException e){
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	
