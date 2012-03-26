@@ -67,7 +67,7 @@ public class ApplicationToolbar extends JPanel {
 		
 		stateLabel = new JLabel();
 		stateLabel.setIcon(new ImageIcon("res/online.png"));
-		stateLabel.setText("Welcome Hans Hansen");
+		stateLabel.setText("Welcome "+CalendarClient.USER.getName());
 		add(stateLabel);
 		add(Box.createHorizontalStrut(5));
 		changeConnectivityButton=new JButton("Logoff");
