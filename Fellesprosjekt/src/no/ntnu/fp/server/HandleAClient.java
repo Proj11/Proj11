@@ -47,7 +47,9 @@ public class HandleAClient extends JFrame implements Runnable {
 			in = new ObjectInputStream(socket.getInputStream());
 			out = new ObjectOutputStream(socket.getOutputStream());
 			while (true) {
+				textArea.append("Listening for new message");
 				String input = (String) in.readObject();
+				textArea.append(input+"\n");
 				doSomething(input);
 				
 			}
@@ -63,7 +65,6 @@ public class HandleAClient extends JFrame implements Runnable {
 	}
 	
 	private void doSomething(String message) throws Exception {
-		textArea.append(message+"\n");
 		char id = message.charAt(0);
 		switch (id) {
 		case Constants.LOGON:
@@ -263,28 +264,20 @@ public class HandleAClient extends JFrame implements Runnable {
 				int appointmentID = Integer.parseInt(stringAppointmentID);
 				appointments.add(getAppointmentFromDB(appointmentID));
 			}
-			sendMessage(parseAppointmentsToXML(appointments));
 			return appointments;
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TimeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -298,7 +291,6 @@ public class HandleAClient extends JFrame implements Runnable {
 		return Room.allRoomsToXML(roomList);
 	}
 	
-	//TODO: Lage allAppointmentsToXML(appList)
 	public String parseAppointmentsToXML(ArrayList<Appointment> appList) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		return Appointment.appointmentListToXML(appList);
 	}
@@ -307,7 +299,6 @@ public class HandleAClient extends JFrame implements Runnable {
 		String[] logonArray = logonString.split("-");
 		String username = logonArray[0];
 		String password = logonArray[1];
-		Employee emp;
 		Database db = Database.getDatabase();
 		ResultSet rs = db.query("SELECT * FROM Employee WHERE username='" + username + "' AND password='" + password + "'");
 		if (rs.next()){
@@ -328,8 +319,6 @@ public class HandleAClient extends JFrame implements Runnable {
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
-					//TODO: Ikke sendMessage noe annet sted enn i doSomething
-					sendMessage(a.toXML());
 			return true;
 		}
 		catch (Exception exception){
@@ -350,7 +339,6 @@ public class HandleAClient extends JFrame implements Runnable {
 						"('" + p.getEmployee().getUsername() + "', '" + appID + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
-					sendMessage(a.toXML());
 			return true;
 		}
 		catch (Exception exception){
@@ -399,7 +387,6 @@ public class HandleAClient extends JFrame implements Runnable {
 					"values ('" + message.getRecipient().getUsername() +"', '" + message.getAppointmentId() +
 					"', '" + message.getMessageCreatedBy().getName() + "', '" + sentMessage + "');");
 			message.setMessageID(mId);
-			sendMessage(message.toXML());
 			return true;
 		}
 		catch (Exception createMessageException) {
@@ -443,7 +430,6 @@ public class HandleAClient extends JFrame implements Runnable {
 		messageFromDB.setMessageText(messageText);
 		messageFromDB.setAppointmentId(Integer.parseInt(appointmentID));
 		
-		sendMessage(messageFromDB.toXML());
 		return messageFromDB;
 	}
 	
@@ -461,7 +447,6 @@ public class HandleAClient extends JFrame implements Runnable {
 				int messageID = Integer.parseInt(stringMessageID);
 				messages.add(getMessageFromDB(messageID));
 			}
-			sendMessage(parseMessagesToXML(messages));
 			return messages;
 		}
 		catch (Exception getAllMsgsException){

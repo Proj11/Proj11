@@ -67,7 +67,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		setFocusable(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setPreferredSize(size);
-		setExtendedState(MAXIMIZED_BOTH);
 		setLocale(calendarLocale);		
 		
 		//Initialize components
@@ -95,7 +94,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		pack();
 		setVisible(true);
 		
-		//add component listener, this should be the last thing you do because we don't want to call events for no reason
+		//add listeners, this should be the last thing you do because we don't want to call events for no reason
 		addComponentListener(this);
 		toolbar.nextWeek.addActionListener(this);
 		toolbar.previousWeek.addActionListener(this);
@@ -111,20 +110,16 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getRoomsButton().addActionListener(this);
 		toolPanel.getAppPanel().getAutoReserveButton().addActionListener(this);
 		
+		//Get data from the server
 		try {
-			System.out.println("Dette funker");
 			List<Appointment> q =client.getAppointmentList(USER.getUsername());
 			calendarPanel.getCalendar().addAllAppointments(q);
-			System.out.println("Funker dette?");
 			calendarPanel.revalidate();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TimeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

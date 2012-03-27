@@ -1,6 +1,5 @@
 package no.ntnu.fp.model.calendar;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -10,8 +9,6 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import no.ntnu.fp.model.appointment.Appointment;
-import no.ntnu.fp.model.appointment.Participant.State;
-import no.ntnu.fp.model.employee.Employee;
 import no.ntnu.fp.model.time.Time;
 
 public class CalendarTableModel extends AbstractTableModel {
@@ -31,16 +28,6 @@ public class CalendarTableModel extends AbstractTableModel {
 		rowCount=24;
 		columnCount=columnNames.length;
 		appointments=new ArrayList<Appointment>();
-		
-		//TODO REMOVE DUMMY DATA
-		Appointment temp;
-		temp=new Appointment(new Employee("name"));
-		temp.setStart(new Time(7, 0));
-		temp.setEnd(new Time(12, 0));
-		temp.setSubject("Hurr durr");
-		temp.setDate(new Date(2012-1900, 2, 21));
-		temp.setRoomNumber(6);
-		appointments.add(temp);
 	}
 
 	public String getColumnName(int col) {
