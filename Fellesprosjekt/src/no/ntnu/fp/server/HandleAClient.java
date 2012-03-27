@@ -177,17 +177,19 @@ public class HandleAClient extends JFrame implements Runnable {
 				Time start = Time.parseTime(rs.getString("starttime"));
 				Time end = Time.parseTime(rs.getString("endtime"));
 				Date date = new Date(rs.getLong("date"));
-				if (date.getTime() != a.getDate().getTime()) {
-					System.out.println("Dato er forskjellig");
-					continue;
-				}
-				if ((a.getStart().compareTo(start) < 0) && (a.getEnd().compareTo(start) < 0)) 
-					continue;
-				if (a.getStart().compareTo(end) > 0)
-					continue;
-				if (rs.getInt("roomnr") == roomID) {
-					System.out.println(roomID + " er opptatt!");
-					available = false;
+				if (date.getTime() == a.getDate().getTime()) {
+					if ((a.getStart().compareTo(start) >= 0) && (a.getStart().compareTo(end) < 0)) 
+						return false;
+					if (a.getStart().compareTo(start) < 0 && a.getEnd().compareTo(end) > 0)
+						return false;
+					if ((a.getEnd().compareTo(start) >= 0) && (a.getEnd().compareTo(end) < 0)) {
+						return false;
+					}
+					
+					if (rs.getInt("roomnr") == roomID) {
+						System.out.println(roomID + " er opptatt!");
+						available = false;
+					}
 				}
 			} catch (TimeException e) {
 				// TODO Auto-generated catch block
