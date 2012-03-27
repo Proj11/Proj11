@@ -312,7 +312,6 @@ public class Appointment {
 		return null;
 	}
 	
-	//TODO: xmlToAppointmentList
 	public static ArrayList<Appointment> xmlToAppoinmentList(String xml) throws ParserConfigurationException, SAXException, IOException, TimeException{
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -391,7 +390,6 @@ public class Appointment {
 		return appointmentList;
 	}
 	
-	//TODO: test this!
 	public static String appointmentListToXML(ArrayList<Appointment> appointmentList){
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
@@ -486,13 +484,10 @@ public class Appointment {
 			
 			return stringWriter.getBuffer().toString();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

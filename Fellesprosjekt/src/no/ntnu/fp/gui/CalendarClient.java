@@ -149,13 +149,16 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		if (e.getSource()==toolbar.nextWeek) {
 			calendarPanel.getCalendar().setDisplayedWeek(calendarPanel.getCalendar().getDisplayedWeek()+1);
 			updateCalendarPanel();
+			
 		} else if (e.getSource()==toolbar.previousWeek) {
 			calendarPanel.getCalendar().setDisplayedWeek(calendarPanel.getCalendar().getDisplayedWeek()-1);
 			updateCalendarPanel();
+			
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
 			calendarPanel.getCalendar().addAppointment(toolPanel.getAppPanel().getAppointmentModel());
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); 
 			toolPanel.getAppPanel().setAppointmentModel(null);
+			
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
 			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
 				calendarPanel.getCalendar().removeAppointment(calendarPanel.getCalendar().getSelectedCell());		
@@ -166,6 +169,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			calendarPanel.getCalendar().editAppointment(toolPanel.getAppPanel().getAppointmentModel());
 			client.editAppointment(toolPanel.getAppPanel().getAppointmentModel());
 			toolPanel.getAppPanel().setAppointmentModel(null);
+			
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
@@ -174,12 +178,15 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		} else if(e.getSource()==toolPanel.getAppPanel().getAddParticipantButton()) {
 			Employee participant = new PopupEmployees(client).getParticipant();
 			toolPanel.getAppPanel().addParticipant(participant);
+			
 		} else if (e.getSource()==toolPanel.getAppPanel().getRemoveParticipantButton()) {
 			toolPanel.getAppPanel().removeSelectedParticipant();
+			
 		} else if (e.getSource()==toolPanel.getAppPanel().getRoomsButton()) {
 			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
 			PopupRooms r = new PopupRooms(client, a.getParticipants().size(), a);
 			toolPanel.getAppPanel().setRoom(r.getRoom());
+			
 		} else if(e.getSource()==toolPanel.getAppPanel().getAutoReserveButton()){
 			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
 			System.out.println(a.getDate() + "\n" + a.getStart() + "\n" + a.getEnd());
@@ -189,7 +196,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			else
 				toolPanel.getAppPanel().setRoom(r);
 		}else if(e.getSource()==toolPanel.getAppPanel().getAcceptButton()){
-			sendState("accept");
+			sendState("accepted");
 		}else if(e.getSource()==toolPanel.getAppPanel().getDenyButton()){
 			sendState("denied");
 		}
@@ -199,7 +206,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public void sendState(String state){
 		client.sendState(toolPanel.getAppPanel().getAppointmentModel().getId(), state, USER.getUsername());
 		toolPanel.getAppPanel().getAppointmentModel().getParticipant(USER.getUsername()).setState(Appointment.stringToState(state));
-		toolPanel.getAppPanel().getParticipantList().revalidate();
+		toolPanel.getAppPanel().getParticipantList().repaint();
 		//TODO: legg til kode i HandleAClient
 	}
 
@@ -220,6 +227,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			Appointment a = calendarPanel.getCalendar().getSelectedCell().getCopy();
 			if(USER.getUsername().equals(a.getLeader().getUsername())){
 				toolPanel.getAppPanel().setIsLeader(true);
+			}else{
+				toolPanel.getAppPanel().setIsLeader(false);
 			}
 			toolPanel.getAppPanel().setAppointmentModel(a);
 			toolPanel.setSelectedComponent(toolPanel.getAppPanel());

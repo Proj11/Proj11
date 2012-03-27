@@ -218,9 +218,8 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		add(panel);
 		
 		setAppointmentModel(null);
-		if(!isLeader){
-			changePanel();
-		}
+		changePanel(isLeader);
+		
 		
 		dateChooser.addPropertyChangeListener(this);
 		startTime.addChangeListener(this);
@@ -242,6 +241,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	
 	public void setIsLeader(boolean b){
 		isLeader = b;
+		changePanel(isLeader);
 	}
 	
 	public JButton getAddParticipantButton() {
@@ -313,22 +313,40 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		}
 		
 	}
-	public void changePanel(){
-		dateChooser.setEnabled(false);
-		startTime.setEnabled(false);
-		endTime.setEnabled(false);
-		subject.setEnabled(false);
-		addParticipant.setEnabled(false);
-		removeParticipant.setEnabled(false);
-		description.setEnabled(false);
-		autoReserveButton.setEnabled(false);
-		location.setEnabled(false);
-		getRoomsButton().setEnabled(false);
-		deleteButton.setVisible(false);
-		saveButton.setVisible(false);
-		editButton.setVisible(false);
-		denyButton.setVisible(true);
-		acceptButton.setVisible(true);
+	public void changePanel(boolean isLeader){
+		if(!isLeader){
+			dateChooser.setEnabled(false);
+			startTime.setEnabled(false);
+			endTime.setEnabled(false);
+			subject.setEnabled(false);
+			addParticipant.setEnabled(false);
+			removeParticipant.setEnabled(false);
+			description.setEnabled(false);
+			autoReserveButton.setEnabled(false);
+			location.setEnabled(false);
+			getRoomsButton().setEnabled(false);
+			deleteButton.setVisible(false);
+			saveButton.setVisible(false);
+			editButton.setVisible(false);
+			denyButton.setVisible(true);
+			acceptButton.setVisible(true);
+		} else{
+			dateChooser.setEnabled(true);
+			startTime.setEnabled(true);
+			endTime.setEnabled(true);
+			subject.setEnabled(true);
+			addParticipant.setEnabled(true);
+			removeParticipant.setEnabled(true);
+			description.setEnabled(true);
+			autoReserveButton.setEnabled(true);
+			location.setEnabled(true);
+			getRoomsButton().setEnabled(true);
+			deleteButton.setVisible(true);
+			saveButton.setVisible(false);
+			editButton.setVisible(true);
+			denyButton.setVisible(false);
+			acceptButton.setVisible(false);
+		}
 	}
 
 
@@ -375,6 +393,9 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==clearButton) {
+			setIsLeader(true);
+			editButton.setVisible(false);
+			saveButton.setVisible(true);
 			setAppointmentModel(null);
 		}
 	}

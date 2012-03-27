@@ -88,6 +88,7 @@ public class CalendarTableModel extends AbstractTableModel {
 		for (Appointment p : appointments) {
 			if(a.getId()==p.getId()){
 				appointments.remove(p);
+				break;
 			}
 		}
 		appointments.add(a);
