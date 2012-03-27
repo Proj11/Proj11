@@ -321,11 +321,11 @@ public class Appointment {
 
 		String loc="", roomnr="13";
 		
-		Appointment appointment = new Appointment();
 		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 		NodeList nodeLst = doc.getElementsByTagName("appointment");
 		
 		for (int i = 0; i < nodeLst.getLength(); i++) {
+			Appointment appointment = new Appointment();
 			List<Participant> participants = new ArrayList<Participant>();
 			Node nNode = nodeLst.item(i);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -356,7 +356,7 @@ public class Appointment {
 				
 				String description = getTagValues("description", element);
 				appointment.setDescription(description);
-
+				//
 				NodeList pList = doc.getElementsByTagName("participant");
 				for (int j = 0; j < pList.getLength(); j++) {
 					Node pNode = pList.item(j);
