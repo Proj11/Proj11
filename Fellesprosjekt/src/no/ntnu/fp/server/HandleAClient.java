@@ -47,7 +47,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			in = new ObjectInputStream(socket.getInputStream());
 			out = new ObjectOutputStream(socket.getOutputStream());
 			while (true) {
-				textArea.append("Listening for new message");
+				textArea.append("Listening for new message\n");
 				String input = (String) in.readObject();
 				textArea.append(input+"\n");
 				doSomething(input);
