@@ -162,6 +162,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				client.deleteAppointment(toolPanel.getAppPanel().getAppointmentModel().getId());
 				toolPanel.getAppPanel().setAppointmentModel(null);
 			}
+		}else if(e.getSource()==toolPanel.getAppPanel().getEditButton()){
+			calendarPanel.getCalendar().editAppointment(toolPanel.getAppPanel().getAppointmentModel());
+			client.editAppointment(toolPanel.getAppPanel().getAppointmentModel());
+			toolPanel.getAppPanel().setAppointmentModel(null);
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
 				toolPanel.getAppPanel().setAppointmentModel(toolPanel.getMsgPanel().getSelectedMessage().getAppointment().getCopy());
@@ -195,6 +199,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	public void sendState(String state){
 		client.sendState(toolPanel.getAppPanel().getAppointmentModel().getId(), state, USER.getUsername());
 		toolPanel.getAppPanel().getAppointmentModel().getParticipant(USER.getUsername()).setState(Appointment.stringToState(state));
+		toolPanel.getAppPanel().getParticipantList().revalidate();
 		//TODO: legg til kode i HandleAClient
 	}
 
@@ -212,7 +217,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (calendarPanel.getCalendar().getSelectedCell()!=null) {
-			toolPanel.getAppPanel().setAppointmentModel(calendarPanel.getCalendar().getSelectedCell().getCopy());
+			Appointment a = calendarPanel.getCalendar().getSelectedCell().getCopy();
+			if(USER.getUsername().equals(a.getLeader().getUsername())){
+				toolPanel.getAppPanel().setIsLeader(true);
+			}
+			toolPanel.getAppPanel().setAppointmentModel(a);
 			toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 		}
 	}

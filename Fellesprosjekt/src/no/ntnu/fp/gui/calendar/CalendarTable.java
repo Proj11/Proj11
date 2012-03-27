@@ -67,6 +67,10 @@ public class CalendarTable extends JTable {
 		model.clearAllAppointments();
 	}
 	
+	public void editAppointment(Appointment a){
+		model.editAppointment(a);
+	}
+	
 	public void removeAllAppointments(Collection<Appointment> a) {
 		model.removeAllAppointments(a);
 	}

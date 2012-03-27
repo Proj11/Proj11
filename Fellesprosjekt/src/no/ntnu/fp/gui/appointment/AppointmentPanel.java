@@ -62,7 +62,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	
 	public AppointmentPanel() {
 		super();
-		isLeader = true;
+		isLeader = false;
 		setLayout(new FlowLayout(FlowLayout.LEADING));
 		//The date and time panel
 		JPanel panel=new JPanel();
@@ -203,6 +203,8 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		acceptButton.setPreferredSize(d);
 		acceptButton.setVisible(false);
 		editButton = new JButton("Edit");
+		editButton.setPreferredSize(d);
+		editButton.setVisible(false);
 		c.insets=new Insets(2, 2, 2, 2);
 		c.gridx=0;
 		panel.add(deleteButton,c);
@@ -210,6 +212,7 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		c.gridx=1;
 		panel.add(saveButton,c);
 		panel.add(denyButton,c);
+		panel.add(editButton,c);
 		c.gridx=2;
 		panel.add(clearButton,c);
 		add(panel);
@@ -237,6 +240,10 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		return saveButton;
 	}
 	
+	public void setIsLeader(boolean b){
+		isLeader = b;
+	}
+	
 	public JButton getAddParticipantButton() {
 		return addParticipant;
 	}
@@ -252,6 +259,10 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	public void setRoom(Room r) {
 		this.setRoom(r.getRoomnr());
 	}
+	public JList getParticipantList(){
+		return participantList;
+	}
+	
 	public JButton getAutoReserveButton(){
 		return autoReserveButton;
 	}

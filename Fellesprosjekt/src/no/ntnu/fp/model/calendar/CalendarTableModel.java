@@ -84,6 +84,16 @@ public class CalendarTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
+	public void editAppointment(Appointment a){
+		for (Appointment p : appointments) {
+			if(a.getId()==p.getId()){
+				appointments.remove(p);
+			}
+		}
+		appointments.add(a);
+		fireTableDataChanged();
+	}
+	
 	public void addAllAppointments(Collection<Appointment> a) {
 		appointments.addAll(a);
 		fireTableDataChanged();
