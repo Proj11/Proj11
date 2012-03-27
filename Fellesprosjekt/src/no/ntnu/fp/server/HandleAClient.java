@@ -126,7 +126,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			break;
 			
 		case Constants.SEND_STATE:
-			String[] s = message.split("-");
+			String[] s = message.substring(1).split("-");
 			updateState(Integer.parseInt(s[0]), s[1], s[2]);
 			break;
 		default:
@@ -147,9 +147,10 @@ public class HandleAClient extends JFrame implements Runnable {
 	}
 	
 	private void updateState(int appID, String state, String username) {
+		textArea.append("metode kallt");
 		try {
 			Database db = Database.getDatabase();
-			db.query("UPDATE Participant SET state='" + state + 
+			db.insert("UPDATE Participant SET state='" + state.toUpperCase() + 
 					"' WHERE username='" + username + "' AND appointmentID=" + appID);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
