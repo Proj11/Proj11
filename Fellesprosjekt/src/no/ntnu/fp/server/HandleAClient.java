@@ -125,6 +125,10 @@ public class HandleAClient extends JFrame implements Runnable {
 			Thread.currentThread().interrupt();
 			break;
 			
+		case Constants.SEND_STATE:
+			String[] s = message.split("-");
+			updateState(Integer.parseInt(s[0]), s[1], s[2]);
+			break;
 		default:
 			break;
 		}
@@ -138,6 +142,22 @@ public class HandleAClient extends JFrame implements Runnable {
 			out.flush();
 			textArea.append("Message sent: "+msg+"\n");
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void updateState(int appID, String state, String username) {
+		try {
+			Database db = Database.getDatabase();
+			db.query("UPDATE Participant SET state='" + state + 
+					"' WHERE username='" + username + "' AND appointmentID=" + appID);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
