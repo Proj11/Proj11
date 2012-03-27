@@ -182,6 +182,11 @@ public class Client {
 		return null;
 	}
 	
+	public void sendState(int appID, String state, String username){
+		String msg = Constants.SEND_STATE + ""+appID+"-"+state+"-"+username;
+		sendMessage(msg);
+	}
+	
 	public boolean editAppointment(Appointment a) {
 		try {
 			sendMessage(Constants.EDIT_APPOINTMENT + a.toXML());

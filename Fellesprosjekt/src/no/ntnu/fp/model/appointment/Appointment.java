@@ -290,7 +290,7 @@ public class Appointment {
 							String username = getTagValues("username", pElement);
 							String name = getTagValues("name", pElement);
 							String state = getTagValues("state",pElement);
-							participants.add(new Participant(new Employee(name, username), getState(state)));
+							participants.add(new Participant(new Employee(name, username), stringToState(state)));
 						}
 					}
 					String lusername = getTagValues("lusername", element);
@@ -375,7 +375,7 @@ public class Appointment {
 						String state = getTagValues("state", pElement);
 						if (username.equals(lusername)) 
 							continue;
-						participants.add(new Participant(new Employee(name, username), getState(state)));
+						participants.add(new Participant(new Employee(name, username), stringToState(state)));
 					}
 				}
 
@@ -517,28 +517,6 @@ public class Appointment {
 		}
 		return nValue.getNodeValue();
 	}
-
-	//TODO: delete before deadline
-	public static void main(String[] args) throws ParserConfigurationException, TransformerException {
-		Participant p = new Participant(new Employee("lylz", "lylz"), State.PENDING);
-		p.getEmployee().setName("Sigurd");
-		Employee leader = new Employee("derp", "derp");
-		leader.setName("Derp Derper");
-		Appointment a = new Appointment(leader);
-		a.setDate(new Date(2012, 3, 20));
-		a.setStart(new Time(12, 00));
-		a.setEnd(new Time(13, 00));
-		a.setRoomNumber(123);
-		a.setDescription("dette blir kult!");
-		List<Participant> ps = a.getParticipants();
-		ps.add(p);
-		a.setParticipants(ps);
-		a.setSubject("sub");
-		String test = a.toXML();
-		System.out.println(test);
-		Appointment app = xmlToAppointment(test);
-		System.out.println(app.toXML());
-	}
 	
 	public Appointment getCopy() {
 		Appointment a = new Appointment(this.leader);
@@ -560,7 +538,16 @@ public class Appointment {
 		return a;
 	}
 	
-	public static State getState(String state){
+	public Participant getParticipant(String username){
+		for (Participant p : participants) {
+			if(p.getEmployee().getUsername().equals(username)){
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	public static State stringToState(String state){
 		if (state.equals("accepted")){
 			return State.ACCEPTED;
 		} else if(state.equals("denied")){

@@ -109,6 +109,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getRemoveParticipantButton().addActionListener(this);
 		toolPanel.getAppPanel().getRoomsButton().addActionListener(this);
 		toolPanel.getAppPanel().getAutoReserveButton().addActionListener(this);
+		toolPanel.getAppPanel().getAcceptButton().addActionListener(this);
+		toolPanel.getAppPanel().getDenyButton().addActionListener(this);
+		toolPanel.getAppPanel().getEditButton().addActionListener(this);
 		
 		//Get data from the server
 	getAppointmentsFromServer();
@@ -181,7 +184,18 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				toolPanel.getAppPanel().getAppointmentModel().setLocation("Ingen tilgjenlige");
 			else
 				toolPanel.getAppPanel().setRoom(r);
+		}else if(e.getSource()==toolPanel.getAppPanel().getAcceptButton()){
+			sendState("accept");
+		}else if(e.getSource()==toolPanel.getAppPanel().getDenyButton()){
+			sendState("denied");
 		}
+		
+	}
+	
+	public void sendState(String state){
+		client.sendState(toolPanel.getAppPanel().getAppointmentModel().getId(), state, USER.getUsername());
+		toolPanel.getAppPanel().getAppointmentModel().getParticipant(USER.getUsername()).setState(Appointment.stringToState(state));
+		//TODO: legg til kode i HandleAClient
 	}
 
 	@Override

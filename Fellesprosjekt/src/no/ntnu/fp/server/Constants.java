@@ -16,4 +16,5 @@ public class Constants {
 	public final static char DELETE_MESSAGE = 'c';
 	public final static char GET_MESSAGE_FROM_DB = 'd';
 	public final static char GET_MESSAGES_FROM_DB = 'e';
+	public final static char SEND_STATE ='f';
 }
