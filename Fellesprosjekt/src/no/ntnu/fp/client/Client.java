@@ -82,14 +82,14 @@ public class Client {
 			appointmentsAsXML = receive();
 			ArrayList<Appointment> allApps = Appointment.xmlToAppoinmentList(appointmentsAsXML);
 			ArrayList<Appointment> appList = new ArrayList<Appointment>();
-			for (int i=0; i<allApps.size(); ++i) {
-				boolean temp=true;
-				for (int j = 0; j < allApps.get(i).getParticipants().size() && temp; j++) {
-					if (allApps.get(i).getParticipants().get(j).getEmployee().getUsername().equals(username)) {
-						appList.add(allApps.get(i));
-						temp=false;
+			for (Appointment a : allApps) {
+				for (Participant p : a.getParticipants()) {
+					if (p.getEmployee().getUsername().equals(username)) {
+						appList.add(a);
+						break;
 					}
 				}
+				continue;
 			}
 			return appList;
 		} catch (ClassNotFoundException e){
