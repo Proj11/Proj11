@@ -177,10 +177,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			Appointment a = (toolPanel.getAppPanel().getAppointmentModel());
 			System.out.println(a.getDate() + "\n" + a.getStart() + "\n" + a.getEnd());
 			Room r = autoReserve(client, a.getParticipants().size());
-			if (r != null)
-				toolPanel.getAppPanel().setRoom(r);
-			else
+			if (r == null)
 				toolPanel.getAppPanel().getAppointmentModel().setLocation("Ingen tilgjenlige");
+			else
+				toolPanel.getAppPanel().setRoom(r);
 		}
 	}
 
@@ -248,7 +248,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		List<Room> rooms;
 		try {
 			rooms = client.getRooms(toolPanel.getAppPanel().getAppointmentModel());
-			if (rooms.size() == 0)
+			if (rooms == null)
 				return null;
 			for(int i=0; i<rooms.size(); i++){
 				if(size <= rooms.get(i).getSize()){

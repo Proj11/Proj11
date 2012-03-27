@@ -147,14 +147,16 @@ public class HandleAClient extends JFrame implements Runnable {
 		Database db;
 		try {
 			db = Database.getDatabase();
-			ResultSet rs = db.query("SELECT * FROM MeetingRoom;");
+			ResultSet rs = db.query("SELECT * FROM MeetingRoom");
 			while (rs.next()){
 				int roomnr, size;
 				roomnr = Integer.parseInt(rs.getString("roomnr"));
 				size = Integer.parseInt(rs.getString("roomsize"));
 				if (size >= a.getParticipants().size()) {
-					if (isRoomAvailable(roomnr, a))
+					if (isRoomAvailable(roomnr, a)) {
 						roomList.add(new Room(roomnr, size));
+						System.out.println("Romnr ledig: " + roomnr);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -170,18 +172,21 @@ public class HandleAClient extends JFrame implements Runnable {
 				" AND mr.roomnr=" + roomID);
 		boolean available = true;
 		while (rs.next()) {
+			available = true;
 			try {
 				Time start = Time.parseTime(rs.getString("starttime"));
 				Time end = Time.parseTime(rs.getString("endtime"));
 				Date date = new Date(rs.getLong("date"));
 				if (date.getTime() != a.getDate().getTime()) {
-					return true;
+					System.out.println("Dato er forskjellig");
+					continue;
 				}
 				if ((a.getStart().compareTo(start) < 0) && (a.getEnd().compareTo(start) < 0)) 
-					return true;
+					continue;
 				if (a.getStart().compareTo(end) > 0)
-					return true;
+					continue;
 				if (rs.getInt("roomnr") == roomID) {
+					System.out.println(roomID + " er opptatt!");
 					available = false;
 				}
 			} catch (TimeException e) {
