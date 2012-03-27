@@ -56,10 +56,13 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 	private JButton deleteButton;
 	private JButton saveButton;
 	private JButton clearButton;
-	private JButton autoReserveButton;
+	private JButton autoReserveButton,editButton;
+	private JButton acceptButton, denyButton;
+	private boolean isLeader;
 	
 	public AppointmentPanel() {
 		super();
+		isLeader = true;
 		setLayout(new FlowLayout(FlowLayout.LEADING));
 		//The date and time panel
 		JPanel panel=new JPanel();
@@ -193,16 +196,28 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		saveButton.setPreferredSize(d);
 		clearButton = new JButton("New");
 		clearButton.setPreferredSize(d);
+		denyButton = new JButton("Deny");
+		denyButton.setPreferredSize(d);
+		denyButton.setVisible(false);
+		acceptButton = new JButton("Accept");
+		acceptButton.setPreferredSize(d);
+		acceptButton.setVisible(false);
+		editButton = new JButton("Edit");
 		c.insets=new Insets(2, 2, 2, 2);
 		c.gridx=0;
 		panel.add(deleteButton,c);
+		panel.add(acceptButton,c);
 		c.gridx=1;
 		panel.add(saveButton,c);
+		panel.add(denyButton,c);
 		c.gridx=2;
 		panel.add(clearButton,c);
 		add(panel);
 		
 		setAppointmentModel(null);
+		if(!isLeader){
+			changePanel();
+		}
 		
 		dateChooser.addPropertyChangeListener(this);
 		startTime.addChangeListener(this);
@@ -287,7 +302,48 @@ public class AppointmentPanel extends JPanel implements ActionListener, KeyListe
 		}
 		
 	}
+	public void changePanel(){
+		dateChooser.setEnabled(false);
+		startTime.setEnabled(false);
+		endTime.setEnabled(false);
+		subject.setEnabled(false);
+		addParticipant.setEnabled(false);
+		removeParticipant.setEnabled(false);
+		description.setEnabled(false);
+		autoReserveButton.setEnabled(false);
+		location.setEnabled(false);
+		getRoomsButton().setEnabled(false);
+		deleteButton.setVisible(false);
+		saveButton.setVisible(false);
+		editButton.setVisible(false);
+		denyButton.setVisible(true);
+		acceptButton.setVisible(true);
+	}
 
+
+	public JButton getEditButton() {
+		return editButton;
+	}
+
+	public void setEditButton(JButton editButton) {
+		this.editButton = editButton;
+	}
+
+	public JButton getAcceptButton() {
+		return acceptButton;
+	}
+
+	public void setAcceptButton(JButton acceptButton) {
+		this.acceptButton = acceptButton;
+	}
+
+	public JButton getDenyButton() {
+		return denyButton;
+	}
+
+	public void setDenyButton(JButton denyButton) {
+		this.denyButton = denyButton;
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {}
