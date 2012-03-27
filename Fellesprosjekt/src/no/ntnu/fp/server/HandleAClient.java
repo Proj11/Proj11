@@ -117,6 +117,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			ArrayList<Appointment> appList = getAppointmentsFromDB();
 			textArea.append("xml parsed!\n");
 			sendMessage(parseAppointmentsToXML(appList));
+			break;
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();

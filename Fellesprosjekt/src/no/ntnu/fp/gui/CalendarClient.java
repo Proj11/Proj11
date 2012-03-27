@@ -307,7 +307,6 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 		c.gridx=1;
 		c.gridy=0;
 		usernameText=new JTextField(10);
-		usernameText.setText("name");
 		panel.add(usernameText, c);
 		c.gridx=0;
 		c.gridy=1;
@@ -316,7 +315,6 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 		c.gridx=1;
 		c.gridy=1;
 		passwordText=new JPasswordField(10);
-		passwordText.setText("passord");
 		panel.add(passwordText, c);
 		
 		add(panel, BorderLayout.CENTER);
@@ -324,6 +322,8 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 		login.addActionListener(this);
 		add(login, BorderLayout.SOUTH);
 		addKeyListener(this);
+		passwordText.addKeyListener(this);
+		usernameText.addKeyListener(this);
 		
 		pack();
 		setVisible(true);
@@ -332,21 +332,13 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 	@SuppressWarnings("deprecation")
 	public void login() {
 		try { 
-			if (usernameText.getText() == "" || passwordText.getText() == ""){
-				Client client = new Client();
-				Employee logon = client.logOn("brukernavn", "passord");
+			Client client = new Client();
+			CalendarClient.USER = client.logOn(usernameText.getText(), passwordText.getText());
+			if (CalendarClient.USER != null){
 				setVisible(false);
 				new CalendarClient(client);
 			}
-			else {
-				Client client = new Client();
-				CalendarClient.USER = client.logOn(usernameText.getText(), passwordText.getText());
-				if (CalendarClient.USER != null){
-					setVisible(false);
-					new CalendarClient(client);
-				}
-				else System.out.println("Incorrect username / password.");
-			}
+			else System.out.println("Incorrect username / password.");
 		}
 		catch (Exception eX){
 			eX.printStackTrace();

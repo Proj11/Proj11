@@ -39,8 +39,10 @@ public class Client {
 	 */
 	public void sendMessage(String msg) {
 		try {
+			System.out.println("Sending message: "+msg);
 			out.writeObject(msg);
 			out.flush();
+			System.out.println("Message successfully sent");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
