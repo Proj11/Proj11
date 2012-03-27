@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.message.Message;
 import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.server.Constants;
 import no.ntnu.fp.timeexception.TimeException;
@@ -102,7 +103,47 @@ public class Client {
 		return null;
 	}
 	
+	public Message createMessage(String messageString, int i){
+		String createMsgAsXML;
+		try {
+			sendMessage(Constants.CREATE_MESSAGE + messageString + "");
+			createMsgAsXML = receive();
+			return Message.xmlToMessage(createMsgAsXML);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
+	public Message getMessage(int messageID){
+		String messageAsXML;
+		try {
+			sendMessage(Constants.GET_MESSAGE_FROM_DB + messageID + "");
+			messageAsXML = receive();
+			return Message.xmlToMessage(messageAsXML);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Message> getMessages(){
+		String messagesAsXML;
+		try {
+			sendMessage(Constants.GET_MESSAGES_FROM_DB+"");
+			messagesAsXML = receive();
+			return Message.xmlToMessageList(messagesAsXML);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	public List<Employee> getEmployees() {
 		String employeesAsXML;
