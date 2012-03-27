@@ -78,6 +78,16 @@ public class Client {
 		//TODO: code to send message to participants
 	}
 	
+	public boolean deleteAppointment(int appointmentID){
+		try {
+			sendMessage(Constants.DELETE_APPOINTMENT + appointmentID + "");
+			return true;
+		} catch (Exception delAppException){
+			delAppException.printStackTrace();
+			return false;
+		}
+	}
+	
 	public List<Appointment> getAppointmentList(String username) throws ParserConfigurationException, SAXException, TimeException{
 		String appointmentsAsXML;
 		try{
