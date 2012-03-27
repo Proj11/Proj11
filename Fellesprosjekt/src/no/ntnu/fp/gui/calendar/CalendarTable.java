@@ -1,5 +1,6 @@
 package no.ntnu.fp.gui.calendar;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JTable;
@@ -60,6 +61,10 @@ public class CalendarTable extends JTable {
 	
 	public void addAllAppointments(Collection<Appointment> a) {
 		model.addAllAppointments(a);
+	}
+	
+	public void clearAllAppointments(){
+		model.clearAllAppointments();
 	}
 	
 	public void removeAllAppointments(Collection<Appointment> a) {

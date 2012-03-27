@@ -150,12 +150,14 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			calendarPanel.getCalendar().setDisplayedWeek(calendarPanel.getCalendar().getDisplayedWeek()-1);
 			updateCalendarPanel();
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
-			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
-			getAppointmentsFromServer();
+			calendarPanel.getCalendar().addAppointment(toolPanel.getAppPanel().getAppointmentModel());
+			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); 
+			toolPanel.getAppPanel().setAppointmentModel(null);
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
 			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
-				client.deleteAppointment(toolPanel.getAppPanel().getAppointmentModel().getId()); //TODO Code to remove an appointment from the database
-				getAppointmentsFromServer();
+				calendarPanel.getCalendar().removeAppointment(calendarPanel.getCalendar().getSelectedCell());		
+				client.deleteAppointment(toolPanel.getAppPanel().getAppointmentModel().getId());
+				toolPanel.getAppPanel().setAppointmentModel(null);
 			}
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {

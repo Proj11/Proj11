@@ -92,7 +92,8 @@ public class HandleAClient extends JFrame implements Runnable {
 				sendMessage(Constants.FALSE + "");
 			break;
 		case Constants.DELETE_APPOINTMENT:
-			boolean del = deleteAppointment(Integer.parseInt(message.substring(1)));
+			boolean del = deleteAppointment(message.substring(1));
+			System.out.println(message + " denne printer ut 59");
 			if (del){
 				sendMessage(Constants.TRUE + "");
 			}
@@ -348,9 +349,10 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}
 	
-	public static boolean deleteAppointment(int appointmentID){
+	public boolean deleteAppointment(String appointmentID){
 		try {
 			Database db = Database.getDatabase();
+			System.out.println(appointmentID);
 			db.insert("DELETE FROM Appointment WHERE appointmentID = '" + appointmentID + "';");
 			return true;
 		}
@@ -363,7 +365,7 @@ public class HandleAClient extends JFrame implements Runnable {
 	public boolean editAppointment(String appointmentString){
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
 		int appID = a.getId();
-		deleteAppointment(a.getId());
+		deleteAppointment(a.getId()+"");
 		return createAppointment(appointmentString, appID);
 	}
 	

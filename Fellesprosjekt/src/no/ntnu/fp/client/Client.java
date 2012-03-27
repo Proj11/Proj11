@@ -78,13 +78,11 @@ public class Client {
 		//TODO: code to send message to participants
 	}
 	
-	public boolean deleteAppointment(int appointmentID){
+	public void deleteAppointment(int appointmentID){
 		try {
-			sendMessage(Constants.DELETE_APPOINTMENT + appointmentID + "");
-			return true;
+			sendMessage(Constants.DELETE_APPOINTMENT + "" + appointmentID);
 		} catch (Exception delAppException){
 			delAppException.printStackTrace();
-			return false;
 		}
 	}
 	
@@ -130,7 +128,7 @@ public class Client {
 	public Message getMessage(int messageID){
 		String messageAsXML;
 		try {
-			sendMessage(Constants.GET_MESSAGE_FROM_DB + messageID + "");
+			sendMessage(Constants.GET_MESSAGE_FROM_DB + "" + messageID );
 			messageAsXML = receive();
 			return Message.xmlToMessage(messageAsXML);
 		} catch (ClassNotFoundException e) {

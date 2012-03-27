@@ -89,6 +89,10 @@ public class CalendarTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
+	public void clearAllAppointments(){
+		appointments = new ArrayList<Appointment>();
+	}
+	
 	public void removeAllAppointments(Collection<Appointment> a) {
 		appointments.removeAll(a);
 		fireTableDataChanged();

@@ -548,6 +548,7 @@ public class Appointment {
 			a.date=new Date(this.date.getTime());
 		}
 		a.subject=this.subject;
+		a.id=this.id;
 		a.description=this.description;
 		a.roomNumber=this.roomNumber;
 		a.location=this.location;
