@@ -314,7 +314,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			Database db = Database.getDatabase();
 			int id = db.insertWithIdReturn("INSERT INTO Appointment (date, starttime, endtime, subject, location, description, roomnr, createdBy) values ('"
 			+ a.getDate().getTime() + "', '" + a.getStart().toString() + "', '" + a.getEnd().toString() + "', '" + a.getSubject() + "', '"
-					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getName() + "');");
+					+ a.getLocation() + "', '" + a.getDescription() + "', '" + a.getRoomNumber() + "', '" + a.getLeader().getUsername() + "');");
 					for (Participant p : a.getParticipants()){
 						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");

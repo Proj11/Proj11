@@ -111,17 +111,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getAutoReserveButton().addActionListener(this);
 		
 		//Get data from the server
-		try {
-			List<Appointment> q =client.getAppointmentList(USER.getUsername());
-			calendarPanel.getCalendar().addAllAppointments(q);
-			calendarPanel.revalidate();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (TimeException e) {
-			e.printStackTrace();
-		}
+	getAppointmentsFromServer();
 	}
 	
 	public static void main(String[] args) {
@@ -161,10 +151,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			updateCalendarPanel();
 		} else if (e.getSource()==toolPanel.getAppPanel().getSaveButton()) {
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); //TODO Code to add an appointment into the database
-			
+			getAppointmentsFromServer();
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
 			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
-				toolPanel.getAppPanel().getAppointmentModel(); //TODO Code to remove an appointment from the database
+				client.deleteAppointment(toolPanel.getAppPanel().getAppointmentModel().getId()); //TODO Code to remove an appointment from the database
+				getAppointmentsFromServer();
 			}
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
@@ -263,14 +254,26 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 				}
 			}
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 		
+	}
+	
+	private void getAppointmentsFromServer(){
+		try {
+			List<Appointment> q =client.getAppointmentList(USER.getUsername());
+			calendarPanel.getCalendar().addAllAppointments(q);
+			calendarPanel.revalidate();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (TimeException e) {
+			e.printStackTrace();
+		}
 	}
 }
 
