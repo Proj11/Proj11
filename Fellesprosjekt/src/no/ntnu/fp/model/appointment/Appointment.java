@@ -46,6 +46,7 @@ public class Appointment {
 
 	private Appointment() {
 		roomNumber=0;
+		participants = new ArrayList<Participant>();
 	}
 
 	public Appointment(Employee createdBy) {
@@ -356,8 +357,15 @@ public class Appointment {
 				
 				String description = getTagValues("description", element);
 				appointment.setDescription(description);
+				String lusername = getTagValues("lusername", element);
+				String lname = getTagValues("lname", element);
+				Employee l = new Employee(lname, lusername);
+				appointment.setLeader(l);
+				participants.add(new Participant(l, State.ACCEPTED));
+				
 				//
-				NodeList pList = doc.getElementsByTagName("participant");
+				NodeList pList = doc.getElementsByTagName("participant"+i);
+				System.out.println("pList lengde: " + pList.getLength());
 				for (int j = 0; j < pList.getLength(); j++) {
 					Node pNode = pList.item(j);
 					if (pNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -365,12 +373,11 @@ public class Appointment {
 						String username = getTagValues("username", pElement);
 						String name = getTagValues("name", pElement);
 						String state = getTagValues("state", pElement);
+						if (username.equals(lusername)) 
+							continue;
 						participants.add(new Participant(new Employee(name, username), getState(state)));
 					}
 				}
-				String lusername = getTagValues("lusername", element);
-				String lname = getTagValues("lname", element);
-				appointment.setLeader(new Employee(lname, lusername));
 
 				//Set leader as accepted
 				for (Participant part : participants) {
@@ -394,6 +401,7 @@ public class Appointment {
 			Element rootElement = doc.createElement("appointments");
 			doc.appendChild(rootElement);
 			
+			int j = 0;
 			for (Appointment a : appointmentList) {
 				Element appointment = doc.createElement("appointment");
 				rootElement.appendChild(appointment);
@@ -439,11 +447,10 @@ public class Appointment {
 					roomnr.appendChild(doc.createTextNode(a.getRoomNumber()+""));
 				}
 				
-				Element participants = doc.createElement("participants");
-				appointment.appendChild(participants);
-				for (Participant p : a.participants) {
-					Element participant = doc.createElement("participant");
-					participants.appendChild(participant);
+				for (int i = 0; i < a.getParticipants().size(); i++) {
+					Participant p = a.getParticipants().get(i);
+					Element participant = doc.createElement("participant" + j);
+					appointment.appendChild(participant);
 					Element username = doc.createElement("username");
 					participant.appendChild(username);
 					username.appendChild(doc.createTextNode(p.getEmployee().getUsername()));	
@@ -467,7 +474,7 @@ public class Appointment {
 				Element description = doc.createElement("description");
 				appointment.appendChild(description);
 				description.appendChild(doc.createTextNode(a.getDescription()));
-				
+				j++;
 			}
 			
 			DOMSource source = new DOMSource(doc);
