@@ -356,6 +356,8 @@ public class HandleAClient extends JFrame implements Runnable {
 						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
+						db.insert("INSERT INTO Message (recipient, messageCreatedBy,  appointmentID, messageText) values " +
+						"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + a.getId() + "');");
 					}
 			
 			return true;
