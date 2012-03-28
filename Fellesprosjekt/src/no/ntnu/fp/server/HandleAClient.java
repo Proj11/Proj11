@@ -416,7 +416,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			Database db = Database.getDatabase();
 			int mId = db.insertWithIdReturn("INSERT INTO Message (recipient, appointmentID, messageCreatedBy messageText)" +
 					"values ('" + message.getRecipient().getUsername() +"', '" + message.getAppointmentId() +
-					"', '" + message.getMessageCreatedBy().getName() + "', '" + sentMessage + "');");
+					"', '" + message.getMessageCreatedBy().getUsername() + "', '" + sentMessage + "');");
 			message.setMessageID(mId);
 			return true;
 		}
