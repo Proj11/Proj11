@@ -245,7 +245,6 @@ public class Message {
 					String messageCreatedByName = getTagValues("messageCreatedByName", element);
 					String messageText = getTagValues("messageText", element);
 					int appointmentID = Integer.parseInt(getTagValues("appointmentID", element));
-					System.out.println("Message line 249: " + getTagValues("messageID", element));
 					if (getTagValues("messageID", element) != null)
 							messageID = Integer.parseInt(getTagValues("messageID", element));						
 					messages.add(new Message(new Employee(recipientName, recipient), new Employee(messageCreatedByName, messageCreatedBy), messageText, appointmentID, messageID));
