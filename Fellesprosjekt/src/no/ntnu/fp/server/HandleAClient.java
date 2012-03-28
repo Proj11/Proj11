@@ -1,8 +1,5 @@
 package no.ntnu.fp.server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,10 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -32,24 +28,24 @@ import no.ntnu.fp.timeexception.TimeException;
 public class HandleAClient extends JFrame implements Runnable {
 
 	private Socket socket;
-	ObjectOutputStream out;
-	ObjectInputStream in;
-	JTextArea textArea; 
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
+	private Employee user;
+	private List<MessageListener> messageListeners;
 	
-	public HandleAClient(Socket socket, JTextArea textArea) throws IOException {
+	public HandleAClient(Socket socket) throws IOException {
 		this.socket = socket;
-		this.textArea=textArea;
-		
+		messageListeners=new ArrayList<MessageListener>();
 	}
+	
 	@Override
 	public void run() {
 		try {
 			in = new ObjectInputStream(socket.getInputStream());
 			out = new ObjectOutputStream(socket.getOutputStream());
 			while (true) {
-				textArea.append("Listening for new message\n");
 				String input = (String) in.readObject();
-				textArea.append(input+"\n");
+				fireMessageReceived(input);
 				doSomething(input);
 				
 			}
@@ -93,7 +89,6 @@ public class HandleAClient extends JFrame implements Runnable {
 			break;
 		case Constants.DELETE_APPOINTMENT:
 			boolean del = deleteAppointment(message.substring(1));
-			System.out.println(message + " denne printer ut 59");
 			if (del){
 				sendMessage(Constants.TRUE + "");
 			}
@@ -105,31 +100,23 @@ public class HandleAClient extends JFrame implements Runnable {
 			sendMessage(parseEmployeesToXML(empList));
 			break;
 		case Constants.GET_ROOMS:
-			textArea.append("GetROOMS mottatt!!\n");
 			Appointment a = Appointment.xmlToAppointment(message.substring(1));
-			textArea.append("xml parsed!\n");
 			ArrayList<Room> roomList = getAvailableRooms(a);
-			textArea.append("Appointment: " +message+"\n");
-			textArea.append("Antall rom: " +roomList.size()+"\n");
 			sendMessage(parseRoomsToXML(roomList));
 			break;
 		case Constants.GET_APPOINTMENTS:
-			textArea.append("GetAPPOINTMENTS mottatt!!\n");
 			ArrayList<Appointment> appList = getAppointmentsFromDB();
-			textArea.append("xml parsed!\n");
 			sendMessage(parseAppointmentsToXML(appList));
 			break;
 			
 		case Constants.GET_MESSAGES_FROM_DB:
-			textArea.append("GetMESSAGES mottatt!!\n");
 			ArrayList<Message> msgList = getAllMessagesFromDB();
-			textArea.append("xml parsed! \n");
 			sendMessage(parseMessagesToXML(msgList));
-		
 			break;
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();
+			fireConnectionClosed();
 			Thread.currentThread().interrupt();
 			break;
 			
@@ -142,20 +129,46 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}
 	
+	public Employee getUser() {
+		return user;
+	}
 	
+	protected void fireMessageReceived(String message) {
+		for (MessageListener listener : messageListeners) {
+			listener.messageReceived(message);
+		}
+	}
+	
+	protected void fireAppointmentReceived(Appointment a) {
+		for (MessageListener listener : messageListeners) {
+			listener.appointmentReceived(a);
+		}
+	}
+	
+	protected void fireConnectionClosed() {
+		for (MessageListener listener : messageListeners) {
+			listener.connectionClosed(this);
+		}
+	}
+	
+	public void addMessageListener(MessageListener listener) {
+		messageListeners.add(listener);
+	}
+	
+	public void removeMessageListener(MessageListener listener) {
+		messageListeners.remove(listener);
+	}
 
 	private void sendMessage(String msg) {
 		try {
 			out.writeObject(msg);
 			out.flush();
-			textArea.append("Message sent: "+msg+"\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void updateState(int appID, String state, String username) {
-		textArea.append("metode kallt");
 		try {
 			Database db = Database.getDatabase();
 			db.insert("UPDATE Participant SET state='" + state.toUpperCase() + 
@@ -221,7 +234,6 @@ public class HandleAClient extends JFrame implements Runnable {
 					}
 				}
 			} catch (TimeException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
