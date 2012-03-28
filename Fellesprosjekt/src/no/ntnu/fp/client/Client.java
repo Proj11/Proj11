@@ -79,11 +79,7 @@ public class Client {
 	}
 	
 	public void deleteAppointment(int appointmentID){
-		try {
-			sendMessage(Constants.DELETE_APPOINTMENT + "" + appointmentID);
-		} catch (Exception delAppException){
-			delAppException.printStackTrace();
-		}
+		sendMessage(Constants.DELETE_APPOINTMENT + "" + appointmentID);
 	}
 	
 	public List<Appointment> getAppointmentList(String username) throws ParserConfigurationException, SAXException, TimeException{
@@ -111,7 +107,7 @@ public class Client {
 		return null;
 	}
 	
-	public Message createMessage(String messageString, int i){
+	/*public Message createMessage(String messageString, int i){
 		String createMsgAsXML;
 		try {
 			sendMessage(Constants.CREATE_MESSAGE + messageString + "");
@@ -123,6 +119,10 @@ public class Client {
 			e.printStackTrace();
 		}
 		return null;
+	}*/
+	
+	public void deleteMessage(int messageID){
+		sendMessage(Constants.DELETE_MESSAGE + "" +messageID);
 	}
 	
 	public Message getMessage(int messageID){

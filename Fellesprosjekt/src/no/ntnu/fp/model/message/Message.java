@@ -88,6 +88,13 @@ public class Message {
 		this.messageCreatedBy = messageCreatedBy;
 		this.messageText = messageText;
 	}
+	
+	public Message(Employee messageCreatedBy, Employee recipient, String messageText, int appointmentID){
+		this.recipient = recipient;
+		this.messageCreatedBy = messageCreatedBy;
+		this.messageText = messageText;
+		this.appointmentId = appointmentID;
+	}
 
 	public Appointment getAppointment(){
 		return appointment;
@@ -235,7 +242,8 @@ public class Message {
 					String messageCreatedBy = getTagValues("messageCreatedBy", element);
 					String messageCreatedByName = getTagValues("messageCreatedByName", element);
 					String messageText = getTagValues("messageText", element);
-					messages.add(new Message(new Employee(recipientName, recipient), new Employee(messageCreatedByName, messageCreatedBy), messageText));
+					int appoinmentID = Integer.parseInt(getTagValues("appointmentID", element));
+					messages.add(new Message(new Employee(recipientName, recipient), new Employee(messageCreatedByName, messageCreatedBy), messageText, appoinmentID));
 				}
 			}
 			return messages;
