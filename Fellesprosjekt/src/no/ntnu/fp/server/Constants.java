@@ -12,9 +12,10 @@ public class Constants {
 	public final static char GET_ROOMS = '8';
 	public final static char GET_APPOINTMENTS= '9';
 	public final static char GET_APPOINTMENT='a';
-	public final static char CREATE_MESSAGE = 'b';
+	public final static char RECEIVE_MESSAGE_FROM_SERVER = 'b';
 	public final static char DELETE_MESSAGE = 'c';
 	public final static char GET_MESSAGE_FROM_DB = 'd';
 	public final static char GET_MESSAGES_FROM_DB = 'e';
 	public final static char SEND_STATE ='f';
+	public final static char SEND_MESSAGE_TO_CLIENT = 'g';
 }

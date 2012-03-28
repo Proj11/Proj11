@@ -100,6 +100,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		getAppointmentsFromServer();
 		getMessagesFromServer();
 		
+		client.setCalendarClient(this);
+		
 		//add listeners, this should be the last thing you do because we don't want to call events for no reason
 		addComponentListener(this);
 		toolbar.nextWeek.addActionListener(this);
@@ -118,6 +120,7 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getAcceptButton().addActionListener(this);
 		toolPanel.getAppPanel().getDenyButton().addActionListener(this);
 		toolPanel.getAppPanel().getEditButton().addActionListener(this);
+		
 		
 	}
 	
@@ -325,6 +328,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		}
 	}
 	
+	public void fireMessagesChanged() {
+		getMessagesFromServer();
+	}
+	
 	private void getMessagesFromServer() {
 		List<Message> messages = client.getMessages(USER.getUsername());
 		if (messages.size() == 0) {
@@ -396,7 +403,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 	@SuppressWarnings("deprecation")
 	public void login() {
 		try { 
-			Client client = new Client();
+			Client client = new Client(null);
 			CalendarClient.USER = client.logOn(usernameText.getText(), passwordText.getText());
 			if (CalendarClient.USER != null){
 				setVisible(false);
