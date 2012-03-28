@@ -143,19 +143,19 @@ public class Client {
 		sendMessage(Constants.DELETE_MESSAGE + "" +messageID);
 	}
 	
-	public Message getMessage(int messageID){
-		String messageAsXML;
-		try {
-			sendMessage(Constants.GET_MESSAGE_FROM_DB + "" + messageID );
-			messageAsXML = receive();
-			return Message.xmlToMessage(messageAsXML);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	public Message getMessage(int messageID){
+//		String messageAsXML;
+//		try {
+//			sendMessage(Constants.GET_MESSAGE_FROM_DB + "" + messageID );
+//			messageAsXML = receive();
+//			return Message.xmlToMessage(messageAsXML);
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	public List<Message> getMessages(String username){
 		String messagesAsXML;

@@ -127,8 +127,11 @@ public class HandleAClient extends JFrame implements Runnable {
 			updateState(Integer.parseInt(s[0]), s[1], s[2]);
 			break;
 			
-		case Constants.SEND_MESSAGE_TO_CLIENT:
-			
+		case Constants.DELETE_MESSAGE:
+			boolean delMsg = deleteMessage(message.substring(1));
+			if (delMsg)
+				sendMessage(Constants.TRUE + "");
+			else sendMessage(Constants.FALSE +"");
 			break;
 		default:
 			break;
@@ -469,10 +472,10 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}*/
 	
-	public boolean deleteMessage(int mId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public boolean deleteMessage(String mId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		Database db = Database.getDatabase();
 		try {
-			db.insert("DELETE FROM Message WHERE messageID = '" + mId + "';");
+			db.insert("DELETE FROM Message WHERE messageID = '" + Integer.parseInt(mId) + "';");
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -182,13 +182,15 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
-				System.out.println("CalendarClient linje 185: ");
 				List<Appointment> appList = calendarPanel.getCalendar().getAppointments();
 				for (Appointment a : appList){
-					System.out.println(appList + "    " + toolPanel.getMsgPanel().getSelectedMessage().getAppointmentId());
+					System.out.println("CalendarClient " + toolPanel.getMsgPanel().getSelectedMessage().getMessageID());
 					if (a.getId() == toolPanel.getMsgPanel().getSelectedMessage().getAppointmentId()){
 						toolPanel.getAppPanel().setAppointmentModel(a);
+						client.deleteMessage(toolPanel.getMsgPanel().getSelectedMessage().getMessageID());
 						toolPanel.setSelectedComponent(toolPanel.getAppPanel());
+						
+						
 						break;
 					}
 				}
