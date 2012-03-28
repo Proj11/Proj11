@@ -147,7 +147,7 @@ public class Client {
 			ArrayList<Message> allMsgs = Message.xmlToMessageList(messagesAsXML);
 			ArrayList<Message> msgList = new ArrayList<Message>();
 			for (Message m : allMsgs) {
-				if (m.getMessageCreatedBy().getUsername().equals(username) || m.getRecipient().getUsername().equals(username)){
+				if (m.getRecipient().getUsername().equals(username)){
 					msgList.add(m);
 				}
 			}
