@@ -216,7 +216,7 @@ public class Message {
 		return stringWriter.getBuffer().toString();
 	}
 	
-	public static List<Message> xmlToMessageList(String xml) {
+	public static ArrayList<Message> xmlToMessageList(String xml) {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
@@ -224,7 +224,7 @@ public class Message {
 			Document doc = db.parse(is);
 			doc.getDocumentElement().normalize();
 
-			List<Message> messages = new ArrayList<Message>();
+			ArrayList<Message> messages = new ArrayList<Message>();
 			NodeList nodeLst = doc.getElementsByTagName("message");
 			for (int i = 0; i < nodeLst.getLength(); i++) {
 				Node nNode = nodeLst.item(i);

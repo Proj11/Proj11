@@ -139,12 +139,19 @@ public class Client {
 		return null;
 	}
 	
-	public List<Message> getMessages(){
+	public List<Message> getMessages(String username){
 		String messagesAsXML;
 		try {
 			sendMessage(Constants.GET_MESSAGES_FROM_DB+"");
 			messagesAsXML = receive();
-			return Message.xmlToMessageList(messagesAsXML);
+			ArrayList<Message> allMsgs = Message.xmlToMessageList(messagesAsXML);
+			ArrayList<Message> msgList = new ArrayList<Message>();
+			for (Message m : allMsgs) {
+				if (m.getMessageCreatedBy().getUsername().equals(username) || m.getRecipient().getUsername().equals(username)){
+					msgList.add(m);
+				}
+			}
+			return msgList;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
