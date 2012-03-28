@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 public class MessageTableModel extends AbstractTableModel {
 	
 	private List<Message> messages;
-	private String[] columnName = {"Leader", "Subject"};
+	private String[] columnName = {"Sent by", "Message"};
 	
 	public MessageTableModel(){
 		messages = new ArrayList<Message>();

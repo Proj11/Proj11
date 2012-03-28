@@ -23,14 +23,6 @@ public class MessagePanel extends JPanel {
 		//making TableModel for the table
 		tableModel=new MessageTableModel();
 		
-		//TODO REMOVE DUMMY DATA
-		Appointment a=new Appointment(new Employee("Torb"));
-		a.setSubject("ROFLOLZOMFGBBQ");
-		tableModel.add(new Message(a));
-		Appointment b=new Appointment(new Employee("Mats"));
-		b.setSubject("This is a subject txt");
-		tableModel.add(new Message(b));
-		
 		//making table to put in JScrollPane
 		elements = new JTable(tableModel);
 		elements.getTableHeader().setReorderingAllowed(false);

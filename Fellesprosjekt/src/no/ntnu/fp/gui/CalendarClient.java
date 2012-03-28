@@ -8,6 +8,7 @@ import no.ntnu.fp.gui.appointment.PopupRooms;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.employee.Employee;
+import no.ntnu.fp.model.message.Message;
 import no.ntnu.fp.model.room.Room;
 import no.ntnu.fp.timeexception.TimeException;
 
@@ -94,6 +95,10 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		pack();
 		setVisible(true);
 		
+		//Get data from the server
+		getAppointmentsFromServer();
+		getMessagesFromServer();
+		
 		//add listeners, this should be the last thing you do because we don't want to call events for no reason
 		addComponentListener(this);
 		toolbar.nextWeek.addActionListener(this);
@@ -113,8 +118,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		toolPanel.getAppPanel().getDenyButton().addActionListener(this);
 		toolPanel.getAppPanel().getEditButton().addActionListener(this);
 		
-		//Get data from the server
-	getAppointmentsFromServer();
 	}
 	
 	public static void main(String[] args) {
@@ -307,6 +310,18 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			e.printStackTrace();
 		} catch (TimeException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void getMessagesFromServer() {
+		List<Message> messages = client.getMessages(USER.getUsername());
+		if (messages.size() == 0) {
+			toolbar.getMessageLabel().setVisible(false);
+		}
+		else {
+			toolPanel.getMsgPanel().addAllMessages(messages);
+			toolbar.getMessageLabel().setText(messages.size() + " New notifications");
+			toolbar.getMessageLabel().setVisible(true);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package no.ntnu.fp.gui;
 
 import java.awt.Dimension;
+import java.io.ObjectInputStream.GetField;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,7 +18,7 @@ import com.toedter.calendar.JYearChooser;
 public class ApplicationToolbar extends JPanel {
 	
 	public static final Dimension size=new Dimension(CalendarClient.size.width, 40); //Default size of the component
-	public JLabel messageLabel; //This label tells you if you have any messages
+	private JLabel messageLabel; //This label tells you if you have any messages
 	public WeekTextField week; //This TextField shows which week is displayed in the calendar
 	public JButton changeConnectivityButton, nextWeek, previousWeek;  //Some intuitive button
 	public JYearChooser year; //This object is used to show which year is used in the calendar
@@ -36,9 +37,9 @@ public class ApplicationToolbar extends JPanel {
 		add(Box.createHorizontalStrut(10));
 		messageLabel=new JLabel();
 		messageLabel.setIcon(new ImageIcon("res/new.png"));
-		messageLabel.setText("3 New Notifications");
 		messageLabel.setHorizontalAlignment(JLabel.CENTER);
 		messageLabel.setMaximumSize(new Dimension(160,28));
+		messageLabel.setVisible(false);
 		add(messageLabel);
 		
 		add(Box.createGlue());
@@ -75,4 +76,9 @@ public class ApplicationToolbar extends JPanel {
 		add(changeConnectivityButton);
 		add(Box.createHorizontalStrut(10));
 	}
+	
+	public JLabel getMessageLabel() {
+		return messageLabel;
+	}
+	
 }
