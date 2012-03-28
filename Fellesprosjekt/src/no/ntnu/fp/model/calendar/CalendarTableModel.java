@@ -100,6 +100,10 @@ public class CalendarTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
+	public List<Appointment> getAppointments(){
+		return appointments;
+	}
+	
 	public void clearAllAppointments(){
 		appointments = new ArrayList<Appointment>();
 	}

@@ -57,10 +57,10 @@ public class MessageTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex==0) {
-			return messages.get(rowIndex).getAppointment().getLeader().getName();
+			return "CrashFix";
 		}
 		else if(columnIndex==1){
-			return messages.get(rowIndex).getAppointment().getSubject();
+			return "CrashFix2";
 		}
 		else{
 			return null;

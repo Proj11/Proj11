@@ -345,6 +345,13 @@ public class HandleAClient extends JFrame implements Runnable {
 		return null;
 	}
 	
+	private boolean isLeader(Participant p, Employee l){
+		if (p.getEmployee().getUsername().equals(l.getUsername())){
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean createAppointment(String appointmentString){
 		Appointment a = Appointment.xmlToAppointment(appointmentString);
 		try {
@@ -356,8 +363,11 @@ public class HandleAClient extends JFrame implements Runnable {
 						db.insert("INSERT INTO Participant (username, appointmentID, state) values" + 
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
+						if (isLeader(p, a.getLeader())){
+							continue;
+						}
 						db.insert("INSERT INTO Message (recipient, messageCreatedBy,  appointmentID, messageText) values " +
-						"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + a.getId() + "');");
+						"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + id + "', 'You have been invited to a meeting.');");
 					}
 			
 			return true;
@@ -380,9 +390,6 @@ public class HandleAClient extends JFrame implements Runnable {
 						"('" + p.getEmployee().getUsername() + "', '" + appID + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
-//			createMessage(new Message(), 1);
-				
-			
 			return true;
 		}
 		catch (Exception exception){
@@ -411,7 +418,7 @@ public class HandleAClient extends JFrame implements Runnable {
 		return createAppointment(appointmentString, appID);
 	}
 	
-	public boolean createMessage(String messageString, int i){
+	/*public boolean createMessage(String messageString, int i){
 		Message message = Message.xmlToMessage(messageString);
 		String sentMessage=null;
 		String invitedMessage = "You have been invited to a meeting.";
@@ -438,7 +445,7 @@ public class HandleAClient extends JFrame implements Runnable {
 			createMessageException.printStackTrace();
 			return false;
 		}
-	}
+	}*/
 	
 	public boolean deleteMessage(int mId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		Database db = Database.getDatabase();

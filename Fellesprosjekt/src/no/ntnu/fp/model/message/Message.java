@@ -230,7 +230,6 @@ public class Message {
 				Node nNode = nodeLst.item(i);
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) nNode;
-					int messageID = Integer.parseInt(getTagValues("messageID", element));
 					String recipient = getTagValues("recipient", element);
 					String recipientName = getTagValues("recipientName", element);
 					String messageCreatedBy = getTagValues("messageCreatedBy", element);
