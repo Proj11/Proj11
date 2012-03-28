@@ -4,6 +4,7 @@ import no.ntnu.fp.client.Client;
 import no.ntnu.fp.gui.appointment.AppointmentPanel;
 import no.ntnu.fp.gui.appointment.PopupConfirmation;
 import no.ntnu.fp.gui.appointment.PopupEmployees;
+import no.ntnu.fp.gui.appointment.PopupFeedback;
 import no.ntnu.fp.gui.appointment.PopupRooms;
 import no.ntnu.fp.gui.calendar.CalendarPanel;
 import no.ntnu.fp.model.appointment.Appointment;
@@ -161,17 +162,20 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			calendarPanel.getCalendar().addAppointment(toolPanel.getAppPanel().getAppointmentModel());
 			client.createAppointment(toolPanel.getAppPanel().getAppointmentModel()); 
 			toolPanel.getAppPanel().setAppointmentModel(null);
+			new PopupFeedback("Appointment created");
 			
 		} else if (e.getSource()==toolPanel.getAppPanel().getDeleteButton()) {
 			if(new PopupConfirmation().getConfirm() == PopupConfirmation.YES){
 				calendarPanel.getCalendar().removeAppointment(calendarPanel.getCalendar().getSelectedCell());		
 				client.deleteAppointment(toolPanel.getAppPanel().getAppointmentModel().getId());
 				toolPanel.getAppPanel().setAppointmentModel(null);
+				new PopupFeedback("Appointment deleted");
 			}
 		}else if(e.getSource()==toolPanel.getAppPanel().getEditButton()){
 			calendarPanel.getCalendar().editAppointment(toolPanel.getAppPanel().getAppointmentModel());
 			client.editAppointment(toolPanel.getAppPanel().getAppointmentModel());
 			toolPanel.getAppPanel().setAppointmentModel(null);
+			new PopupFeedback("Appointment edited");
 			
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
