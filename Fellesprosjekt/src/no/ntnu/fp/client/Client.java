@@ -142,7 +142,7 @@ public class Client {
 	public List<Message> getMessages(String username){
 		String messagesAsXML;
 		try {
-			sendMessage(Constants.GET_MESSAGES_FROM_DB+"");
+			sendMessage(Constants.GET_MESSAGES_FROM_DB+""+username);
 			messagesAsXML = receive();
 			ArrayList<Message> allMsgs = Message.xmlToMessageList(messagesAsXML);
 			ArrayList<Message> msgList = new ArrayList<Message>();

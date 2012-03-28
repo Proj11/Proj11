@@ -119,6 +119,14 @@ public class HandleAClient extends JFrame implements Runnable {
 			textArea.append("xml parsed!\n");
 			sendMessage(parseAppointmentsToXML(appList));
 			break;
+			
+		case Constants.GET_MESSAGES_FROM_DB:
+			textArea.append("GetMESSAGES mottatt!!\n");
+			ArrayList<Message> msgList = getAllMessagesFromDB();
+			textArea.append("xml parsed! \n");
+			sendMessage(parseMessagesToXML(msgList));
+		
+			break;
 		case Constants.CLOSE_CONNECTION:
 			in.close();
 			out.close();
@@ -349,6 +357,7 @@ public class HandleAClient extends JFrame implements Runnable {
 						"('" + p.getEmployee().getUsername() + "', '" + id + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
+			
 			return true;
 		}
 		catch (Exception exception){
@@ -369,6 +378,9 @@ public class HandleAClient extends JFrame implements Runnable {
 						"('" + p.getEmployee().getUsername() + "', '" + appID + "', 'PENDING');");
 						db.insert("UPDATE Participant SET state = 'ACCEPTED' WHERE username = '" + a.getLeader().getUsername() +"';");
 					}
+//			createMessage(new Message(), 1);
+				
+			
 			return true;
 		}
 		catch (Exception exception){
