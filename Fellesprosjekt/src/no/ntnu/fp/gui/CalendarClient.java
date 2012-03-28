@@ -179,9 +179,11 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			
 		} else if (e.getSource()==toolPanel.getMsgPanel().getGoToButton()) {
 			if (toolPanel.getMsgPanel().getSelectedMessage()!=null) {
+				System.out.println("CalendarClient linje 185: ");
 				List<Appointment> appList = calendarPanel.getCalendar().getAppointments();
 				for (Appointment a : appList){
-					if (a.getId() == toolPanel.getMsgPanel().getSelectedMessage().getMessageID()){
+					System.out.println(appList + "    " + toolPanel.getMsgPanel().getSelectedMessage().getAppointmentId());
+					if (a.getId() == toolPanel.getMsgPanel().getSelectedMessage().getAppointmentId()){
 						toolPanel.getAppPanel().setAppointmentModel(a);
 						toolPanel.setSelectedComponent(toolPanel.getAppPanel());
 						break;
