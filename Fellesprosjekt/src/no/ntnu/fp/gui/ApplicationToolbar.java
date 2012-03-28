@@ -24,6 +24,7 @@ public class ApplicationToolbar extends JPanel {
 	public JYearChooser year; //This object is used to show which year is used in the calendar
 	public JMonthChooser month; //This object is used to show which month is used in the calendar
 	public JLabel stateLabel; //This label displays your online status
+	private int notifications;
 	
 	public ApplicationToolbar() {
 		super();
@@ -77,8 +78,18 @@ public class ApplicationToolbar extends JPanel {
 		add(Box.createHorizontalStrut(10));
 	}
 	
-	public JLabel getMessageLabel() {
-		return messageLabel;
+	public int getMessageCount() {
+		return notifications;
+	}
+	
+	public void setMessageLabel(int n) {
+		notifications=n;
+		if (n==0) {
+			messageLabel.setVisible(false);
+		} else {
+			messageLabel.setText(n+" new messages");
+			messageLabel.setVisible(true);
+		}
 	}
 	
 }

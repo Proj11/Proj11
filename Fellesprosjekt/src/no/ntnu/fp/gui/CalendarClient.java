@@ -189,7 +189,8 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 						toolPanel.getAppPanel().setAppointmentModel(a);
 						client.deleteMessage(toolPanel.getMsgPanel().getSelectedMessage().getMessageID());
 						toolPanel.setSelectedComponent(toolPanel.getAppPanel());
-						
+						toolPanel.getMsgPanel().removeMessage(toolPanel.getMsgPanel().getSelectedMessage());
+						toolbar.setMessageLabel(toolbar.getMessageCount()-1);
 						
 						break;
 					}
@@ -227,7 +228,6 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 		client.sendState(toolPanel.getAppPanel().getAppointmentModel().getId(), state, USER.getUsername());
 		toolPanel.getAppPanel().getAppointmentModel().getParticipant(USER.getUsername()).setState(Appointment.stringToState(state));
 		toolPanel.getAppPanel().getParticipantList().repaint();
-		//TODO: legg til kode i HandleAClient
 	}
 
 	@Override
@@ -336,14 +336,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 	
 	private void getMessagesFromServer() {
 		List<Message> messages = client.getMessages(USER.getUsername());
-		if (messages.size() == 0) {
-			toolbar.getMessageLabel().setVisible(false);
-		}
-		else {
 			toolPanel.getMsgPanel().addAllMessages(messages);
-			toolbar.getMessageLabel().setText(messages.size() + " New notifications");
-			toolbar.getMessageLabel().setVisible(true);
-		}
+			toolbar.setMessageLabel(messages.size());
+		
 	}
 }
 
