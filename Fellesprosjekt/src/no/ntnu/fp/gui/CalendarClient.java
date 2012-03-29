@@ -406,7 +406,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 				setVisible(false);
 				new CalendarClient(client);
 			}
-			else System.out.println("Incorrect username / password.");
+			else new PopupFeedback("Invalid username/password");
 		}
 		catch (Exception eX){
 			eX.printStackTrace();
