@@ -392,7 +392,7 @@ public class HandleAClient extends JFrame implements Runnable {
 							continue;
 						}
 						db.insert("INSERT INTO Message (recipient, messageCreatedBy,  appointmentID, messageText) values " +
-						"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + id + "', 'You have been invited to a meeting.');");
+								"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + id + "', 'You have been invited to a meeting.');");
 					}
 			fireAppointmentReceived();
 			return true;

@@ -220,6 +220,9 @@ public class CalendarClient extends JFrame implements ComponentListener, ActionL
 			sendState("accepted");
 		}else if(e.getSource()==toolPanel.getAppPanel().getDenyButton()){
 			sendState("denied");
+			calendarPanel.getCalendar().removeAppointment(calendarPanel.getCalendar().getSelectedCell());
+			toolPanel.getAppPanel().setAppointmentModel(null);
+			
 		}
 		
 	}
@@ -404,6 +407,7 @@ class CalendarLogin extends JFrame implements ActionListener, KeyListener {
 			CalendarClient.USER = client.logOn(usernameText.getText(), passwordText.getText());
 			if (CalendarClient.USER != null){
 				setVisible(false);
+				
 				new CalendarClient(client);
 			}
 			else new PopupFeedback("Invalid username/password");
