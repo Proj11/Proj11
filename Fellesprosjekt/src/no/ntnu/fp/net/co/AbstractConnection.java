@@ -1,10 +1,4 @@
 /*
-Test tast - Ulv
-Test crash - Ulv
-
-Test derp derp - Karsten
-lol
-Torbjørn
  * Created on 11. september 2008
  */
 package no.ntnu.fp.net.co;

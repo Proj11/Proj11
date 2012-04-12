@@ -46,7 +46,10 @@ public class ConnectionImpl extends AbstractConnection {
      *            - the local port to associate with this connection
      */
     public ConnectionImpl(int myPort) {
-        throw new NotImplementedException();
+        super();
+        this.myPort=myPort;
+        this.myAddress=getIPv4Address();
+        usedPorts.put(myPort, true);
     }
 
     private String getIPv4Address() {
@@ -71,9 +74,25 @@ public class ConnectionImpl extends AbstractConnection {
      *             If timeout expires before connection is completed.
      * @see Connection#connect(InetAddress, int)
      */
-    public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
-            SocketTimeoutException {
-        throw new NotImplementedException();
+    public void connect(InetAddress remoteAddress, int remotePort) throws IOException, SocketTimeoutException {
+    	if (state!=State.CLOSED) {
+    		throw new SocketTimeoutException("Socket is not closed");
+    	}
+    	try {
+	    	this.remoteAddress=remoteAddress.getHostAddress();
+	    	this.remotePort=remotePort;
+	    	state=State.SYN_SENT;
+			//KtnDatagram recievedPacket=sendWithRetry(constructInternalPacket(Flag.SYN));
+	    	simplySendPacket(constructInternalPacket(Flag.SYN));
+	    	KtnDatagram recievedPacket=receiveAck();
+			lastValidPacketReceived=recievedPacket;
+			Thread.sleep(1000);
+			sendAck(recievedPacket, false);
+			state=State.ESTABLISHED;
+    	} catch (Exception e) {
+    		state=State.CLOSED;
+    		e.printStackTrace();
+    	}
     }
 
     /**
@@ -83,7 +102,39 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
-        throw new NotImplementedException();
+    	if (state!=State.CLOSED && state != State.LISTEN) {
+    		throw new IOException("Socket isn't closed");
+    	}
+    	state=State.LISTEN;
+    	KtnDatagram recievedPacket=null;
+    	while (!isValid(recievedPacket)) {
+    		recievedPacket=receivePacket(true);
+    	}
+    	System.out.println("Martin: packet is valid");
+        if (recievedPacket.getFlag()==Flag.SYN) {
+        	ConnectionImpl newConnection=new ConnectionImpl(generateNewPortNumber());
+        	newConnection.remoteAddress=recievedPacket.getSrc_addr();
+	    	newConnection.remotePort=recievedPacket.getSrc_port();
+        	newConnection.state=State.SYN_RCVD;
+        	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	newConnection.sendAck(recievedPacket, true);
+        	KtnDatagram recievedAck=receiveAck();
+        	newConnection.state=State.ESTABLISHED;
+        	return newConnection;
+        }
+        throw new IOException("Did not recieve syn");
+    }
+    
+    private int generateNewPortNumber() {
+    	int port = (int)(Math.random()*200) + 8337;
+    	while(usedPorts.containsKey(port)){
+    		port = (int)(Math.random()*200) + 8337;
+    	}
+    	return port;
     }
 
     /**
@@ -99,7 +150,10 @@ public class ConnectionImpl extends AbstractConnection {
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
     public void send(String msg) throws ConnectException, IOException {
-        throw new NotImplementedException();
+    	if (state!=State.ESTABLISHED) {
+    		throw new ConnectException("Error sending, connection not established");
+    	}
+    	KtnDatagram ackPacket=sendDataPacketWithRetransmit(constructDataPacket(msg));
     }
 
     /**
@@ -111,7 +165,32 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-        throw new NotImplementedException();
+    	if (state!=State.ESTABLISHED) {
+    		throw new ConnectException("Connection must be established to receive something");
+    	}
+        KtnDatagram recievedPacket= null;
+        do { 
+        	System.out.println("do1");
+        	recievedPacket = receivePacket(false);
+        	System.out.println("do2");
+        }
+        while (recievedPacket == null);
+        if (recievedPacket!=null) System.out.println(recievedPacket.getPayload());
+        else System.out.println("recieved nothing!");
+        if (isValid(recievedPacket) && recievedPacket.getSeq_nr()>lastValidPacketReceived.getSeq_nr()) {
+        	try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	sendAck(recievedPacket, false);
+        	lastValidPacketReceived=recievedPacket;
+        	return recievedPacket.toString();
+        }
+        else {
+        	sendAck(lastValidPacketReceived, false);
+        	return null;
+        }
     }
 
     /**
@@ -120,7 +199,17 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
-        throw new NotImplementedException();
+    	if (state!=State.ESTABLISHED) {
+    		throw new IOException("No connection is established");
+    	}
+    	state=State.FIN_WAIT_1;
+        KtnDatagram finPacket=constructInternalPacket(Flag.FIN);
+        KtnDatagram ackPacket=sendDataPacketWithRetransmit(finPacket);
+        state=State.FIN_WAIT_2;
+        KtnDatagram recieveFinPacket = receivePacket(true);
+        sendAck(recieveFinPacket, false);
+        state=State.CLOSED;
+        
     }
 
     /**
@@ -132,6 +221,8 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        throw new NotImplementedException();
+    	if (packet==null) return false;
+        long checksum=packet.calculateChecksum();
+        return checksum==packet.getChecksum();
     }
 }

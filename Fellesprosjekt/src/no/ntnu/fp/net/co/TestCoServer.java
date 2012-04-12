@@ -40,11 +40,14 @@ public class TestCoServer {
     // each new connection lives in its own instance
     Connection conn;
     try {
+      System.out.println("Martin: server.accept()");
       conn = server.accept();
 
       try {
 	while (true) {
+	  System.out.println("Martin: while loop started");
 	  String msg = conn.receive();
+	  System.out.println(msg);
 	  Log.writeToLog("Message got through to server: " + msg,
 			 "TestServer");
 	}
