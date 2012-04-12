@@ -6,4 +6,5 @@ public interface MessageListener {
 	public void messageReceived(String message);
 	public void appointmentReceived(Appointment a);
 	public void connectionClosed(HandleAClient clientHandler);
+	public void appointmentReceived();
 }

@@ -89,11 +89,12 @@ public class Message {
 		this.messageText = messageText;
 	}
 	
-	public Message(Employee messageCreatedBy, Employee recipient, String messageText, int appointmentID){
+	public Message(Employee messageCreatedBy, Employee recipient, String messageText, int appointmentID, int messageID){
 		this.recipient = recipient;
 		this.messageCreatedBy = messageCreatedBy;
 		this.messageText = messageText;
 		this.appointmentId = appointmentID;
+		this.messageID = messageID;
 	}
 
 	public Appointment getAppointment(){
@@ -145,33 +146,33 @@ public class Message {
 		return stringWriter.getBuffer().toString();
 	}
 	
-	public static Message xmlToMessage(String xml) {
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			InputSource is = new InputSource(new StringReader(xml));
-			Document doc = db.parse(is);
-			doc.getDocumentElement().normalize();
-
-			Message message = new Message();
-			NodeList nodeLst = doc.getElementsByTagName("message");
-			for (int i = 0; i < nodeLst.getLength(); i++) {
-				Node nNode = nodeLst.item(i);
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) nNode;
-					message.setMessageID(Integer.parseInt(getTagValues("messageID", element)));
-					message.setAppointmentId(Integer.parseInt(getTagValues("appointmentID", element)));
-					message.setRecipient(new Employee((getTagValues("recipientName", element)), (getTagValues("recipient", element))));
-					message.setMessageCreatedBy(new Employee((getTagValues("messageCreatedByName", element)), (getTagValues("messageCreatedBy", element))));
-					message.setMessageText(getTagValues("messageText", element));
-				}
-			}
-			return message;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	public static Message xmlToMessage(String xml) {
+//		try {
+//			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//			DocumentBuilder db = dbf.newDocumentBuilder();
+//			InputSource is = new InputSource(new StringReader(xml));
+//			Document doc = db.parse(is);
+//			doc.getDocumentElement().normalize();
+//
+//			Message message = new Message();
+//			NodeList nodeLst = doc.getElementsByTagName("message");
+//			for (int i = 0; i < nodeLst.getLength(); i++) {
+//				Node nNode = nodeLst.item(i);
+//				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+//					Element element = (Element) nNode;
+//					message.setMessageID(Integer.parseInt(getTagValues("messageID", element)));
+//					message.setAppointmentId(Integer.parseInt(getTagValues("appointmentID", element)));
+//					message.setRecipient(new Employee((getTagValues("recipientName", element)), (getTagValues("recipient", element))));
+//					message.setMessageCreatedBy(new Employee((getTagValues("messageCreatedByName", element)), (getTagValues("messageCreatedBy", element))));
+//					message.setMessageText(getTagValues("messageText", element));
+//				}
+//			}
+//			return message;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	public static String allMessagesToXML(ArrayList<Message> allMessages) throws ParserConfigurationException, TransformerException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -186,7 +187,7 @@ public class Message {
 			rootElement.appendChild(message);
 			
 			Element messageID = doc.createElement("messageID");
-			rootElement.appendChild(messageID);
+			message.appendChild(messageID);
 			messageID.appendChild(doc.createTextNode(m.getMessageID()+ ""));
 			
 			Element appointmentID = doc.createElement("appointmentID");
@@ -230,6 +231,7 @@ public class Message {
 			InputSource is = new InputSource(new StringReader(xml));
 			Document doc = db.parse(is);
 			doc.getDocumentElement().normalize();
+			int messageID = 0;
 
 			ArrayList<Message> messages = new ArrayList<Message>();
 			NodeList nodeLst = doc.getElementsByTagName("message");
@@ -242,8 +244,10 @@ public class Message {
 					String messageCreatedBy = getTagValues("messageCreatedBy", element);
 					String messageCreatedByName = getTagValues("messageCreatedByName", element);
 					String messageText = getTagValues("messageText", element);
-					int appoinmentID = Integer.parseInt(getTagValues("appointmentID", element));
-					messages.add(new Message(new Employee(recipientName, recipient), new Employee(messageCreatedByName, messageCreatedBy), messageText, appoinmentID));
+					int appointmentID = Integer.parseInt(getTagValues("appointmentID", element));
+					if (getTagValues("messageID", element) != null)
+							messageID = Integer.parseInt(getTagValues("messageID", element));						
+					messages.add(new Message(new Employee(recipientName, recipient), new Employee(messageCreatedByName, messageCreatedBy), messageText, appointmentID, messageID));
 				}
 			}
 			return messages;

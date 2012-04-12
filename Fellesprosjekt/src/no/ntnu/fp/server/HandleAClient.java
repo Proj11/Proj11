@@ -65,7 +65,9 @@ public class HandleAClient extends JFrame implements Runnable {
 		switch (id) {
 		case Constants.LOGON:
 			Employee emp = logon(message.substring(1));
+			
 			if (emp != null){
+				user=emp;
 				sendMessage(Constants.TRUE + emp.toXML());
 			}
 			else 
@@ -124,6 +126,13 @@ public class HandleAClient extends JFrame implements Runnable {
 			String[] s = message.substring(1).split("-");
 			updateState(Integer.parseInt(s[0]), s[1], s[2]);
 			break;
+			
+		case Constants.DELETE_MESSAGE:
+			boolean delMsg = deleteMessage(message.substring(1));
+			if (delMsg)
+				sendMessage(Constants.TRUE + "");
+			else sendMessage(Constants.FALSE +"");
+			break;
 		default:
 			break;
 		}
@@ -131,6 +140,10 @@ public class HandleAClient extends JFrame implements Runnable {
 	
 	public Employee getUser() {
 		return user;
+	}
+	
+	protected void fireAppointmentReceived() {
+		sendMessage(Constants.RECEIVE_MESSAGE_FROM_SERVER+"");
 	}
 	
 	protected void fireMessageReceived(String message) {
@@ -379,9 +392,9 @@ public class HandleAClient extends JFrame implements Runnable {
 							continue;
 						}
 						db.insert("INSERT INTO Message (recipient, messageCreatedBy,  appointmentID, messageText) values " +
-						"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + id + "', 'You have been invited to a meeting.');");
+								"('" + p.getEmployee().getUsername() + "', '" + a.getLeader().getUsername() + "', '" + id + "', 'You have been invited to a meeting.');");
 					}
-			
+			fireAppointmentReceived();
 			return true;
 		}
 		catch (Exception exception){
@@ -459,10 +472,10 @@ public class HandleAClient extends JFrame implements Runnable {
 		}
 	}*/
 	
-	public boolean deleteMessage(int mId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
+	public boolean deleteMessage(String mId) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		Database db = Database.getDatabase();
 		try {
-			db.insert("DELETE FROM Message WHERE messageID = '" + mId + "';");
+			db.insert("DELETE FROM Message WHERE messageID = '" + Integer.parseInt(mId) + "';");
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -503,6 +516,28 @@ public class HandleAClient extends JFrame implements Runnable {
 			Database db = Database.getDatabase();
 			ArrayList<String> messagesSize = new ArrayList<String>();
 			ResultSet rs = db.query("SELECT * FROM Message;");
+			while (rs.next()){
+				String messageID = rs.getString("messageID");
+				messagesSize.add(messageID);
+			}
+			for (String stringMessageID : messagesSize) {
+				int messageID = Integer.parseInt(stringMessageID);
+				messages.add(getMessageFromDB(messageID));
+			}
+			return messages;
+		}
+		catch (Exception getAllMsgsException){
+			getAllMsgsException.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ArrayList<Message> getAllMessagesFromDBWhere(int appointmentID) {
+		ArrayList<Message> messages = new ArrayList<Message>();
+		try {
+			Database db = Database.getDatabase();
+			ArrayList<String> messagesSize = new ArrayList<String>();
+			ResultSet rs = db.query("SELECT * FROM Message WHERE appointmentID = '" + appointmentID + "';");
 			while (rs.next()){
 				String messageID = rs.getString("messageID");
 				messagesSize.add(messageID);

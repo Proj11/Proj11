@@ -70,18 +70,21 @@ public class CalendarServer extends JFrame implements MessageListener {
 	}
 	
 	@Override
-	public void appointmentReceived(Appointment a) {
-		for (Participant p : a.getParticipants()) {
-			for (HandleAClient clientHandler : clients) {
-				if (p.getEmployee().getUsername().equals(clientHandler.getUser().getUsername()) && !clientHandler.getUser().getUsername().equals(a.getLeader().getUsername())) {
-					//TODO Make the given clientHandler send a message about the appointment
-				}
-			}
+	public void appointmentReceived() {
+		for (HandleAClient clientHandler : clients) {
+			clientHandler.getAllMessagesFromDB();
+			clientHandler.fireAppointmentReceived();
 		}
 	}
 
 	@Override
 	public void connectionClosed(HandleAClient clientHandler) {
 		clients.remove(clientHandler);
+	}
+
+	@Override
+	public void appointmentReceived(Appointment a) {
+		// TODO Auto-generated method stub
+		
 	}
 }

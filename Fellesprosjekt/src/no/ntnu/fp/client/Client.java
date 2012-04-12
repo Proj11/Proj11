@@ -13,6 +13,7 @@ import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
+import no.ntnu.fp.gui.CalendarClient;
 import no.ntnu.fp.model.appointment.Appointment;
 import no.ntnu.fp.model.appointment.Participant;
 import no.ntnu.fp.model.employee.Employee;
@@ -25,13 +26,18 @@ public class Client {
 	
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private CalendarClient calendar;
 	
-	public Client() throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException {
+	public Client(CalendarClient calendar) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException {
 		Socket socket = new Socket("localhost", 8000);
 		out = new ObjectOutputStream(socket.getOutputStream());
 		out.flush();
 		in = new ObjectInputStream(socket.getInputStream());
-
+		this.calendar = calendar;
+	}
+	
+	public void setCalendarClient(CalendarClient calendar) {
+		this.calendar = calendar;
 	}
 	
 	/**
@@ -51,9 +57,20 @@ public class Client {
 		
 	}
 	
+	public void doSomething(String message){
+		char id = message.charAt(0);
+		switch (id){
+		case Constants.RECEIVE_MESSAGE_FROM_SERVER:
+			System.out.println("Client linje 64");
+			calendar.fireMessagesChanged();
+			break;
+		}
+	}
+	
 	public synchronized String receive() throws IOException, ClassNotFoundException {
 		String s=(String) in.readObject();
 		System.out.println("Client recieve(): "+s);
+		doSomething(s);
 		return s;
 	}
 	
@@ -68,6 +85,7 @@ public class Client {
 	public boolean createAppointment(Appointment appointment){
 		try {
 			sendMessage(Constants.CREATE_APPOINTMENT + appointment.toXML());
+			sendMessage(Constants.SEND_MESSAGE_TO_CLIENT +"");
 			return true;
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -125,19 +143,19 @@ public class Client {
 		sendMessage(Constants.DELETE_MESSAGE + "" +messageID);
 	}
 	
-	public Message getMessage(int messageID){
-		String messageAsXML;
-		try {
-			sendMessage(Constants.GET_MESSAGE_FROM_DB + "" + messageID );
-			messageAsXML = receive();
-			return Message.xmlToMessage(messageAsXML);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	public Message getMessage(int messageID){
+//		String messageAsXML;
+//		try {
+//			sendMessage(Constants.GET_MESSAGE_FROM_DB + "" + messageID );
+//			messageAsXML = receive();
+//			return Message.xmlToMessage(messageAsXML);
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	public List<Message> getMessages(String username){
 		String messagesAsXML;
@@ -212,14 +230,4 @@ public class Client {
 		in.close();
 	}
 	
-	public static void main(String[] args) throws Exception {
-		try {
-			new Client();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 }
