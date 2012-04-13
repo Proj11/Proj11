@@ -85,9 +85,11 @@ public class ConnectionImpl extends AbstractConnection {
 			//KtnDatagram recievedPacket=sendWithRetry(constructInternalPacket(Flag.SYN));
 	    	simplySendPacket(constructInternalPacket(Flag.SYN));
 	    	KtnDatagram recievedPacket=receiveAck();
+	    	this.remotePort = recievedPacket.getSrc_port();
 			lastValidPacketReceived=recievedPacket;
-			Thread.sleep(1000);
+			Thread.sleep(50);
 			sendAck(recievedPacket, false);
+			Thread.sleep(500);
 			state=State.ESTABLISHED;
     	} catch (Exception e) {
     		state=State.CLOSED;
@@ -122,7 +124,8 @@ public class ConnectionImpl extends AbstractConnection {
 				e.printStackTrace();
 			}
         	newConnection.sendAck(recievedPacket, true);
-        	KtnDatagram recievedAck=receiveAck();
+        	newConnection.lastValidPacketReceived = newConnection.receiveAck();
+        	System.out.println("hei hei" + newConnection.lastValidPacketReceived);
         	newConnection.state=State.ESTABLISHED;
         	return newConnection;
         }
@@ -177,6 +180,7 @@ public class ConnectionImpl extends AbstractConnection {
         while (recievedPacket == null);
         if (recievedPacket!=null) System.out.println(recievedPacket.getPayload());
         else System.out.println("recieved nothing!");
+        System.out.println(lastValidPacketReceived);
         if (isValid(recievedPacket) && recievedPacket.getSeq_nr()>lastValidPacketReceived.getSeq_nr()) {
         	try {
 				Thread.sleep(1500);
@@ -204,7 +208,14 @@ public class ConnectionImpl extends AbstractConnection {
     	}
     	state=State.FIN_WAIT_1;
         KtnDatagram finPacket=constructInternalPacket(Flag.FIN);
-        KtnDatagram ackPacket=sendDataPacketWithRetransmit(finPacket);
+//        KtnDatagram ackPacket=sendDataPacketWithRetransmit(finPacket);
+		try {
+			simplySendPacket((finPacket));
+		} catch (ClException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		KtnDatagram ackPacket= receiveAck();
         state=State.FIN_WAIT_2;
         KtnDatagram recieveFinPacket = receivePacket(true);
         sendAck(recieveFinPacket, false);
