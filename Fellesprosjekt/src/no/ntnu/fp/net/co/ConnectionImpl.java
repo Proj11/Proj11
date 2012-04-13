@@ -206,21 +206,54 @@ public class ConnectionImpl extends AbstractConnection {
     	if (state!=State.ESTABLISHED) {
     		throw new IOException("No connection is established");
     	}
-    	state=State.FIN_WAIT_1;
-        KtnDatagram finPacket=constructInternalPacket(Flag.FIN);
-//        KtnDatagram ackPacket=sendDataPacketWithRetransmit(finPacket);
-		try {
-			simplySendPacket((finPacket));
-		} catch (ClException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		KtnDatagram ackPacket= receiveAck();
-        state=State.FIN_WAIT_2;
-        KtnDatagram recieveFinPacket = receivePacket(true);
-        sendAck(recieveFinPacket, false);
-        state=State.CLOSED;
-        
+    	if (disconnectRequest == null){
+
+    		state=State.FIN_WAIT_1;
+    		KtnDatagram finPacket=constructInternalPacket(Flag.FIN);
+    		//        KtnDatagram ackPacket=sendDataPacketWithRetransmit(finPacket);
+    		try {
+    			Thread.sleep(100);
+    			simplySendPacket((finPacket));
+    		} catch (ClException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		KtnDatagram ackPacket= receiveAck();
+    		state=State.FIN_WAIT_2;
+    		
+    		KtnDatagram recieveFinPacket = receivePacket(true);
+    		sendAck(recieveFinPacket, false);
+    		state=State.CLOSED;
+    	}
+    	else {
+    		try {
+    			sendAck(disconnectRequest, false);
+    		}
+    		catch (Exception e){
+    			e.printStackTrace();
+    		}
+    		state=State.CLOSE_WAIT;
+    		KtnDatagram finPacket = constructInternalPacket(Flag.FIN);
+    		try {
+    			simplySendPacket((finPacket));
+    		} catch (ClException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    		state=State.LAST_ACK;
+    		try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		receiveAck();
+    		
+    		state=State.CLOSED;
+    	}
     }
 
     /**
