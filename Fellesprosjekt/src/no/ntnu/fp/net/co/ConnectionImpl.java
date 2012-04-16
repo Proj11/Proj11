@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.cl.ClException;
@@ -30,7 +29,7 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  * of the functionality, leaving message passing and error handling to this
  * implementation.
  * 
- * @author Sebjørn Birkeland and Stein Jakob Nordbø
+ * @author Sebjï¿½rn Birkeland and Stein Jakob Nordbï¿½
  * @see no.ntnu.fp.net.co.Connection
  * @see no.ntnu.fp.net.cl.ClSocket
  */
@@ -156,7 +155,15 @@ public class ConnectionImpl extends AbstractConnection {
     	if (state!=State.ESTABLISHED) {
     		throw new ConnectException("Error sending, connection not established");
     	}
-    	KtnDatagram ackPacket=sendDataPacketWithRetransmit(constructDataPacket(msg));
+    	KtnDatagram sendPacket=constructDataPacket(msg);
+    	int retry =16;
+    	while (retry-->0) {
+    		KtnDatagram ackPacket=sendDataPacketWithRetransmit(sendPacket);
+    		if (ackPacket.getAck()==sendPacket.getSeq_nr()) {
+    			return;
+    		}
+    	}
+    	throw new IOException("Did not receive correct ack after 16 freaking tries!");
     }
 
     /**
