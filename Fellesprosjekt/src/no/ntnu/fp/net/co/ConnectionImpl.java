@@ -37,6 +37,7 @@ public class ConnectionImpl extends AbstractConnection {
 
     /** Keeps track of the used ports for each server port. */
     private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
+    private final static int RETRY=16;
 
     /**
      * Initialise initial sequence number and setup state machine.
@@ -78,10 +79,10 @@ public class ConnectionImpl extends AbstractConnection {
     		throw new SocketTimeoutException("Socket is not closed");
     	}
     	try {
+    		//Set the address and port we want to connect to
 	    	this.remoteAddress=remoteAddress.getHostAddress();
 	    	this.remotePort=remotePort;
 	    	state=State.SYN_SENT;
-			//KtnDatagram recievedPacket=sendWithRetry(constructInternalPacket(Flag.SYN));
 	    	simplySendPacket(constructInternalPacket(Flag.SYN));
 	    	KtnDatagram recievedPacket=receiveAck();
 	    	this.remotePort = recievedPacket.getSrc_port();
@@ -106,15 +107,17 @@ public class ConnectionImpl extends AbstractConnection {
     	if (state!=State.CLOSED && state != State.LISTEN) {
     		throw new IOException("Socket isn't closed");
     	}
+    	//Listen for a new connection
     	state=State.LISTEN;
     	KtnDatagram recievedPacket=null;
     	while (!isValid(recievedPacket)) {
     		recievedPacket=receivePacket(true);
     	}
-    	System.out.println("Martin: packet is valid");
+    	// If we received a syn, we can establish a new connection! Hurray!
         if (recievedPacket.getFlag()==Flag.SYN) {
-        	ConnectionImpl newConnection=new ConnectionImpl(generateNewPortNumber());
-        	newConnection.remoteAddress=recievedPacket.getSrc_addr();
+        	ConnectionImpl newConnection=new ConnectionImpl(generateNewPortNumber()); //Generate a random, new, unused port number for the connection
+        	//Set the address and port that we want to connect to
+        	newConnection.remoteAddress=recievedPacket.getSrc_addr(); 
 	    	newConnection.remotePort=recievedPacket.getSrc_port();
         	newConnection.state=State.SYN_RCVD;
         	try {
@@ -124,10 +127,10 @@ public class ConnectionImpl extends AbstractConnection {
 			}
         	newConnection.sendAck(recievedPacket, true);
         	newConnection.lastValidPacketReceived = newConnection.receiveAck();
-        	System.out.println("hei hei" + newConnection.lastValidPacketReceived);
         	newConnection.state=State.ESTABLISHED;
-        	return newConnection;
+        	return newConnection; 
         }
+        //If we get down here, we have not received a syn
         throw new IOException("Did not recieve syn");
     }
     
@@ -156,14 +159,15 @@ public class ConnectionImpl extends AbstractConnection {
     		throw new ConnectException("Error sending, connection not established");
     	}
     	KtnDatagram sendPacket=constructDataPacket(msg);
-    	int retry =16;
+    	int retry = RETRY;
+    	//Retry in case we don't receive the correct ack 
     	while (retry-->0) {
     		KtnDatagram ackPacket=sendDataPacketWithRetransmit(sendPacket);
     		if (ackPacket.getAck()==sendPacket.getSeq_nr()) {
-    			return;
+    			return; //Successfully recieved the correct ack packet, so we are done here
     		}
     	}
-    	throw new IOException("Did not receive correct ack after 16 freaking tries!");
+    	throw new IOException("Did not receive correct ack after "+RETRY+" tries!");
     }
 
     /**
@@ -180,15 +184,9 @@ public class ConnectionImpl extends AbstractConnection {
     	}
         KtnDatagram recievedPacket= null;
         do { 
-        	System.out.println("do1");
         	recievedPacket = receivePacket(false);
-        	System.out.println("do2");
-        }
-        while (recievedPacket == null);
-        if (recievedPacket!=null) System.out.println(recievedPacket.getPayload());
-        else System.out.println("recieved nothing!");
-        System.out.println(lastValidPacketReceived);
-        if (isValid(recievedPacket) && recievedPacket.getSeq_nr()>lastValidPacketReceived.getSeq_nr()) {
+        } while (recievedPacket == null);
+        if (isValid(recievedPacket) && recievedPacket.getSeq_nr()>lastValidPacketReceived.getSeq_nr()) { //Check if the packet we recieved is a valid packet, and had new data for us
         	try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) {
@@ -199,7 +197,7 @@ public class ConnectionImpl extends AbstractConnection {
         	return recievedPacket.toString();
         }
         else {
-        	sendAck(lastValidPacketReceived, false);
+        	sendAck(lastValidPacketReceived, false); //Ack the last received packet if the packet recieved was not valid
         	return null;
         }
     }
@@ -217,18 +215,15 @@ public class ConnectionImpl extends AbstractConnection {
 
     		state=State.FIN_WAIT_1;
     		KtnDatagram finPacket=constructInternalPacket(Flag.FIN);
-    		//        KtnDatagram ackPacket=sendDataPacketWithRetransmit(finPacket);
     		try {
     			Thread.sleep(100);
     			simplySendPacket((finPacket));
     		} catch (ClException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
     		} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		KtnDatagram ackPacket= receiveAck();
+    		KtnDatagram ackPacket = receiveAck();
     		state=State.FIN_WAIT_2;
     		
     		KtnDatagram recieveFinPacket = receivePacket(true);
